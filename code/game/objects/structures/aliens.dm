@@ -365,7 +365,7 @@
 
 	for(var/turf/T in U.GetAtmosAdjacentTurfs())
 
-		if(locate(/obj/structure/alien/weeds) in T || istype(T, /turf/space))
+		if((locate(/obj/structure/alien/weeds) in T) || istype(T, /turf/space) || islava(T) || ischasm(T))
 			continue
 
 		new /obj/structure/alien/weeds(T, linked_node)
