@@ -27,7 +27,7 @@
   );
 
  @use '../base.scss' with (
-    $color-bg: #651e88,
+    $color-bg: #3f055c,
     $color-bg-grad-spread: 12%,
     //$border-radius: 0,
   );
@@ -53,8 +53,7 @@
    );
    @include meta.load-css('../components/Divider.scss');
    @include meta.load-css(
-     '../components/Section.scss',
-     $with: ('color-background': rgba(205, 205, 205, 0.595))
+     '../components/Section.scss'
    );
    @include meta.load-css(
      '../components/Tooltip.scss',
@@ -66,29 +65,23 @@
    @include meta.load-css('../layouts/Window.scss');
    @include meta.load-css(
      '../layouts/TitleBar.scss',
-     $with: ('color-background': #7d00bc)
+     $with: ('color-background': #3e1c50)
    );
 
    .Section {
-     color: black;
      outline: 2px inset 	#651e88;
-     font-size: 14px;
    }
 
    .Section__buttons {
     position: absolute;
     display: inline-block;
     right: 6px;
-    margin-top: 2px;
-  }
-
-   .Section--level--1 .Section__titleText {
-    font-size: 18px;
+    margin-top: 0px;
   }
 
    .Button {
      color: #F0EBF2;
-     background-color: #8400ff;
+     background-color: #651e88;
    }
 
    .ProgressBar {
@@ -114,8 +107,8 @@
 
 
    .Layout__content {
-     background-image: url('../../assets/bg-nanotrasen.svg');
-     background-size: 75%;
+     background-image: url('../../assets/bg-grayripley.svg');
+     background-size: 300%;
      background-repeat: no-repeat;
    }
    .Layout,
@@ -139,11 +132,11 @@
        $lightness: 0% * $scrollbar-color-multiplier
      );
      scrollbar-track-color: color.scale(
-       #ba753a,
+       #7c3aba,
        $lightness: -25% * $scrollbar-color-multiplier
      );
      scrollbar-arrow-color: color.scale(
-       orange,
+       rgb(47, 3, 94),
        $lightness: 50% * $scrollbar-color-multiplier
      );
      scrollbar-shadow-color: color.scale(
@@ -175,6 +168,5 @@
    .Flex {
      color: white;
      background-color: rgba(0, 0, 0, 0);
-     font-size: 14px;
    }
  }
