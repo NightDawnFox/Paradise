@@ -31264,8 +31264,9 @@
 	dir = 1;
 	on = 1
 	},
+/obj/machinery/roboquest_pad,
 /turf/simulated/floor/plasteel{
-	dir = 9;
+	dir = 1;
 	icon_state = "purple"
 	},
 /area/assembly/chargebay)
@@ -34440,7 +34441,6 @@
 "dsE" = (
 /obj/effect/decal/warning_stripes/yellow/hollow,
 /obj/effect/decal/warning_stripes/south,
-/obj/machinery/roboquest_pad,
 /turf/simulated/floor/plasteel{
 	dir = 8;
 	icon_state = "neutralfull"
@@ -58629,8 +58629,9 @@
 	},
 /area/hallway/primary/central/nw)
 "hFn" = (
-/obj/effect/landmark/start/cyborg,
 /obj/effect/decal/warning_stripes/yellow,
+/obj/machinery/computer/roboquest,
+/obj/effect/decal/warning_stripes/east,
 /turf/simulated/floor/plasteel{
 	dir = 1;
 	icon_state = "purple"
@@ -115632,6 +115633,7 @@
 	},
 /obj/effect/decal/warning_stripes/yellow,
 /obj/machinery/light,
+/obj/effect/landmark/start/cyborg,
 /turf/simulated/floor/plasteel{
 	dir = 10;
 	icon_state = "purple"
@@ -118796,7 +118798,6 @@
 /area/hallway/secondary/exit)
 "vuD" = (
 /obj/effect/decal/warning_stripes/south,
-/obj/machinery/computer/roboquest,
 /turf/simulated/floor/plasteel{
 	dir = 8;
 	icon_state = "neutralfull"
@@ -167430,7 +167431,7 @@ yjq
 oNS
 vvY
 dfn
-wGs
+avZ
 tjR
 wcO
 wGs
@@ -167687,7 +167688,7 @@ oIq
 pYJ
 uZs
 hFn
-sDC
+dyI
 doK
 xgz
 sDC
