@@ -89,7 +89,7 @@
 	var/list/embedded_objects
 
 	/// Whether bodypart has an open incision from surgery
-	var/open = 0
+	var/open = ORGAN_CLOSED
 	/// Whether bodypart needs to be opened with a saw to access the internal organs. Can be a string with encasing description
 	var/encased = FALSE
 	/// Reference to item hidden in this bodypart after cavity surgery
@@ -105,14 +105,14 @@
 	light_on = FALSE
 
 
-/obj/item/organ/external/New(mob/living/carbon/holder)
+/obj/item/organ/external/New(mob/living/carbon/holder, special = ORGAN_MANIPULATION_NOEFFECT)
 	..()
 
 	if(dna?.species)
 		icobase = dna.species.icobase
 		deform = dna.species.deform
 	if(ishuman(holder))
-		replaced(holder, ORGAN_MANIPULATION_NOEFFECT)
+		replaced(holder, special)
 		sync_colour_to_human(holder)
 		properly_attached = TRUE
 
@@ -714,7 +714,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	if(I.sharp)
 		add_fingerprint(user)
 		if(!length(contents))
-			to_chat(user, span_warning("There is nothing left inside [src]!"))
+			user.balloon_alert(user, "внутри ничего нет!")
 			return
 
 		playsound(loc, 'sound/weapons/slice.ogg', 50, TRUE, -1)
