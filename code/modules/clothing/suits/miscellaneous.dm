@@ -104,6 +104,7 @@
 	flags = CONDUCT
 	fire_resist = T0C+5200
 	flags_inv = HIDEGLOVES|HIDESHOES|HIDEJUMPSUIT
+	undyeable = TRUE
 
 
 /obj/item/clothing/suit/greatcoat
@@ -173,6 +174,7 @@
 	allowed = list(/obj/item/flashlight,/obj/item/tank/internals/emergency_oxygen,/obj/item/toy)
 	flags_inv = HIDEGLOVES|HIDESHOES|HIDEJUMPSUIT
 	resistance_flags = NONE
+	undyeable = TRUE
 
 
 /obj/item/clothing/suit/hastur
@@ -1423,7 +1425,12 @@
 		SPECIES_DRASK = 'icons/mob/clothing/species/drask/suit.dmi',
 		SPECIES_GREY = 'icons/mob/clothing/species/grey/suit.dmi',
 		SPECIES_MONKEY = 'icons/mob/clothing/species/monkey/suit.dmi',
+		SPECIES_FARWA = 'icons/mob/clothing/species/monkey/suit.dmi',
+		SPECIES_WOLPIN = 'icons/mob/clothing/species/monkey/suit.dmi',
+		SPECIES_NEARA = 'icons/mob/clothing/species/monkey/suit.dmi',
+		SPECIES_STOK = 'icons/mob/clothing/species/monkey/suit.dmi'
 	)
+
 
 /obj/item/clothing/suit/hoodie
 	sprite_sheets = list(
@@ -1483,3 +1490,127 @@
 		SPECIES_STOK = 'icons/mob/clothing/species/monkey/suit.dmi',
 	)
 
+
+/obj/item/clothing/suit/towel
+	name = "towel"
+	desc = "A soft cotton towel."
+	icon_state = "towel_long"
+	item_state = "towel"
+	w_class = WEIGHT_CLASS_SMALL
+	slot_flags = ITEM_SLOT_CLOTH_OUTER
+	body_parts_covered = LOWER_TORSO | UPPER_TORSO
+	var/drop_ammount = 3
+	sprite_sheets = list(
+		SPECIES_DRASK = 'icons/mob/clothing/species/drask/suit.dmi',
+		SPECIES_GREY = 'icons/mob/clothing/species/grey/suit.dmi',
+		SPECIES_MONKEY = 'icons/mob/clothing/species/monkey/suit.dmi',
+		SPECIES_FARWA = 'icons/mob/clothing/species/monkey/suit.dmi',
+		SPECIES_WOLPIN = 'icons/mob/clothing/species/monkey/suit.dmi',
+		SPECIES_NEARA = 'icons/mob/clothing/species/monkey/suit.dmi',
+		SPECIES_STOK = 'icons/mob/clothing/species/monkey/suit.dmi',
+		SPECIES_UNATHI = 'icons/mob/clothing/species/unathi/suit.dmi',
+		SPECIES_ASHWALKER_BASIC = 'icons/mob/clothing/species/unathi/suit.dmi',
+		SPECIES_ASHWALKER_SHAMAN = 'icons/mob/clothing/species/unathi/suit.dmi',
+		SPECIES_DRACONOID = 'icons/mob/clothing/species/unathi/suit.dmi',
+		SPECIES_VOX = 'icons/mob/clothing/species/vox/suit.dmi'
+	)
+
+
+/obj/item/clothing/suit/towel/Initialize(mapload)
+	. = ..()
+	AddComponent(/datum/component/spraycan_paintable)
+
+
+/obj/item/clothing/suit/towel/attack_self(mob/living/carbon/user)
+	if(!istype(user) || !user.wetlevel)
+		return ..()
+
+	INVOKE_ASYNC(src, PROC_REF(wipe_dry), user, user)
+
+
+/obj/item/clothing/suit/towel/afterattack(mob/living/carbon/target, mob/user, proximity, params)
+	if(try_item_eat(target, user))
+		return
+
+	if(!istype(target) || !target.wetlevel)
+		return
+
+	INVOKE_ASYNC(src, PROC_REF(wipe_dry), target, user)
+
+
+/obj/item/clothing/suit/towel/proc/wipe_dry(mob/living/carbon/target, mob/user)
+	user.visible_message(span_warning("[user] begins to wipe [target == user ? target.p_themselves() : target] with [src]."))
+
+	if(!do_after(user, 5 SECONDS, target))
+		return
+
+	if(!istype(target) || !target.wetlevel)
+		return
+
+	target.wetlevel = 0
+	to_chat(user, span_notice("You wiped [target == user ? "yourself" : target] dry."))
+
+
+/obj/item/clothing/suit/towel/attackby(obj/item/I, mob/user, params)
+	if(I.sharp)
+		var/obj/item/stack/sheet/cloth/cloth = new(get_turf(src), drop_ammount)
+		transfer_fingerprints_to(cloth)
+		cloth.add_fingerprint(user)
+		to_chat(user, span_notice("You tear [src] up."))
+		qdel(src)
+	else
+		return ..()
+
+
+/obj/item/clothing/suit/towel/alt
+	icon_state = "towel_long_alt"
+	item_state = "towel_alt"
+
+
+/obj/item/clothing/suit/towel/alt/equipped(mob/user, slot, initial)
+	. = ..()
+
+	if(slot != ITEM_SLOT_CLOTH_OUTER)
+		return .
+
+	update_icon(UPDATE_ICON_STATE)
+	user.wear_suit_update(src)
+
+
+/obj/item/clothing/suit/towel/alt/update_icon_state()
+	if(ishumanbasic(loc))
+		var/mob/living/carbon/human/user = loc
+		. = user.gender == FEMALE
+
+	icon_state = "[initial(icon_state)][. ? "_woman" : null]"
+
+
+/obj/item/clothing/suit/towel/short
+	icon_state = "towel"
+	drop_ammount = 2
+	slot_flags = ITEM_SLOT_CLOTH_OUTER | ITEM_SLOT_HEAD
+	body_parts_covered = LOWER_TORSO
+
+
+/obj/item/clothing/suit/towel/short/equipped(mob/user, slot, initial)
+	. = ..()
+
+	update_icon(UPDATE_ICON_STATE)
+
+	if(slot & (ITEM_SLOT_CLOTH_OUTER | ITEM_SLOT_HEAD))
+		update_equipped_item(update_speedmods = FALSE)
+
+
+/obj/item/clothing/suit/towel/short/update_icon_state()
+	if(!isliving(loc))
+		return
+
+	var/mob/living/user = loc
+	var/slot = user.get_slot_by_item(src)
+
+	icon_state = "[initial(icon_state)][slot == ITEM_SLOT_HEAD ? "_head" : null]"
+
+
+/obj/item/clothing/suit/towel/short/alt
+	icon_state = "towel_alt"
+	item_state = "towel_alt"
