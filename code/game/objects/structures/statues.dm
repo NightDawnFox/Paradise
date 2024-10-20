@@ -322,7 +322,7 @@
 	desc = "An antique statue of a human angel made of stone."
 	icon_state = "angel"
 	anchored = TRUE
-	oreAmount = 0
+	obj_flags = NODECONSTRUCT
 
 /obj/structure/statue/russian_mulebot
 	desc = "Like a MULEbot, but more Russian and less functional.";
@@ -396,6 +396,14 @@
 	anchored = TRUE
 	oreAmount = 0
 
+/obj/structure/statue/carp_mini
+	name = "Carp Statue"
+	desc = "A great inhabitant of space.."
+	icon = 'icons/obj/statuelarge.dmi'
+	icon_state = "carp_mini"
+	max_integrity = 200
+	anchored = TRUE
+
 /obj/structure/statue/noble
 	name = "Noble person"
 	desc = "Giant person, not like us... May be a hero from an ancient fairy tale?"
@@ -434,7 +442,8 @@
 	bound_width = 64
 	var/lit = 0
 	layer = EDGED_TURF_LAYER
-
+	anchored = TRUE
+	obj_flags = NODECONSTRUCT
 
 /obj/structure/statue/unknown/update_icon_state()
 	icon_state = "unknown[lit ? "_lit" : ""]"
@@ -594,3 +603,6 @@
 	desc = "It's staggering to think that something this big could have lived, let alone died."
 	icon = 'icons/obj/statuelarge.dmi'
 	icon_state = "rib"
+	anchored = TRUE
+	obj_flags = NODECONSTRUCT
+
