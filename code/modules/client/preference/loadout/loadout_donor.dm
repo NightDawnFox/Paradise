@@ -236,6 +236,24 @@
 	cost = 1
 	allowed_roles = list(JOB_TITLE_REPRESENTATIVE)
 
+/datum/gear/donor/strip/syndi
+	display_name = "strip, Syndicate"
+	path = /obj/item/clothing/accessory/head_strip/syndicate
+	donator_tier = 3
+	cost = 1
+
+/datum/gear/donor/strip/comrad
+	display_name = "strip, SSSP"
+	path = /obj/item/clothing/accessory/head_strip/comrad
+	donator_tier = 3
+	cost = 1
+
+/datum/gear/donor/strip/federal
+	display_name = "strip, TSF"
+	path = /obj/item/clothing/accessory/head_strip/federal
+	donator_tier = 3
+	cost = 1
+
 /datum/gear/donor/heartglasses
 	display_name = "heart-shaped glasses, color"
 	path = /obj/item/clothing/glasses/heart
@@ -338,6 +356,12 @@
 	donator_tier = 3
 	cost = 1
 
+/datum/gear/donor/earring_NT
+	display_name = "Earrings NT"
+	path = /obj/item/clothing/ears/earrings/Nt
+	donator_tier = 3
+	cost = 1
+
 /datum/gear/donor/hijab
 	donator_tier = 1
 	cost = 1
@@ -397,4 +421,11 @@
 	cost = 1
 	display_name = "RD doll"
 	path = /obj/item/toy/plushie/rdplushie
+
+/datum/gear/donor/gsbplushie
+	donator_tier = 3
+	cost = 1
+	display_name = "GSBussy doll"
+	path = /obj/item/toy/plushie/gsbplushie
+
 
