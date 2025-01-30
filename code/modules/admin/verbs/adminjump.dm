@@ -1,7 +1,7 @@
 /client/proc/jump_to()
 	set name = "Jump to..."
 	set desc = "Area, Mob, Key or Coordinate"
-	set category = "Admin"
+	set category = "Admin.Admin"
 	var/list/choices = list("Area", "Mob", "Key", "Coordinates")
 
 	if(!check_rights(R_ADMIN))
@@ -14,7 +14,7 @@
 	var/jumping // Thing to jump to
 	switch(chosen)
 		if("Area")
-			jumping = tgui_input_list(src, "Area to jump to", "Jump to Area", return_sorted_areas())
+			jumping = tgui_input_list(src, "Area to jump to", "Jump to Area", get_sorted_areas())
 			if(jumping)
 				return jumptoarea(jumping)
 		if("Mob")
@@ -181,13 +181,13 @@
 		SSblackbox.record_feedback("tally", "admin_verb", 1, "Get Key") //If you are copy-pasting this, ensure the 4th parameter is unique to the new proc!
 
 /client/proc/sendmob(mob/M in GLOB.mob_list)
-	set category = "Admin"
+	set category = "Admin.Admin"
 	set name = "Send Mob"
 
 	if(!check_rights(R_ADMIN))
 		return
 
-	var/area/A = tgui_input_list(usr, "Pick an area.", "Pick an area", return_sorted_areas())
+	var/area/A = tgui_input_list(usr, "Pick an area.", "Pick an area", get_sorted_areas())
 	if(!A)
 		return
 
