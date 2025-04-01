@@ -80,7 +80,7 @@
 		"8" = "RADIO_MULEBOT",
 		"_default" = "NO_FILTER"
 		)
-	var/output = {"<meta charset="UTF-8"><b>Radio Report</b><hr>"}
+	var/output = {"<b>Radio Report</b><hr>"}
 	for(var/fq in SSradio.frequencies)
 		output += "<b>Freq: [fq]</b><br>"
 		var/datum/radio_frequency/fqs = SSradio.frequencies[fq]
@@ -99,7 +99,9 @@
 				else
 					output += "&nbsp;&nbsp;&nbsp;&nbsp;[device]<br>"
 
-	usr << browse(output,"window=radioreport")
+	var/datum/browser/popup = new(usr, "radioreport", "Radio Report")
+	popup.set_content(output)
+	popup.open(FALSE)
 
 	message_admins("[key_name_admin(usr)] has generated a radio report")
 	log_admin("[key_name(usr)] has generated a radio report")
@@ -143,7 +145,7 @@
 	if(!check_rights(R_DEBUG))
 		return
 
-	var/filter = clean_input("Contains what?","Filter")
+	var/filter = tgui_input_text(usr, "Contains what?", "Filter")
 	if(!filter)
 		return
 
@@ -164,7 +166,7 @@
 	if(!check_rights(R_DEBUG))
 		return
 
-	var/refstring = clean_input("Which reference?","Ref")
+	var/refstring = tgui_input_text(usr, "Which reference?", "Ref")
 	if(!refstring)
 		return
 

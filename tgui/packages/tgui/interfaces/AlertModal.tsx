@@ -1,5 +1,5 @@
 import { Loader } from './common/Loader';
-import { KEY } from 'common/keys';
+import { isEscape, KEY } from 'common/keys';
 import { BooleanLike } from 'common/react';
 import { useBackend, useLocalState } from '../backend';
 import { Autofocus, Box, Button, Section, Stack } from '../components';
@@ -64,6 +64,10 @@ export const AlertModal = (props, context) => {
         event.preventDefault();
         onKey(DIRECTION.Increment);
         return;
+      default:
+        if (isEscape(event.key)) {
+          act('cancel');
+        }
     }
   };
 
@@ -84,7 +88,7 @@ export const AlertModal = (props, context) => {
                 {message}
               </Box>
             </Stack.Item>
-            <Stack.Item>
+            <Stack.Item grow>
               {!!autofocus && <Autofocus />}
               {isVerbose ? (
                 <VerticalButtons selected={selected} />
@@ -158,6 +162,7 @@ const VerticalButtons = (props: ButtonDisplayProps, context) => {
           width={large_buttons ? '100%' : undefined}
           key={index}
           m={0}
+          mb={large_buttons ? 2.5 : 0}
         >
           <Button
             fluid
