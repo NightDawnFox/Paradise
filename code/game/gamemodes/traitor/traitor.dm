@@ -87,7 +87,7 @@
 /datum/game_mode/traitor/post_setup()
 	for(var/datum/mind/traitor in pre_traitors)
 		var/datum/antagonist/traitor/new_antag = new
-		new_antag.is_contractor = TRUE
+		new_antag.contractor_pending = new(traitor)
 		addtimer(CALLBACK(traitor, TYPE_PROC_REF(/datum/mind, add_antag_datum), new_antag), rand(1 SECONDS, 10 SECONDS))
 	if(pre_malf_AI)
 		addtimer(CALLBACK(pre_malf_AI, TYPE_PROC_REF(/datum/mind, add_antag_datum), /datum/antagonist/malf_ai), rand(1 SECONDS, 10 SECONDS))
@@ -112,7 +112,7 @@
 
 /datum/game_mode/proc/auto_declare_completion_traitor()
 	if(length(traitors))
-		var/text = "<span style='font-size: 2;'><b>The traitors were:</b></span><br>"
+		var/list/text = list(span_fontsize2(span_bold("The traitors were:<br>")))
 		for(var/datum/mind/traitor in traitors)
 			var/traitorwin = TRUE
 			text += printplayer(traitor) + "<br>"
@@ -120,6 +120,7 @@
 			var/TC_uses = 0
 			var/used_uplink = FALSE
 			var/purchases = ""
+
 			for(var/obj/item/uplink/uplink in GLOB.world_uplinks)
 				if(uplink?.uplink_owner && uplink.uplink_owner == traitor.key)
 					TC_uses += uplink.used_TC
@@ -199,8 +200,7 @@
 		var/phrases = jointext(GLOB.syndicate_code_phrase, ", ")
 		var/responses = jointext(GLOB.syndicate_code_response, ", ")
 
-		text += "<br><br><b>The code phrases were:</b> <span class='danger'>[phrases]</span><br>\
-					<b>The code responses were:</b> <span class='danger'>[responses]</span><br><br>"
+		text += "<br><br><b>The code phrases were:</b> [span_danger(phrases)]<br>\
+					<b>The code responses were:</b> [span_danger(responses)]<br><br>"
 
-		to_chat(world, text)
-	return TRUE
+		return text.Join("")

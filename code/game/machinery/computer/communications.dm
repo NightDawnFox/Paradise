@@ -410,14 +410,14 @@
 
 /proc/directive_7_12()
 	var/nukecode = rand(10000, 99999)
-	for(var/obj/machinery/nuclearbomb/bomb in GLOB.machines)
+	for(var/obj/machinery/nuclearbomb/bomb in SSmachines.get_by_type(/obj/machinery/nuclearbomb))
 		if(bomb && bomb.r_code)
 			if(is_station_level(bomb.z))
 				bomb.r_code = nukecode
 	var/intercepttext
 	var/interceptname
 	interceptname = "Секретное постановление [command_name()]"
-	intercepttext += "<span style='font-size: 3;'><b>Постановление Nanotrasen</b>: Предупреждение о биологической угрозе.</span><hr>"
+	intercepttext += span_fontsize3("<b>Постановление Nanotrasen</b>: Предупреждение о биологической угрозе.<hr>")
 	intercepttext += "Для [station_name()] была издана директива 7-12.<br>"
 	intercepttext += "Биологическая угроза вышла из-под контроля.<br>"
 	intercepttext += "Вам приказано следующее:<br>"
@@ -617,10 +617,10 @@
 		return
 
 	if(seclevel2num(get_security_level()) >= SEC_LEVEL_RED) // There is a serious threat we gotta move no time to give them five minutes.
-		SSshuttle.emergency.request(null, 0.5, null, " Автоматический Трансфер Экипажа", 1)
+		SSshuttle.emergency.request(null, 0.5, null, " Автоматический трансфер экипажа", 1)
 		SSshuttle.emergency.canRecall = FALSE
 	else
-		SSshuttle.emergency.request(null, 1, null, " Автоматический Трансфер Экипажа", 0)
+		SSshuttle.emergency.request(null, 1, null, " Автоматический трансфер экипажа", 0)
 		SSshuttle.emergency.canRecall = FALSE
 	if(user)
 		add_game_logs("has called the shuttle.", user)

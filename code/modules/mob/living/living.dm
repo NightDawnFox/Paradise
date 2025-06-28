@@ -568,8 +568,8 @@
 
 
 /mob/living/verb/stop_pulling1()
-	set name = "Stop Pulling"
-	set category = "IC"
+	set name = "Прекратить тащить"
+	set category = STATPANEL_IC
 	stop_pulling()
 
 //same as above
@@ -883,8 +883,8 @@
 
 
 /mob/living/proc/Examine_OOC()
-	set name = "Examine Meta-Info (OOC)"
-	set category = "OOC"
+	set name = "Мета-инфа (OOC)"
+	set category = STATPANEL_OOC
 	set src in view()
 
 	if(CONFIG_GET(flag/allow_metadata))
@@ -896,7 +896,7 @@
 		to_chat(usr, "OOC Metadata is not supported by this server!")
 
 
-/mob/living/Move(atom/newloc, direct = NONE, glide_size_override = 0, update_dir = TRUE)	
+/mob/living/Move(atom/newloc, direct = NONE, glide_size_override = 0, update_dir = TRUE)
 	if(lying_angle != 0 && !buckled)
 		lying_angle_on_movement(direct)
 
@@ -944,7 +944,7 @@
 
 
 /mob/living/proc/makeTrail(turf/T)
-	if(!has_gravity())
+	if(no_gravity())
 		return
 
 	var/blood_exists = FALSE
@@ -1048,8 +1048,8 @@
 
 
 /mob/living/verb/resist()
-	set name = "Resist"
-	set category = "IC"
+	set name = "Сопротивляться"
+	set category = STATPANEL_IC
 
 	DEFAULT_QUEUE_OR_CALL_VERB(VERB_CALLBACK(src, PROC_REF(run_resist)))
 
@@ -1871,7 +1871,7 @@
 		return TRUE
 	face_atom(target)
 	if(!has_vision(information_only = TRUE))
-		to_chat(src, chat_box_regular(span_notice("Здесь что-то есть, но вы не видите — что именно.")), MESSAGE_TYPE_INFO, confidential = TRUE)
+		to_chat(src, chat_box_regular(span_notice("Здесь что-то есть, но вы не видите — что именно.")), MESSAGE_TYPE_INFO, confidential = TRUE)
 		return TRUE
 	return FALSE
 
@@ -2081,8 +2081,8 @@
 
 
 /mob/living/proc/toggle_resting()
-	set name = "Rest"
-	set category = "IC"
+	set name = "Лечь"
+	set category = STATPANEL_IC
 
 	set_resting(!resting, silent = FALSE)
 

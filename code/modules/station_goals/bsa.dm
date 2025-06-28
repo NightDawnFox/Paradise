@@ -23,7 +23,7 @@
 /datum/station_goal/bluespace_cannon/check_completion()
 	if(..())
 		return TRUE
-	for(var/obj/machinery/bsa/full/B in GLOB.machines)
+	for(var/obj/machinery/bsa/full/B in SSmachines.get_by_type(/obj/machinery/bsa/full))
 		if(B && !B.stat && is_station_contact(B.z))
 			return TRUE
 	return FALSE
@@ -235,7 +235,7 @@
 
 	message_admins("[key_name_admin(user)] has launched an artillery strike into [ADMIN_COORDJMP(bullseye)].")
 	log_admin("[key_name_log(user)] has launched an artillery strike into [COORD(bullseye)].") // Line below handles logging the explosion to disk
-	explosion(bullseye,ex_power,ex_power*2,ex_power*4, cause = "Bluespace artillery strike")
+	explosion(bullseye,ex_power,ex_power*2+1,ex_power*4+2, cause = "Bluespace artillery strike") // 3 7 14 at ex_power = 3
 
 	reload()
 

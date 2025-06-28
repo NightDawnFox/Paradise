@@ -53,6 +53,8 @@
 #define COMSIG_QDELETING "parent_qdeleting"
 /// generic topic handler (usr, href_list)
 #define COMSIG_TOPIC "handle_topic"
+/// Forces you to equip a hood
+#define COMSIG_EQUIP_HOOD "force_hood_equip"
 
 /// fires on the target datum when an element is attached to it (/datum/element)
 #define COMSIG_ELEMENT_ATTACH "element_attach"
@@ -169,6 +171,9 @@
 #define COMSIG_ATOM_BSA_BEAM "atom_bsa_beam_pass"
 	#define COMSIG_ATOM_BLOCKS_BSA_BEAM (1<<0)
 
+/// Called on [/atom/SpinAnimation()] : (speed, loops, segments, angle)
+#define COMSIG_ATOM_SPIN_ANIMATION "atom_spin_animation"
+
 /// From base of atom/setDir(): (old_dir, new_dir). Called before the direction changes
 #define COMSIG_ATOM_PRE_DIR_CHANGE "atom_pre_dir_change"
 	#define COMPONENT_ATOM_BLOCK_DIR_CHANGE (1<<0)
@@ -183,7 +188,7 @@
 
 ///from base of atom/handle_atom_del(): (atom/deleted)
 #define COMSIG_ATOM_CONTENTS_DEL "atom_contents_del"
-///from base of atom/has_gravity(): (turf/location, list/forced_gravities)
+///from base of atom/get_gravity(): (turf/location, list/forced_gravities)
 #define COMSIG_ATOM_HAS_GRAVITY "atom_has_gravity"
 ///from proc/get_rad_contents(): ()
 #define COMSIG_ATOM_RAD_PROBE "atom_rad_probe"
@@ -307,7 +312,7 @@
 
 ///from base of turf/ChangeTurf(): (path, list/new_baseturf, flags, list/transferring_comps)
 #define COMSIG_TURF_CHANGE "turf_change"
-///from base of atom/has_gravity(): (atom/asker, list/forced_gravities)
+///from base of atom/get_gravity(): (atom/asker, list/forced_gravities)
 #define COMSIG_TURF_HAS_GRAVITY "turf_has_gravity"
 ///from base of turf/multiz_turf_del(): (turf/source, direction)
 #define COMSIG_TURF_MULTIZ_DEL "turf_multiz_del"
@@ -470,6 +475,8 @@
 #define COMSIG_MOB_ITEM_ATTACK_QDELETED "mob_item_attack_qdeleted"
 ///from base of mob/RangedAttack(): (atom/A, params)
 #define COMSIG_MOB_ATTACK_RANGED "mob_attack_ranged"
+///from base of mob/ranged_secondary_attack(): (atom/target, modifiers)
+#define COMSIG_MOB_ATTACK_RANGED_SECONDARY "mob_attack_ranged_secondary"
 ///from base of mob/RangedAttack(): (atom/A, params) after being range attacked
 #define COMSIG_MOB_ATTACKED_RANGED "mob_attack_ranged"
 ///from base of /mob/throw_item(): (atom/target)
@@ -480,6 +487,8 @@
 #define COMSIG_MOB_VERB_EXAMINATE "mob_examinate"
 /// from base of /mob/proc/run_examinate(): (atom/target, list/result)
 #define COMSIG_MOB_RUN_EXAMINATE "mob_run_examinate"
+/// from /datum/element/halo_attach
+#define COMSIG_MOB_HALO_GAINED "mob_halo_gained"
 ///from base of /mob/update_sight(): ()
 #define COMSIG_MOB_UPDATE_SIGHT "mob_update_sight"
 ////from /mob/living/say(): ()
@@ -758,6 +767,9 @@
 #define COMSIG_CARBON_TRY_PUT_IN_HAND "carbon_try_put_in_hand"
 	/// Can't pick up
 	#define COMPONENT_CARBON_CANT_PUT_IN_HAND (1<<0)
+#define COMSIG_ITEM_TRY_PUT_IN_HAND "carbon_try_put_in_hand"
+	/// Can't pick up
+	#define COMPONENT_ITEM_CANT_PUT_IN_HAND (1<<0)
 /// from /mob/living/carbon/enter_stamcrit()
 #define COMSIG_CARBON_ENTER_STAMCRIT "carbon_enter_stamcrit"
 ///Called from apply_overlay(cache_index, overlay)
@@ -775,6 +787,12 @@
 
 ///Called when someone attempts to cuff a carbon
 #define COMSIG_CARBON_CUFF_ATTEMPTED "carbon_attempt_cuff"
+
+///Called when checking the rituals of the devil's sacrifice
+#define COMSIG_DEVIL_SACRIFICE_CHECK "devil_sacrifice_check"
+	#define COMPONENT_SACRIFICE_VALID (1<<0)
+///Called after successfully performing the Devil Sacrifice Ritual
+#define COMSIG_DEVIL_SACRIFICE "devil_sacrifice"
 
 // /mob/living/simple_animal/hostile signals
 #define COMSIG_HOSTILE_ATTACKINGTARGET "hostile_attackingtarget"
@@ -1163,6 +1181,8 @@
 ///from base of datum/action/proc/Trigger(): (datum/action)
 #define COMSIG_ACTION_TRIGGER "action_trigger"
 	#define COMPONENT_ACTION_BLOCK_TRIGGER (1<<0)
+#define COMSIG_ACTION_BUTTON_UPDATE "action_button_update"
+	#define COMSIG_ACTION_UPDATE_INTERRUPT (1<<0)
 
 //Xenobio hotkeys
 
@@ -1342,7 +1362,8 @@
 
 /// Source: /datum/component/object_possession/proc/on_move (mob/mob, new_loc, direct)
 #define COMSIG_POSSESSED_MOVEMENT "possessed_movement"
-
+/// from base of atom/obj/item/death_book
+#define COMSIG_PHANTOM_DELETE "phantom_delete"
 /// from base of atom/on_teleported(): ()
 #define COMSIG_ATOM_TELEPORT_ACT "atom_teleport_act"
 
@@ -1359,3 +1380,12 @@
 /// from start of /mob/living/handle_breathing(): (delta_time, times_fired)
 #define COMSIG_LIVING_HANDLE_BREATHING "living_handle_breathing"
 
+#define COMSIG_TICKER_GAME_STATE_CHANGED "ticker_game_state_changed"
+
+/// from start of /mob/living/simple_animal/soulscythe/Life(): (amount)
+#define COMSIG_BLOOD_LEVEL_TICK "blood_level_tick"
+
+/// Window is fully visible and we can make fragile calls
+#define COMSIG_TGUI_WINDOW_VISIBLE "tgui_window_visible"
+/// /obj/item/card/id/proc/freeze_linked_account(datum/source)
+#define COMSIG_FREEZE_LINKED_ACCOUNT "nigga_freeze"

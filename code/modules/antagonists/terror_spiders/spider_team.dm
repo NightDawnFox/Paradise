@@ -190,19 +190,19 @@ GLOBAL_VAR_INIT(global_degenerate, FALSE)
 
 /datum/team/terror_spiders/proc/declare_results()
 	if(SSticker?.mode?.station_was_nuked && !terror_stage == TERROR_STAGE_POST_END)
-		to_chat(world, "<br><<span style='font-size: 3;'><b>Частичная победа Пауков Ужаса!</b></span>")
+		to_chat(world, span_fontsize3("<br><b>Частичная победа Пауков Ужаса!</b>"))
 		to_chat(world, "<b>Станция была уничтожена!</b>")
 		to_chat(world, "<b>Устройство самоуничтожения сработало, предотвратив распространение Пауков Ужаса.</b>")
 	else if(protect_egg?.check_completion(src))
-		to_chat(world, "<br><span style='font-size: 3;'<b>Полная победа Пауков Ужаса!</b></span>")
+		to_chat(world, span_fontsize3("<br><b>Полная победа Пауков Ужаса!</b>"))
 		to_chat(world, "<b>Пауки захватили станцию!</b>")
 		to_chat(world, "<b>Императрица Ужаса появилась на свет, превратив всю станцию в гнездо.</b>")
 	else if(!check_main_spiders())
-		to_chat(world, "<br><<span style='font-size: 3;'><b>Полная победа персонала станции!</b></span>")
+		to_chat(world, span_fontsize3("<br><b>Полная победа персонала станции!</b>"))
 		to_chat(world, "<b>Экипаж защитил станцию от Пауков Ужаса!</b>")
 		to_chat(world, "<b>Пауки Ужаса были истреблены.</b>")
 	else
-		to_chat(world, "<br><span style='font-size: 3;'><b>Ничья!</b></span>")
+		to_chat(world, span_fontsize3("<br><b>Ничья!</b>"))
 		to_chat(world, "<b>Экипаж эвакуирован!</b>")
 		to_chat(world, "<b>Пауки Ужаса не были истреблены.</b>")
 	to_chat(world, "<b>Целями Пауков Ужаса было:</b>")
@@ -233,7 +233,7 @@ GLOBAL_VAR_INIT(global_degenerate, FALSE)
 
 	if(terror_queens.len || terror_princes.len || terror_princesses.len || terror_defilers.len)
 		declare_results()
-		var/text = "<br/><span style='font-size: 2;'><b>Основа гнезда:</b></span>"
+		var/list/text = list("<br/><span style='font-size: 2;'><b>Основа гнезда:</b></span>")
 		if(terror_queens.len)
 			text += "<br/><span style='font-size: 1;'><b>Королев[(terror_queens?.len > 1 ? "ами были" : "ой был")]:</b></span>"
 			for(var/datum/mind/spider in terror_queens)
@@ -254,8 +254,7 @@ GLOBAL_VAR_INIT(global_degenerate, FALSE)
 			text += "<br/><span style='font-size: 2;'><b>Паук[(members?.len > 1 ? "ами Ужаса были" : "ом Ужаса был")]:</b></span>"
 			for(var/datum/mind/spider in members)
 				text += "<br/><b>[spider.key]</b> был <b>[spider.name]</b>"
-		to_chat(world, text)
-	return TRUE
+		return text.Join("")
 
 /datum/team/terror_spiders/get_admin_texts()
 	. = ..()

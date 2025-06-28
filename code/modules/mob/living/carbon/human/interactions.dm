@@ -13,8 +13,8 @@
 
 //Distant interactions
 /mob/living/carbon/human/verb/interact(mob/M as mob)
-	set name = "Interact"
-	set category = "IC"
+	set name = "Взаимодействовать"
+	set category = STATPANEL_IC
 
 	if (ishuman(M) && usr != M && src != M)
 		partner = M
@@ -43,11 +43,11 @@
 	var/mouthfree_p = !((P.head && (P.head.flags_cover & HEADCOVERSMOUTH)) || (P.wear_mask && (P.wear_mask.flags_cover & MASKCOVERSMOUTH)))
 
 
-	var/dat = {"<b><hr><span style='font-size: 3;'>[H.partner]</span></b><br><hr>"}
+	var/dat = span_fontsize3("<b><hr>[H.partner]</b><br><hr>")
 
 	dat +=  {"• <a href='byond://?src=[UID()];interaction=bow'>Отвесить поклон.</a><br>"}
 	if (hashands)
-		dat +=  {"<span style='font-size: 3;'><b>Руки:</b></span><br>"}
+		dat +=  span_fontsize3("<b>Руки:</b><br>")
 		dat +=  {"• <a href='byond://?src=[UID()];interaction=wave'>Приветливо помахать.</a><br>"}
 		dat +=  {"• <a href='byond://?src=[UID()];interaction=bow_affably'>Приветливо кивнуть.</a><br>"}
 		if (Adjacent(P))
@@ -70,7 +70,7 @@
 		dat +=  {"• <a href='byond://?src=[UID()];interaction=threaten'><span style='color: darkred;'>Погрозить кулаком.</span></a><br>"}
 
 	if (mouthfree && H.dna.species.name != SPECIES_DIONA)
-		dat += {"<span style='font-size: 3;'><b>Лицо:</b></span><br>"}
+		dat += span_fontsize3("<b>Лицо:</b><br>")
 		dat += {"• <a href='byond://?src=[UID()];interaction=kiss'>Поцеловать.</a><br>"}
 		if (Adjacent(P))
 			if (mouthfree_p)

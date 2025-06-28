@@ -485,6 +485,7 @@
 		"ninja" = 10,
 		"thief" = 10,
 		"nothing" = 20,
+		"devil" = 0
 	)
 
 
@@ -841,4 +842,4 @@
  * This flag represents the maximum chunk count the server is willing to receive.
  */
 /datum/config_entry/number/tgui_max_chunk_count
-	default = 32
+	default = 128

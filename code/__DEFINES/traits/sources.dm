@@ -15,6 +15,7 @@
 #define MAGIC_TRAIT "magic"
 #define CULT_TRAIT "cult"
 #define CLOCK_TRAIT "clockwork_cult"
+#define DEVIL_TRAIT "devil"
 #define INNATE_TRAIT "innate"
 #define EAR_DAMAGE "ear_damage"
 #define EYE_DAMAGE "eye_damage"
@@ -170,3 +171,11 @@
 #define BLOB_ZOMBIE_TRAIT "blob_zombie_trait"
 
 #define ADMIN_OFFER_TRAIT "admin_offer"
+
+#define GRAVITATION_TRAIT	"gravitation"
+
+#define FAKEFIRE_TRAIT "fakefire"
+
+#define DEVIL_CONTRACT_TRAIT "devil_contract"
+
+#define DEVIL_RITUAL_TRAIT "devil_ritual"

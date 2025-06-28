@@ -33,6 +33,8 @@
 
 #define isdevil(A) (istype(A, /mob/living/carbon/true_devil))
 
+#define isascendeddevil(A) (istype(A, /mob/living/carbon/true_devil/ascended))
+
 #define islarva(A) (istype(A, /mob/living/carbon/alien/larva))
 
 #define isalienadult(A) (istype(A, /mob/living/carbon/alien/humanoid))
@@ -71,6 +73,8 @@
 
 #define issupplypod(A) (istype(A, /obj/structure/closet/supplypod))
 
+#define ismortarcasing(A) (istype(A, /obj/item/mortar_shell))
+
 #define isammocasing(A) (istype(A, /obj/item/ammo_casing))
 
 #define ismachinery(A) (istype(A, /obj/machinery))
@@ -91,9 +95,13 @@
 
 #define isgun(A) (istype(A, /obj/item/gun))
 
+#define isbaton(A) (istype(A, /obj/item/melee/baton))
+
 #define is_pen(W) (istype(W, /obj/item/pen))
 
 #define is_pda(W) (istype(W, /obj/item/pda))
+
+#define is_id_card(W) (istype(W, /obj/item/card/id))
 
 #define isradio(A) istype(A, /obj/item/radio)
 
@@ -104,6 +112,12 @@
 #define is_internal_organ(A) istype(A, /obj/item/organ/internal)
 
 #define	is_organ(A)			istype((A), /obj/item/organ)
+
+#define isbluespacecrystal(A) istype(A, /obj/item/stack/ore/bluespace_crystal)
+
+#define issyringe(A) istype(A, /obj/item/reagent_containers/syringe)
+
+#define isglassreagentcontainer(A) istype(A, /obj/item/reagent_containers/glass)
 
 GLOBAL_LIST_INIT(pointed_types, typecacheof(list(
 	/obj/item/pen,
@@ -131,6 +145,10 @@ GLOBAL_LIST_INIT(glass_sheet_types, typecacheof(list(
 #define isprox(O) (istype(O, /obj/item/assembly/prox_sensor))
 #define issignaler(O) (istype(O, /obj/item/assembly/signaler))
 #define istimer(O) (istype(O, /obj/item/assembly/timer))
+#define iscoret1(O) (istype(O, /obj/item/assembly/signaler/core) && O.tier == 1)
+#define iscoret2(O) (istype(O, /obj/item/assembly/signaler/core) && O.tier == 2)
+#define iscoret3(O) (istype(O, /obj/item/assembly/signaler/core) && O.tier == 3)
+#define iscell(O) (istype(O, /obj/item/stock_parts/cell)) // Not assembly, but neaely.
 
 
 //Turfs
@@ -179,3 +197,7 @@ GLOBAL_LIST_INIT(turfs_without_ground, typecacheof(list(
 #define is_ventcrawler(A) (HAS_TRAIT(A, TRAIT_VENTCRAWLER_NUDE) || HAS_TRAIT(A, TRAIT_VENTCRAWLER_ALWAYS) || HAS_TRAIT(A, TRAIT_VENTCRAWLER_ITEM_BASED) || HAS_TRAIT(A, TRAIT_VENTCRAWLER_ALIEN))
 
 #define is_multi_tile_object(atom) (atom.bound_width > world.icon_size || atom.bound_height > world.icon_size)
+
+#define is_proximity(A) istype(A, /obj/effect/abstract/proximity_checker)
+
+#define is_light(A) istype(A, /atom/movable/lighting_object)

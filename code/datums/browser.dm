@@ -45,8 +45,8 @@
 /datum/browser/proc/add_head_content(nhead_content)
 	head_content =islist(nhead_content) ? nhead_content : list(nhead_content)
 
-/datum/browser/proc/set_window_options(nwindow_options)
-	window_options = nwindow_options
+/datum/browser/proc/set_window_options(list/nwindow_options)
+	window_options = islist(nwindow_options) ? jointext(nwindow_options, "") : nwindow_options
 
 /datum/browser/proc/add_stylesheet(name, file)
 	if (istype(name, /datum/asset/spritesheet))
@@ -93,7 +93,7 @@
 		head_content += {"
 			<style>
 				body {
-					zoom: [100 / client?.window_scaling]%;
+					zoom: [100 / client.window_scaling]%;
 				}
 			</style>
 			"}
@@ -134,7 +134,7 @@
 	var/client/client = isclient(user)? user : user.client
 	if (width && height)
 		window_size = ""
-		if(width && height && client.window_scaling &&(client?.prefs.toggles3 & PREFTOGGLE_3_UI_SCALE))
+		if(width && height && client?.window_scaling &&(client?.prefs.toggles3 & PREFTOGGLE_3_UI_SCALE))
 			var/scaling = client.window_scaling
 			window_size = "size=[width * scaling]x[height * scaling];"
 		else

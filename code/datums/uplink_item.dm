@@ -380,7 +380,7 @@
 	name = "Артистический ящик для инструментов"
 	desc = "Проклятый ящик для инструментов, который наделяет своих последователей невероятной силой, требуя взамен постоянных жертв. \
 			Если эти жертвы не будут принесены, он может напасть на своего обладателя."
-	item = /obj/item/storage/toolbox/green/memetic
+	item = /obj/item/his_grace
 	cost = 100
 	job = list(JOB_TITLE_CHAPLAIN, JOB_TITLE_CIVILIAN)
 	surplus = 0 //No lucky chances from the crate; if you get this, this is ALL you're getting
@@ -611,6 +611,13 @@
 	job = list(JOB_TITLE_LIBRARIAN)
 	surplus = 0
 	can_discount = FALSE
+
+/datum/uplink_item/jobspecific/death_book
+	name = "Летопись вашей погибели"
+	desc = "Магический артефакт, захваченный синдикатом для своих агентов. Эта книга рассказывает о том, как погибали целые миры, и тот, кто её прочтёт, сможет на время ощутить себя одним из тех, кто несёт ответственность за эти события."
+	item = /obj/item/death_book
+	cost = 60
+	job = list(JOB_TITLE_LIBRARIAN)
 
 //Botanist
 
@@ -2340,7 +2347,7 @@
 			имплант медицинской лучевой пушки, имплант хирургических инструментов, отвертка, автоимплантер, элитный медицинский ИКС Синдиката, портативный анализатор тела, \
 			медицинская шина, инъектор с нанокальцием."
 	item = /obj/item/storage/backpack/duffel/syndie/med/medicalbundle
-	cost = 175 // normally 200
+	cost = 130 // normally 200
 	uplinktypes = list(UPLINK_TYPE_NUCLEAR, UPLINK_TYPE_SST)
 
 /datum/uplink_item/bundles_TC/sniper

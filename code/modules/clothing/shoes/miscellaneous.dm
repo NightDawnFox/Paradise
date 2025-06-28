@@ -221,8 +221,8 @@
 
 
 /obj/item/clothing/shoes/workboots/mining/verb/verb_remove_knife()
-	set category = "Object"
-	set name = "Remove knife"
+	set category = STATPANEL_OBJECT
+	set name = "Достать нож"
 	set src in usr
 	remove_knife(usr)
 
@@ -485,7 +485,7 @@
 	if(user.throwing)
 		to_chat(user, span_warning("You can't jump in the middle of another jump!"))
 		return
-	if(!jumper.has_gravity())
+	if(jumper.no_gravity())
 		to_chat(user, span_warning("You can't jump without gravity!"))
 		return
 

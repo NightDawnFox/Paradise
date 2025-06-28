@@ -25,28 +25,28 @@
 		if(GAMEMODE_IS_BLOB)
 			SSticker.mode_result = "blob halfwin - nuke"
 			add_game_logs("Blob mode completed with a tie (station destroyed).")
-		to_chat(world, "<br><span style='font-size: 3;'><b>Частичная победа блоба!</b></span>")
+		to_chat(world, span_fontsize3("<br><b>Частичная победа блоба!</b>"))
 		to_chat(world, "<b>Станция была уничтожена!</b>")
 		to_chat(world, "<b>Директива 7-12 успешно выполнена, предотвращая распространение блоба.</b>")
 	else if(blob_objective.check_completion())
 		if(GAMEMODE_IS_BLOB)
 			SSticker.mode_result = "blob win - blob took over"
 			add_game_logs("Blob mode completed with a blob victory.")
-		to_chat(world, "<br><span style='font-size: 3;'<b>Полная победа блоба!</b></span>")
+		to_chat(world, span_fontsize3("<br><b>Полная победа блоба!</b>"))
 		to_chat(world, "<b>Блоб захватил станцию!</b>")
 		to_chat(world, "<b>Вся станция была поглощена блобом.</b>")
 	else if(!GLOB.blob_cores.len)
 		if(GAMEMODE_IS_BLOB)
 			add_game_logs("Blob mode completed with a crew victory.")
 			SSticker.mode_result = "blob loss - blob eliminated"
-		to_chat(world, "<br><span style='font-size: 3;'><b>Полная победа персонала станции!</b></span>")
+		to_chat(world, span_fontsize3("<br><b>Полная победа персонала станции!</b>"))
 		to_chat(world, "<b>Экипаж защитил станцию от блоба!</b>")
 		to_chat(world, "<b>Инопланетный организм был истреблен.</b>")
 	else
 		if(GAMEMODE_IS_BLOB)
 			add_game_logs("Blob mode completed with a draw.")
 			SSticker.mode_result = "draw - the station was not destroyed, blob is alife "
-		to_chat(world, "<br><span style='font-size: 3;'><b>Ничья!</b></span>")
+		to_chat(world, span_fontsize3("<br><b>Ничья!</b>"))
 		to_chat(world, "<b>Экипаж эвакуирован!</b>")
 		to_chat(world, "<b>Инопланетный организм не был истреблен.</b>")
 	to_chat(world, "<b>Целью блобов было:</b>")
@@ -65,7 +65,7 @@
 	var/list/minions = blobs["minions"]
 	if(blob_infected?.len)
 		declare_blob_completion()
-		var/text = "<br/><span style='font-size: 2;'><b>Блоб[(blob_infected.len > 1 ? "ами были" : "ом был")]:</b></pan>"
+		var/list/text = list("<br/><span style='font-size: 2;'><b>Блоб[(blob_infected.len > 1 ? "ами были" : "ом был")]:</b></pan>")
 
 		for(var/datum/mind/blob in blob_infected)
 			text += "<br/><b>[blob.key]</b> был <b>[blob.name]</b>"
@@ -80,8 +80,7 @@
 			for(var/datum/mind/blob in minions)
 				text += "<br/><b>[blob.key]</b> был <b>[blob.name]</b>"
 
-		to_chat(world, text)
-	return TRUE
+		return text.Join("")
 
 
 /datum/game_mode/proc/end_game()

@@ -112,7 +112,7 @@ Made by Xhuis
 		var/list/messages = list()
 		spawn(rand(10,100))
 			messages.Add("<br>")
-			messages.Add("<span class='deadsay'><b><font size=3>You are a shadowling!</font></b></span>")
+			messages.Add(span_deadsay(span_fontsize3(span_bold("You are a shadowling!"))))
 			messages.Add(greet_shadow(shadow))
 			messages.Add(process_shadow_objectives(shadow))
 			finalize_shadowling(shadow)
@@ -173,11 +173,8 @@ Made by Xhuis
 		if(jobban_isbanned(new_thrall_mind.current, ROLE_SHADOWLING) || jobban_isbanned(new_thrall_mind.current, ROLE_SYNDICATE))
 			replace_jobbanned_player(new_thrall_mind.current, ROLE_SHADOWLING)
 
-		var/thralls = 0
+		var/thralls = get_thralls()
 		var/victory_threshold = SSticker.mode.required_thralls
-		for(var/mob/living/target in GLOB.alive_mob_list)
-			if(is_thrall(target))
-				thralls++
 
 		if(thralls < victory_threshold)
 			for(var/mob/shadowling in GLOB.alive_mob_list)
@@ -273,8 +270,8 @@ Made by Xhuis
 		spawn(30)
 			if(!M || QDELETED(M))
 				return
-			M.visible_message("<span class='warning'>[M] внезапно раздувается и взрывается!</span>", \
-							  "<span class='warning'><b>AAAAAAAAA<font size=3>AAAAAAAAAAAAA</font><font size=4>AAAAAAAAAAAA----</font></span>")
+			M.visible_message(span_warning("[M] внезапно раздувается и взрывается!"), \
+							  span_warning(span_bold("AAAAAAAAA[span_fontsize3("AAAAAAAAAAAAA")][span_fontsize4("AAAAAAAAAAAA.....")]")))
 			playsound(M, 'sound/magic/disintegrate.ogg', 100, 1)
 			M.gib()
 
@@ -288,26 +285,26 @@ Made by Xhuis
 /datum/game_mode/shadowling/declare_completion()
 	if(check_shadow_victory() && EMERGENCY_ESCAPED_OR_ENDGAMED) //Doesn't end instantly - this is hacky and I don't know of a better way ~X
 		SSticker.mode_result = "Победа тенелингов - тенелинги возвысились"
-		to_chat(world, "<span style='font-size: 3;'><b>Победа тенелингов</b></span>")
+		to_chat(world, span_fontsize3("<b>Победа тенелингов</b>"))
 		to_chat(world, "<span class='greentext'><b>Тенелинги возвысились и полностью захватили станцию!</b></span>")
 	else if(shadowling_dead && !check_shadow_victory()) //If the shadowlings have ascended, they can not lose the round
 		SSticker.mode_result = "Тенелинги проиграли - тенелинги погибли"
-		to_chat(world, "<span style='font-size: 3;'><b>Крупная победа экипажа</b></span>")
+		to_chat(world, span_fontsize3("<b>Крупная победа экипажа</b>"))
 		to_chat(world, "<span class='redtext'><b>Тенелинги были убиты экипажем!</b></span>")
 	else if(!check_shadow_victory() && EMERGENCY_ESCAPED_OR_ENDGAMED)
 		SSticker.mode_result = "Тенелинги проиграли - экипаж сбежал"
-		to_chat(world, "<span style='font-size: 3;'><b>Мелкая победа экипажа</b></span>")
+		to_chat(world, span_fontsize3("<b>Мелкая победа экипажа</b>"))
 		to_chat(world, "<span class='redtext'><b>Экипаж сбежал со станции до того, как тенелинги возвысились!</b></span>")
 	else
 		SSticker.mode_result = "Тенелинги проиграли - тенелинги не справились"
-		to_chat(world, "<span style='font-size: 3;'><b>Крупная победа экипажа</b></span>")
+		to_chat(world, span_fontsize3("<b>Крупная победа экипажа</b>"))
 		to_chat(world, "<span class='redtext'><b>Тенелинги не смогли возвыситься!</b></span>")
 	..()
 	return 1
 
 
 /datum/game_mode/proc/auto_declare_completion_shadowling()
-	var/text = ""
+	var/list/text = list("")
 	if(shadows.len)
 		text += "<br><span class='big'><b>Тенелингами были:</b></span>"
 		for(var/datum/mind/shadow in shadows)
@@ -338,7 +335,7 @@ Made by Xhuis
 					text += "тело уничтожено"
 				text += ")"
 	text += "<br>"
-	to_chat(world, text)
+	return text.Join("")
 
 
 /*

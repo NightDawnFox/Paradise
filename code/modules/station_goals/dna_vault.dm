@@ -11,6 +11,8 @@
 #define VAULT_SPEED "Стимулятор мышц ног"
 #define VAULT_QUICK "Стимуляция мышц рук"
 
+GLOBAL_LIST_EMPTY(dna_vaults)
+
 /datum/station_goal/dna_vault
 	name = "DNA Vault"
 	var/animal_count
@@ -55,8 +57,8 @@
 /datum/station_goal/dna_vault/check_completion()
 	if(..())
 		return TRUE
-	for(var/obj/machinery/dna_vault/V in GLOB.machines)
-		if(V.animals.len >= animal_count && V.plants.len >= plant_count && V.dna.len >= human_count && is_station_contact(V.z))
+	for(var/obj/machinery/dna_vault/V in SSmachines.get_by_type(/obj/machinery/dna_vault))
+		if(length(V.animals) >= animal_count && length(V.plants) >= plant_count && length(V.dna) >= human_count && is_station_contact(V.z))
 			return TRUE
 	return FALSE
 

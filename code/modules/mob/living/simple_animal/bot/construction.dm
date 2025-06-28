@@ -250,7 +250,7 @@
 
 		if(9)
 			add_fingerprint(user)
-			if(!istype(I, /obj/item/stock_parts/cell))
+			if(!iscell(I))
 				to_chat(user, span_notice("Для завершения сборки ED-209 нужна батарея."))
 				balloon_alert(user, "неверная деталь")
 				return ATTACK_CHAIN_PROCEED
@@ -328,10 +328,6 @@
 
 	add_fingerprint(user)
 	var/obj/item/stack/tile/plasteel/plasteel = I
-	if(istype(I, /obj/item/storage/toolbox/green/memetic))
-		to_chat(user, span_notice("Хорошая попытка..."))
-		balloon_alert(user, "невозможно")
-		return .
 
 	if(length(contents))
 		to_chat(user, span_notice("Вы не можете начать сборку, пока в ящике для инструментов что-то лежит."))

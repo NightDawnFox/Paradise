@@ -49,26 +49,26 @@
 				continue
 			validtargets += M
 	if(!validtargets.len)
-		to_chat(usr, "<span class='warning'>There are no valid targets!</span>")
+		to_chat(usr, span_warning("There are no valid targets!"))
 	var/mob/living/carbon/human/target = input("Choose a target for recruitment.", "Targeting") as null|mob in validtargets
 	return target
 
 /datum/action/innate/revolution_recruitment/Activate()
 	if(!(usr && usr.mind && usr.stat == CONSCIOUS))
-		to_chat(usr, "<span class='danger'>You must be conscious.")
+		to_chat(usr, span_danger("You must be conscious."))
 		return
 	if(world.time < usr.mind.rev_cooldown)
-		to_chat(usr, "<span class='danger'>You must wait between attempts.")
+		to_chat(usr, span_danger("You must wait between attempts."))
 		return
 	usr.mind.rev_cooldown = world.time + 50
 	var/mob/living/carbon/human/recruit = choose_targets()
 	if(!recruit)
 		return
 	log_admin("[key_name(usr)] attempted recruitment [key_name(recruit)] into the revolution.", usr)
-	to_chat(usr, "<span class='info'><b>You are trying to recruit [recruit]: </b></span>")
+	to_chat(usr, span_info("<b>You are trying to recruit [recruit]: </b>"))
 	if(ismindshielded(recruit) || (recruit.mind in SSticker.mode.get_living_heads()))
-		to_chat(recruit, "<span class='danger'><span style='font-size: 4;'>You were asked to join the revolution, but for reasons you did not know, you refused.</span></span>")
-		to_chat(usr, "<span class='danger'>\The [recruit] does not support the revolution!</span>")
+		to_chat(recruit, span_danger(span_fontsize4("You were asked to join the revolution, but for reasons you did not know, you refused.")))
+		to_chat(usr, span_danger("\The [recruit] does not support the revolution!"))
 		return
 	var/choice = alert(recruit, "Do you want to join the revolution?", "Join the revolution", "Yes", "No")
 	if(choice == "Yes")
@@ -77,8 +77,8 @@
 		if(usr.mind in SSticker.mode.head_revolutionaries)
 			SSticker.mode.add_revolutionary(recruit.mind)
 	if(choice == "No")
-		to_chat(recruit, "<span class='danger'>You reject this traitorous cause!")
-		to_chat(usr, "<span class='danger'>\The [recruit] does not support the revolution!")
+		to_chat(recruit, span_danger("You reject this traitorous cause!"))
+		to_chat(usr, span_danger("\The [recruit] does not support the revolution!"))
 
 ///////////////////////////////////////////////////////////////////////////////
 //Gets the round setup, cancelling if there's not enough players at the start//
@@ -148,7 +148,7 @@
 	C.Grant(rev_mind.current)
 	var/list/messages = list()
 	if(you_are)
-		messages.Add("<span class='userdanger'>You are a member of the revolutionaries' leadership!</span>")
+		messages.Add(span_danger("You are a member of the revolutionaries' leadership!"))
 	messages.Add(rev_mind.prepare_announce_objectives())
 	to_chat(rev_mind.current, chat_box_red(messages.Join("<br>")))
 	if(rev_mind.current)
@@ -228,7 +228,7 @@
 	if((rev_mind in revolutionaries) || (rev_mind in head_revolutionaries))
 		return 0
 	revolutionaries += rev_mind
-	to_chat(rev_mind.current, "<span class='danger'><span style='font-size: 3;'> You are now a revolutionary! Follow orders given by revolution leaders. Do not harm your fellow freedom fighters. You can identify your comrades by the red \"R\" icons, and your leaders by the blue \"R\" icons.</span></span>")
+	to_chat(rev_mind.current, span_danger(span_fontsize3(" You are now a revolutionary! Follow orders given by revolution leaders. Do not harm your fellow freedom fighters. You can identify your comrades by the red \"R\" icons, and your leaders by the blue \"R\" icons.")))
 	add_conversion_logs(rev_mind.current, "recruited to the revolution")
 	rev_mind.special_role = SPECIAL_ROLE_REV
 	update_rev_icons_added(rev_mind)
@@ -253,10 +253,10 @@
 			qdel(C)
 		add_conversion_logs(rev_mind.current, "renounced the revolution")
 		if(beingborged)
-			to_chat(rev_mind.current, "<span class='danger'><span style='font-size: 3;'>The frame's firmware detects and deletes your neural reprogramming! You remember nothing[remove_head ? "." : " but the name of the one who recruited you."]</span></span>")
+			to_chat(rev_mind.current, span_danger(span_fontsize3("The frame's firmware detects and deletes your neural reprogramming! You remember nothing[remove_head ? "." : " but the name of the one who recruited you."]")))
 			message_admins("[ADMIN_LOOKUPFLW(rev_mind.current)] has been borged while being a [remove_head ? "leader" : " member"] of the revolution.")
 		else
-			to_chat(rev_mind.current, "<span class='danger'><span style='font-size: 3;'>You have been brainwashed! You are no longer a revolutionary!</span></span>")
+			to_chat(rev_mind.current, span_danger(span_fontsize3("You have been brainwashed! You are no longer a revolutionary!")))
 
 		update_rev_icons_removed(rev_mind)
 
@@ -295,22 +295,15 @@
 					if((survivor.mind in head_revolutionaries) || (survivor.mind in revolutionaries))
 						num_revs++
 		if(num_survivors)
-			to_chat(world, "[TAB]Command's Approval Rating: <b>[100 - round((num_revs/num_survivors)*100, 0.1)]%</b>") // % of loyal crew
-		var/text = "<br><font size=3><b>The head revolutionaries were:</b></font>"
+			to_chat(world, "[TAB]Command's Approval Rating: [span_bold("[100 - round((num_revs/num_survivors)*100, 0.1)]%")]") // % of loyal crew
+		var/list/text = list(span_bold(span_fontsize3("<br>The head revolutionaries were:</font>")))
 		for(var/datum/mind/headrev in head_revolutionaries)
 			text += printplayer(headrev, 1)
 		text += "<br>"
-		to_chat(world, text)
 
-	if(revolutionaries.len || GAMEMODE_IS_REVOLUTION)
-		var/text = "<br><font size=3><b>The revolutionaries were:</b></font>"
-		for(var/datum/mind/rev in revolutionaries)
-			text += printplayer(rev, 1)
-		text += "<br>"
-		to_chat(world, text)
+		// we dont show the revolutionaries because there are a LOT of them
 
-	if( head_revolutionaries.len || revolutionaries.len || GAMEMODE_IS_REVOLUTION )
-		var/text = "<br><font size=3><b>The heads of staff were:</b></font>"
+		text = list(span_bold(span_fontsize3("<br>The heads of staff were:")))
 		var/list/heads = get_all_heads()
 		for(var/datum/mind/head in heads)
 			var/target = (head in targets)
@@ -318,7 +311,7 @@
 				text += span_boldannounceooc("Target")
 			text += printplayer(head, 1)
 		text += "<br>"
-		to_chat(world, text)
+		return text.Join("")
 
 
 /datum/game_mode/revolution/set_scoreboard_vars()

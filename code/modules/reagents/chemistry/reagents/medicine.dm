@@ -1173,6 +1173,7 @@
 	description = "Миниатюрные медицинские роботы, которые быстро восстанавливают повреждения тела. Могут начать атаковать клетки своего хозяина в больших количествах."
 	reagent_state = SOLID
 	color = "#555555"
+	overdose_threshold = 100
 	can_synth = FALSE
 	taste_description = "нано-технологий"
 
@@ -1185,6 +1186,12 @@
 	update_flags |= M.adjustBrainLoss(-7.5, FALSE)
 	update_flags |= M.adjustCloneLoss(-1.5, FALSE)
 	return ..() | update_flags
+
+/datum/reagent/medicine/syndicate_nanites/overdose_process(mob/living/M, severity)
+	var/update_flags = STATUS_UPDATE_NONE
+	update_flags |= M.adjustBruteLoss(3, FALSE)
+	update_flags |= M.adjustFireLoss(3, FALSE)
+	return list(0, update_flags)
 
 /datum/reagent/medicine/omnizine_diluted
 	name = "Разбавленный омнизин"
@@ -1468,9 +1475,9 @@
 	return ..() | update_flags
 
 /datum/reagent/medicine/lavaland_extract
-	name = "Экстракт Лаваленда"
+	name = "Экстракт Лазиса"
 	id = "lavaland_extract"
-	description = "Экстракт атмосферы Лаваленда и минеральные элементы в придачу. В небольших дозах исцеляет пользователя, но в остальных случаях крайне токсичен."
+	description = "Экстракт атмосферы Лазиса и минеральные элементы в придачу. В небольших дозах исцеляет пользователя, но в остальных случаях крайне токсичен."
 	color = "#C8A5DC" // rgb: 200, 165, 220
 	overdose_threshold = 3 //To prevent people stacking massive amounts of a very strong healing reagent
 	harmless = FALSE
@@ -1555,6 +1562,23 @@
 /datum/reagent/medicine/adrenaline
 	name = "Адреналин"
 	id = "adrenaline"
+	description = "Мощное обезболивающее."
+	color = "#C8A5DC"
+	metabolization_rate = 0.8 * REAGENTS_METABOLISM
+	overdose_threshold = 3.1
+	shock_reduction = 100
+	harmless = TRUE
+	can_synth = FALSE
+
+/datum/reagent/medicine/adrenaline/overdose_process(mob/living/M, severity)
+	var/update_flags = STATUS_UPDATE_NONE
+	update_flags |= M.adjustToxLoss(10, FALSE)
+
+	return list(0, update_flags)
+
+/datum/reagent/medicine/noradrenaline //ling's special chem
+	name = "Норадреналин"
+	id = "noradrenaline"
 	description = "Мощный стимулятор, который делает вас невосприимчивым к оглушению на некоторое время."
 	color = "#C8A5DC"
 	metabolization_rate = 0.8 * REAGENTS_METABOLISM
@@ -1563,31 +1587,27 @@
 	harmless = TRUE
 	can_synth = FALSE
 
-
-/datum/reagent/medicine/adrenaline/on_mob_life(mob/living/M)
+/datum/reagent/medicine/noradrenaline/on_mob_life(mob/living/M)
 	var/update_flags = STATUS_UPDATE_NONE
 	update_flags |= M.setStaminaLoss(0, FALSE)
 	return ..() | update_flags
 
-
-/datum/reagent/medicine/adrenaline/on_mob_add(mob/living/M)
+/datum/reagent/medicine/noradrenaline/on_mob_add(mob/living/M)
 	. = ..()
 	M.add_status_effect_absorption(source = id, effect_type = list(STUN, WEAKEN, STAMCRIT, PARALYZE, KNOCKDOWN))
 
-
-/datum/reagent/medicine/adrenaline/on_mob_delete(mob/living/M)
+/datum/reagent/medicine/noradrenaline/on_mob_delete(mob/living/M)
 	. = ..()
 	M.remove_status_effect_absorption(source = id, effect_type = list(STUN, WEAKEN, STAMCRIT, PARALYZE, KNOCKDOWN))
 
-
-/datum/reagent/medicine/adrenaline/overdose_process(mob/living/M, severity)
+/datum/reagent/medicine/noradrenaline/overdose_process(mob/living/M, severity)
 	var/update_flags = STATUS_UPDATE_NONE
 	update_flags |= M.adjustToxLoss(10, FALSE)
 
 	return list(0, update_flags)
 
 /datum/reagent/medicine/adv_lava_extract
-	name = "Модифицированный Экстракт Лаваленда"
+	name = "Модифицированный Экстракт Лазиса"
 	id = "adv_lava_extract"
 	description = "Очень дорогое лекарство, которое помогает перекачивать кровь по телу и предотвращает замедление работы сердца, исцеляя пациента в процессе. Передозировка приводит к сердечным приступам."
 	reagent_state = LIQUID
@@ -1644,7 +1664,7 @@
 	user.clear_alert("penthrite")
 
 /datum/reagent/medicine/ashiezine
-	name = "Сироп Лаваленда"
+	name = "Сироп Лазиса"
 	id = "ashiezine"
 	description = "Странный реагент, найденный на Лазис Ардаксе. Судя по всему, он работает только на пеплоходцев."
 	reagent_state = LIQUID

@@ -116,7 +116,7 @@
 
 
 /obj/item/gun/throw/crossbow/attackby(obj/item/I, mob/user, params)
-	if(istype(I, /obj/item/stock_parts/cell))
+	if(iscell(I))
 		add_fingerprint(user)
 		if(cell)
 			balloon_alert(user, "уже установлено!")
@@ -149,8 +149,8 @@
 
 
 /obj/item/gun/throw/crossbow/verb/set_tension()
-	set name = "Adjust Tension"
-	set category = "Object"
+	set name = "Регулировка натяжения"
+	set category = STATPANEL_OBJECT
 	set src in usr
 
 	if(usr.incapacitated() || HAS_TRAIT(usr, TRAIT_HANDS_BLOCKED))

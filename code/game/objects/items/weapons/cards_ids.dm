@@ -149,10 +149,20 @@
 
 /obj/item/card/id/Initialize(mapload)
 	. = ..()
+	RegisterSignal(src, COMSIG_FREEZE_LINKED_ACCOUNT, PROC_REF(freeze_linked_account))
 	spawn(30)
 		if(ishuman(loc) && blood_type == "\[UNSET\]")
 			var/mob/living/carbon/human/H = loc
 			SetOwnerInfo(H)
+
+/obj/item/card/id/Destroy()
+	UnregisterSignal(src, COMSIG_FREEZE_LINKED_ACCOUNT)
+	. = ..()
+
+/obj/item/card/id/proc/freeze_linked_account(datum/source)
+	SIGNAL_HANDLER
+	var/datum/money_account/acc = get_money_account(associated_account_number)
+	acc.suspended = TRUE
 
 /obj/item/card/id/examine(mob/user)
 	. = ..()
@@ -311,8 +321,8 @@
 
 
 /obj/item/card/id/verb/remove_guest_pass()
-	set name = "Remove Guest Pass"
-	set category = "Object"
+	set name = "Убрать гостевой пропуск"
+	set category = STATPANEL_OBJECT
 	set src in range(0)
 
 	if(usr.incapacitated() || HAS_TRAIT(usr, TRAIT_HANDS_BLOCKED))
@@ -739,12 +749,6 @@
 			to_chat(registered_user, "<span class='notice'>Fingerprint hash changed to [new_fingerprint_hash].</span>")
 	RebuildHTML()
 
-/obj/item/card/id/syndicate/ui_assets(mob/user)
-	return list(
-		get_asset_datum(/datum/asset/spritesheet/id_card)
-	)
-
-
 /obj/item/card/id/syndicate/ui_data(mob/user)
 	var/list/data = list()
 	data["registered_name"] = registered_name
@@ -766,6 +770,7 @@
 
 /obj/item/card/id/syndicate/ui_static_data(mob/user)
 	var/list/data = list()
+	data["id_icon"] = icon
 	data["appearances"] = appearances
 	return data
 
