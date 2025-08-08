@@ -30,7 +30,7 @@ GLOBAL_VAR_INIT(nologevent, 0)
 				to_chat(C, msg, MESSAGE_TYPE_ADMINPM, confidential = TRUE)
 			if(important)
 				if(C.prefs?.sound & SOUND_ADMINHELP)
-					SEND_SOUND(C, 'sound/effects/adminhelp.ogg')
+					SEND_SOUND(C, sound('sound/effects/adminhelp.ogg'))
 				window_flash(C)
 
 /**
@@ -47,7 +47,7 @@ GLOBAL_VAR_INIT(nologevent, 0)
 				to_chat(C, msg, MESSAGE_TYPE_MENTORPM, confidential = TRUE)
 			if(important)
 				if(C.prefs?.sound & SOUND_MENTORHELP)
-					SEND_SOUND(C, sound('sound/machines/notif1.ogg'))
+					SEND_SOUND(C, sound('sound/effects/adminhelp.ogg'))
 				window_flash(C)
 
 /proc/admin_ban_mobsearch(var/mob/M, var/ckey_to_find, var/mob/admin_to_notify)
@@ -68,7 +68,7 @@ GLOBAL_VAR_INIT(nologevent, 0)
 
 /datum/admins/proc/show_player_panel(mob/M in GLOB.mob_list)
 	set name = "\[Admin\] Show Player Panel"
-	set desc="Edit player (respawn, ban, heal, etc)"
+	set desc = "Edit player (respawn, ban, heal, etc)"
 
 	if(!M)
 		to_chat(usr, "You seem to be selecting a mob that doesn't exist anymore.", confidential=TRUE)
@@ -90,12 +90,18 @@ GLOBAL_VAR_INIT(nologevent, 0)
 
 	if(!check_rights(R_ADMIN|R_MOD))
 		return
+	var/our_key = M.key
+	if(M.client && M.client.holder)
+		if(M.client.holder.fakekey && M.client.holder.big_brother)
+			our_key = M.client.holder.fakekey
 
-	var/body = "<body>Options panel for <b>[M]</b>"
+	var/body = "<body>Options panel for <b>[our_key]</b>"
 	if(M.client)
 		body += " played by <b>[M.client]</b> "
-		if(check_rights(R_PERMISSIONS, 0))
+		if(check_rights(R_PERMISSIONS, FALSE))
 			body += "\[<a href='byond://?_src_=holder;editrights=rank;ckey=[M.ckey]'>[M.client.holder ? M.client.holder.rank : "Player"]</a>\] "
+		else if(M.client.holder && M.client.holder.fakekey && M.client.holder.big_brother)
+			body += "\[Player\] "
 		else
 			body += "\[[M.client.holder ? M.client.holder.rank : "Player"]\] "
 		body += "\[<a href='byond://?_src_=holder;getplaytimewindow=[M.UID()]'>" + M.client.get_exp_type(EXP_TYPE_CREW) + " as [EXP_TYPE_CREW]</a>\]"
@@ -749,7 +755,7 @@ GLOBAL_VAR_INIT(nologevent, 0)
 		antag_list += "Revolutionary"
 	if(M.mind in SSticker.mode.cult)
 		antag_list += "Cultist"
-	if(M.mind in SSticker.mode.syndicates)
+	if(M.mind.has_antag_datum(/datum/antagonist/nuclear_operative))
 		antag_list += "Nuclear Operative"
 	if(M.mind in SSticker.mode.wizards)
 		antag_list += "Wizard"
@@ -899,6 +905,8 @@ GLOBAL_VAR_INIT(nologevent, 0)
 	var/ai_number = 0
 	var/list/messages = list()
 	for(var/mob/living/silicon/S in GLOB.mob_list)
+		if(istype(S, /mob/living/silicon/decoy) && !S.client)
+			continue
 		ai_number++
 		if(isAI(S))
 			messages += "<b>AI [key_name(S, TRUE)]'s laws:</b>"
@@ -918,7 +926,7 @@ GLOBAL_VAR_INIT(nologevent, 0)
 		if(S.laws == null)
 			messages += "[key_name(S, TRUE)]'s laws are null. Contact a coder."
 		else
-			messages += S.laws.show_laws()
+			messages += S.laws.return_laws_text()
 	if(!ai_number)
 		messages += "<b>No AI's located.</b>" //Just so you know the thing is actually working and not just ignoring you.
 

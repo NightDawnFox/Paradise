@@ -589,6 +589,7 @@
 /area/security/permabrig)
 "afs" = (
 /obj/structure/chair/stool,
+/obj/effect/landmark/start/prisoner,
 /turf/simulated/floor/plating,
 /area/security/permabrig)
 "afz" = (
@@ -664,6 +665,7 @@
 /obj/structure/chair{
 	dir = 8
 	},
+/obj/effect/landmark/start/prisoner,
 /turf/simulated/floor/plasteel,
 /area/security/permabrig)
 "agf" = (
@@ -1125,6 +1127,7 @@
 "ajO" = (
 /obj/structure/chair/stool,
 /obj/effect/decal/cleanable/dirt,
+/obj/effect/landmark/start/prisoner,
 /turf/simulated/floor/plating{
 	icon_state = "asteroidplating"
 	},
@@ -1566,6 +1569,7 @@
 	network = list("Prison","SS13")
 	},
 /obj/item/bedsheet/patriot,
+/obj/effect/landmark/start/prisoner,
 /turf/simulated/floor/plasteel,
 /area/security/permabrig)
 "amj" = (
@@ -8590,6 +8594,7 @@
 	dir = 1;
 	initialize_directions = 11
 	},
+/obj/effect/landmark/start/prisoner,
 /turf/simulated/floor/plasteel,
 /area/security/permabrig)
 "bne" = (
@@ -13489,12 +13494,6 @@
 	},
 /turf/simulated/floor/plating,
 /area/turret_protected/aisat_interior)
-"bOh" = (
-/obj/machinery/light/small{
-	dir = 8
-	},
-/turf/simulated/floor/engine/n2,
-/area/atmos)
 "bOj" = (
 /turf/simulated/mineral/ancient,
 /area/engineering/mechanic_workshop/hangar)
@@ -14317,12 +14316,6 @@
 	},
 /turf/space,
 /area/space/nearstation)
-"bSm" = (
-/obj/machinery/light/small{
-	dir = 8
-	},
-/turf/simulated/floor/engine/o2,
-/area/atmos)
 "bSo" = (
 /obj/machinery/atmospherics/unary/vent_scrubber/on{
 	dir = 8
@@ -15002,12 +14995,6 @@
 "bUN" = (
 /turf/simulated/wall,
 /area/chapel/main)
-"bUQ" = (
-/obj/machinery/light/small{
-	dir = 8
-	},
-/turf/simulated/floor/engine/air,
-/area/atmos)
 "bUR" = (
 /obj/effect/turf_decal/siding/brown/corner{
 	dir = 1
@@ -15056,7 +15043,7 @@
 	},
 /area/atmos)
 "bVa" = (
-/obj/machinery/slot_machine,
+/obj/machinery/computer/slot_machine,
 /turf/simulated/floor/wood/fancy/oak,
 /area/maintenance/gambling_den2)
 "bVc" = (
@@ -15767,22 +15754,6 @@
 	icon_state = "dark"
 	},
 /area/hydroponics)
-"bYc" = (
-/obj/machinery/light/small,
-/turf/simulated/floor/engine/co2,
-/area/atmos)
-"bYd" = (
-/obj/machinery/light/small,
-/turf/simulated/floor/engine/plasma,
-/area/atmos)
-"bYe" = (
-/obj/machinery/light/small,
-/turf/simulated/floor/engine/n20,
-/area/atmos)
-"bYf" = (
-/obj/machinery/light/small,
-/turf/simulated/floor/engine/insulated/vacuum,
-/area/atmos)
 "bYj" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 4
@@ -33332,6 +33303,7 @@
 	dir = 4
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
+/obj/effect/landmark/start/prisoner,
 /turf/simulated/floor/plasteel,
 /area/security/permabrig)
 "fHT" = (
@@ -39279,6 +39251,12 @@
 	},
 /turf/simulated/floor/plasteel,
 /area/security/main)
+"hvB" = (
+/obj/effect/landmark/join_late_prisoner,
+/turf/simulated/floor/plating{
+	icon_state = "asteroidplating"
+	},
+/area/security/permabrig)
 "hvH" = (
 /obj/machinery/autolathe,
 /obj/machinery/door/firedoor,
@@ -39504,6 +39482,7 @@
 /turf/simulated/floor/plating,
 /area/maintenance/atmospherics)
 "hyJ" = (
+/obj/effect/landmark/start/prisoner,
 /turf/simulated/floor/plasteel{
 	icon_state = "freezerfloor"
 	},
@@ -40056,7 +40035,7 @@
 	pixel_y = -32;
 	random_basetype = /obj/structure/sign/poster/contraband
 	},
-/obj/machinery/slot_machine,
+/obj/machinery/computer/slot_machine,
 /turf/simulated/floor/wood/fancy/oak,
 /area/maintenance/gambling_den2)
 "hHP" = (
@@ -50024,7 +50003,6 @@
 	},
 /area/medical/cmostore)
 "kzS" = (
-/obj/item/twohanded/required/kirbyplants,
 /obj/machinery/light{
 	dir = 8
 	},
@@ -50032,6 +50010,7 @@
 	dir = 4;
 	pixel_x = -28
 	},
+/obj/machinery/vending/protein,
 /turf/simulated/floor/plasteel,
 /area/crew_quarters/fitness)
 "kAb" = (
@@ -52722,9 +52701,7 @@
 	},
 /area/security/nuke_storage)
 "lll" = (
-/obj/machinery/nuclearbomb{
-	r_code = "LOLNO"
-	},
+/obj/machinery/nuclearbomb,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
 	dir = 5
 	},
@@ -61800,6 +61777,10 @@
 	},
 /turf/simulated/floor/carpet/arcade,
 /area/crew_quarters/fitness)
+"nMU" = (
+/obj/effect/landmark/join_late_prisoner,
+/turf/simulated/floor/plating,
+/area/security/permabrig)
 "nNd" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /turf/simulated/floor/plating,
@@ -73528,6 +73509,13 @@
 	icon_state = "asteroidplating"
 	},
 /area/crew_quarters/theatre)
+"raz" = (
+/obj/effect/decal/cleanable/dirt,
+/obj/effect/landmark/start/prisoner,
+/turf/simulated/floor/plating{
+	icon_state = "asteroidplating"
+	},
+/area/security/permabrig)
 "raH" = (
 /obj/machinery/suit_storage_unit/standard_unit,
 /turf/simulated/floor/plasteel{
@@ -74856,6 +74844,12 @@
 /obj/effect/spawner/window/reinforced,
 /turf/simulated/floor/plating,
 /area/medical/cmostore)
+"rwm" = (
+/obj/effect/landmark/start/prisoner,
+/turf/simulated/floor/plating{
+	icon_state = "asteroidplating"
+	},
+/area/security/permabrig)
 "rwo" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 9
@@ -75837,7 +75831,7 @@
 /obj/machinery/light{
 	dir = 4
 	},
-/obj/machinery/slot_machine,
+/obj/machinery/computer/slot_machine,
 /turf/simulated/floor/carpet,
 /area/crew_quarters/bar)
 "rKY" = (
@@ -78471,6 +78465,7 @@
 	network = list("Prison","SS13")
 	},
 /obj/item/bedsheet/purple,
+/obj/effect/landmark/start/prisoner,
 /turf/simulated/floor/plasteel,
 /area/security/permabrig)
 "swq" = (
@@ -86352,7 +86347,7 @@
 "uNU" = (
 /obj/machinery/door/firedoor,
 /obj/machinery/smartfridge/secure{
-	name = "\improper Kitchen Delivery SmartFridge";
+	name = "Kitchen Delivery SmartFridge";
 	req_access = list(28,35)
 	},
 /turf/simulated/floor/plasteel{
@@ -86776,8 +86771,8 @@
 /turf/simulated/floor/plasteel,
 /area/crew_quarters/fitness)
 "uVC" = (
-/mob/living/simple_animal/pet/dog/bullterrier/Genn,
 /obj/structure/bed/dogbed/pet,
+/mob/living/simple_animal/pet/library_owl,
 /turf/simulated/floor/wood/fancy/light,
 /area/library)
 "uVO" = (
@@ -89354,6 +89349,7 @@
 	dir = 4
 	},
 /obj/machinery/atmospherics/pipe/manifold/hidden/supply,
+/obj/effect/landmark/start/prisoner,
 /turf/simulated/floor/plasteel{
 	icon_state = "floorgrime"
 	},
@@ -90389,7 +90385,10 @@
 /area/security/podbay)
 "vZR" = (
 /obj/structure/table/wood,
-/obj/machinery/computer/library/checkout,
+/obj/machinery/computer/library/checkout{
+	dir = 4;
+	pixel_y = 5
+	},
 /turf/simulated/floor/carpet,
 /area/library)
 "vZZ" = (
@@ -91329,7 +91328,7 @@
 	},
 /area/hallway/primary/fore/west)
 "wot" = (
-/obj/machinery/slot_machine,
+/obj/machinery/computer/slot_machine,
 /turf/simulated/floor/carpet,
 /area/crew_quarters/bar)
 "woF" = (
@@ -91349,6 +91348,10 @@
 /obj/effect/spawner/lootdrop/maintenance/double,
 /turf/simulated/floor/plating,
 /area/maintenance/disposal/north)
+"woT" = (
+/obj/effect/landmark/start/prisoner,
+/turf/simulated/floor/plasteel,
+/area/security/permabrig)
 "woU" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/machinery/bluespace_beacon,
@@ -97428,7 +97431,10 @@
 /area/quartermaster/office)
 "ydI" = (
 /obj/structure/table/wood,
-/obj/machinery/computer/library/public,
+/obj/machinery/computer/library/public{
+	dir = 4;
+	pixel_y = 5
+	},
 /turf/simulated/floor/wood/fancy/light,
 /area/library)
 "yep" = (
@@ -116482,7 +116488,7 @@ abO
 xvE
 aQL
 rHj
-vdq
+woT
 vdq
 adD
 bna
@@ -116491,7 +116497,7 @@ bEW
 dJs
 ajN
 akf
-vNP
+nMU
 alp
 afd
 htk
@@ -116749,7 +116755,7 @@ oQy
 ajO
 adc
 vdq
-rHj
+hvB
 afd
 cIY
 iMa
@@ -116996,7 +117002,7 @@ abO
 dmK
 vNP
 aQL
-adc
+raz
 rHj
 vNP
 aQL
@@ -117778,7 +117784,7 @@ dpl
 dpl
 vNC
 vNP
-rHj
+rwm
 vdq
 afd
 sPV
@@ -125325,15 +125331,15 @@ vFg
 mXi
 bDR
 bNl
-bOh
+bNl
 bNl
 bDR
 bRq
-bSm
+bRq
 bRq
 bDR
 bUj
-bUQ
+bUj
 bUj
 bDR
 nIF
@@ -127652,7 +127658,7 @@ bVW
 vsE
 jjg
 oqz
-bYc
+bXv
 bDR
 nIF
 cuZ
@@ -128680,7 +128686,7 @@ bVW
 vsE
 nAi
 vpX
-bYd
+bXx
 bDR
 nIF
 ozT
@@ -129708,7 +129714,7 @@ bVW
 vsE
 gfJ
 dOS
-bYe
+bXz
 bDR
 kgL
 ccS
@@ -130736,7 +130742,7 @@ bWc
 dAk
 kdK
 bXB
-bYf
+bXB
 cIg
 nVW
 mJM

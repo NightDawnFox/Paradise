@@ -2,6 +2,15 @@
 
 /obj/machinery/computer/library
 	name = "visitor computer"
+	desc = "Старый библиотечный компьютер с ограниченным функционалом – специально для посетителей книжного храма."
+	ru_names = list(
+		NOMINATIVE = "гостевой компьютер",
+		GENITIVE = "гостевого компьютера",
+		DATIVE = "гостевому компьютеру",
+		ACCUSATIVE = "гостевой компьютер",
+		INSTRUMENTAL = "гостевым компьютером",
+		PREPOSITIONAL = "гостевом компьютере"
+	)
 	icon = 'icons/obj/library.dmi'
 	icon_state = "oldcomp"
 	icon_screen = "library"
@@ -14,6 +23,10 @@
 	var/num_results = 0
 	var/datum/library_query/query = new()
 
+/obj/machinery/computer/library/attack_animal(mob/living/simple_animal/M)
+	if(istype(M, /mob/living/simple_animal/pet/library_owl))
+		interact(M)
+	. = ..()
 
 /obj/machinery/computer/library/proc/interact_check(var/mob/user)
 	if(stat & (BROKEN | NOPOWER))
