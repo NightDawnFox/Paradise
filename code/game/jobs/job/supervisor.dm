@@ -9,8 +9,9 @@
 	selection_color = "#6691ff"
 	req_admin_notify = 1
 	is_command = 1
-	access = list() 			//See get_access()
-	minimal_access = list() 	//See get_access()
+	access = list()			//See get_access()
+	law_level = LAW_LEVEL_CAPTAIN
+	minimal_access = list()	//See get_access()
 	minimal_player_age = 30
 	min_age_type = JOB_MIN_AGE_COMMAND
 	blocked_race_for_job = list(SPECIES_VOX)
@@ -250,6 +251,7 @@
 			            ACCESS_THEATRE, ACCESS_CHAPEL_OFFICE, ACCESS_LIBRARY, ACCESS_RESEARCH, ACCESS_MINING, ACCESS_HEADS_VAULT, ACCESS_MINING_STATION,
 			            ACCESS_CLOWN, ACCESS_MIME, ACCESS_RC_ANNOUNCE, ACCESS_KEYCARD_AUTH, ACCESS_GATEWAY, ACCESS_MAGISTRATE)
 	minimal_access = list(ACCESS_SECURITY, ACCESS_SEC_DOORS, ACCESS_BRIG, ACCESS_COURT, ACCESS_MAINT_TUNNELS, ACCESS_LAWYER, ACCESS_MAGISTRATE, ACCESS_HEADS)
+	law_level = LAW_LEVEL_MAGISTRATE
 	alt_titles = list("Judge")
 	outfit = /datum/outfit/job/judge
 	insurance_type = INSURANCE_TYPE_DELUXE
