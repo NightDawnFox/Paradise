@@ -26,7 +26,6 @@ cause a ton of data to be lost, an admin can go send it back.
 it's entirety. You can then take the disk to any R&D console and upload it's data to it. This method is a lot more secure (since it
 won't update every console in existence) but it's more of a hassle to do. Also, the disks can be stolen.
 
-
 */
 
 // Who likes #defines?
@@ -95,7 +94,6 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 
 	var/ui_theme = "Nanotrasen" //Тема интерфейса
 
-
 /proc/CallTechName(ID) //A simple helper proc to find the name of a tech with a given ID.
 	for(var/T in subtypesof(/datum/tech))
 		var/datum/tech/tt = T
@@ -152,8 +150,8 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 			KT.level=KT.max_level
 	files.RefreshResearch()
 
-/obj/machinery/computer/rdconsole/New()
-	..()
+/obj/machinery/computer/rdconsole/Initialize(mapload)
+	. = ..()
 	files = new /datum/research(src) //Setup the research data holder.
 	matching_designs = list()
 	if(is_taipan(z))
@@ -164,13 +162,6 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 		req_access = list(ACCESS_SYNDICATE_SCIENTIST)
 		id = 0027
 		update_icon()
-	if(!id)
-		for(var/obj/machinery/r_n_d/server/centcom/S in SSmachines.get_by_type(/obj/machinery/r_n_d/server/centcom))
-			S.initialize_serv()
-			break
-
-/obj/machinery/computer/rdconsole/Initialize(mapload)
-	. = ..()
 	SyncRDevices()
 
 /obj/machinery/computer/rdconsole/Destroy()
@@ -224,11 +215,10 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 
 	return ..()
 
-
 /obj/machinery/computer/rdconsole/emag_act(mob/user)
 	if(!emagged)
 		add_attack_logs(user, src, "emagged")
-		playsound(src.loc, 'sound/effects/sparks4.ogg', 75, 1)
+		playsound(src.loc, 'sound/effects/sparks4.ogg', 75, TRUE)
 		req_access = list()
 		emagged = TRUE
 		if(user)
@@ -264,13 +254,11 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 	if(desired_num_sheets)
 		machine.materials.retrieve_sheets(desired_num_sheets, material_id)
 
-
-
 /obj/machinery/computer/rdconsole/proc/update_from_disk()
 	clear_wait_message()
-	if(d_disk && d_disk.blueprint)
+	if(d_disk?.blueprint)
 		files.AddDesign2Known(d_disk.blueprint)
-	else if(t_disk && t_disk.stored)
+	else if(t_disk?.stored)
 		var/datum/tech/tech_copy = t_disk.stored.copyTech()
 		files.AddTech2Known(tech_copy)
 	SStgui.update_uis(src)
@@ -371,7 +359,6 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 		send_mats()
 		linked_destroy.loaded_item = null
 
-
 	for(var/obj/I in linked_destroy.contents)
 		for(var/mob/M in I.contents)
 			M.death()
@@ -392,8 +379,6 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 	menu = MENU_MAIN
 	submenu = SUBMENU_MAIN
 	SStgui.update_uis(src)
-
-
 
 /obj/machinery/computer/rdconsole/proc/start_machine(obj/machinery/r_n_d/machine, design_id, amount)
 	if(!machine)
@@ -420,7 +405,7 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 		message_admins("[machine] exploit attempted by [ADMIN_LOOKUPFLW(usr)]!")
 		return
 
-	if(being_built.make_reagents.len) // build_type should equal BIOGENERATOR though..
+	if(length(being_built.make_reagents)) // build_type should equal BIOGENERATOR though..
 		return
 
 	var/max_amount = is_lathe ? 10 : 1
@@ -442,10 +427,10 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 
 	if(is_lathe)
 		add_wait_message("Constructing Prototype. Please Wait...", time_to_construct)
-		flick("[machine.base_icon_state]_n", machine)
+		flick("[machine.base_icon_state]_work", machine)
 	else
 		add_wait_message("Imprinting Circuit. Please Wait...", time_to_construct)
-		flick("[machine.base_icon_state]_ani", machine)
+		flick("[machine.base_icon_state]_work", machine)
 
 	machine.busy = TRUE
 	use_power(power)
@@ -479,7 +464,6 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 			continue
 		if(istype(S, /obj/machinery/r_n_d/server/core) || istype(S, /obj/machinery/r_n_d/server/centcom))
 			S.add_usage_log(usr, being_built, machine)
-
 
 /obj/machinery/computer/rdconsole/proc/finish_machine(mob/user, amount, enough_materials, obj/machinery/r_n_d/machine, datum/design/being_built, coeff)
 	if(machine)
@@ -517,7 +501,6 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 	clear_wait_message()
 	SStgui.update_uis(src)
 
-
 /obj/machinery/computer/rdconsole/ui_act(action, list/params)
 	if(..())
 		return
@@ -526,7 +509,6 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 		return
 
 	add_fingerprint(usr)
-
 
 	switch(action)
 		if("nav") //Switches menu screens. Converts a sent text string into a number. Saves a LOT of code.
@@ -712,7 +694,6 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 			var/query = params["to_search"]
 			var/compare
 
-
 			if(menu == MENU_LATHE)
 				compare = PROTOLATHE
 			else if(menu == MENU_IMPRINTER)
@@ -733,7 +714,6 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 			selected_category = "Search Results for '[query]'"
 
 	return TRUE // update uis
-
 
 /obj/machinery/computer/rdconsole/attack_hand(mob/user)
 	if(..())
@@ -770,7 +750,7 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 	var/is_lathe = istype(machine, /obj/machinery/r_n_d/protolathe)
 	var/is_imprinter = istype(machine, /obj/machinery/r_n_d/circuit_imprinter)
 
-	if (!is_lathe && !is_imprinter)
+	if(!is_lathe && !is_imprinter)
 		return
 
 	var/coeff = machine.efficiency_coeff
@@ -825,7 +805,6 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 			loaded_chemical["name"] = R.name
 			loaded_chemical["volume"] = R.volume
 			loaded_chemical["id"] = R.id
-
 
 /obj/machinery/computer/rdconsole/proc/can_copy_design(datum/design/D)
 	if(D)
@@ -930,7 +909,7 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 				item["name"] = D.name
 				item["id"] = D.id
 
-	else if(menu == MENU_DESTROY && linked_destroy && linked_destroy.loaded_item)
+	else if(menu == MENU_DESTROY && linked_destroy?.loaded_item)
 		var/list/loaded_item_list = list()
 		data["loaded_item"] = loaded_item_list
 		loaded_item_list["name"] = linked_destroy.loaded_item.name
@@ -974,7 +953,6 @@ won't update every console in existence) but it's more of a hassle to do. Also, 
 		deltimer(wait_message_timer)
 		wait_message_timer = null
 	SStgui.update_uis(src)
-
 
 /obj/machinery/computer/rdconsole/core
 	name = "core R&D console"

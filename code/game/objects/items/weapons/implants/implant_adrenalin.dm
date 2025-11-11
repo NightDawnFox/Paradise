@@ -4,7 +4,6 @@
 	icon_state = "adrenal_old"
 	implant_state = "implant-syndicate"
 	origin_tech = "materials=2;biotech=4;combat=3;syndicate=2"
-	activated = BIOCHIP_ACTIVATED_ACTIVE
 	implant_data = /datum/implant_fluff/adrenaline
 	actions_types = null
 	base_cooldown = 120 SECONDS
@@ -61,7 +60,6 @@
 	imp_in.adjust_nutrition(-150)
 
 	return TRUE
-
 
 /obj/item/implanter/adrenalin
 	name = "bio-chip implanter (adrenalin)"

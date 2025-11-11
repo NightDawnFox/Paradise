@@ -1,6 +1,6 @@
 /**
-  * # Rep Purchase - Fulton Extraction Kit
-  */
+ * # Rep Purchase - Fulton Extraction Kit
+ */
 /datum/rep_purchase/item/fulton
 	name = "Набор для эвакуации \"Фултон\""
 	description = "Устройство, похожее на шахтёрское оборудование, но предназначенное для работы на космической станции. Оно используется для транспортировки целей в труднодоступные места."
@@ -21,7 +21,7 @@
 		DATIVE = "системе эвакуации \"Фултон\"",
 		ACCUSATIVE = "систему эвакуации \"Фултон\"",
 		INSTRUMENTAL = "системой эвакуации \"Фултон\"",
-		PREPOSITIONAL = "системе эвакуации \"Фултон\""
+		PREPOSITIONAL = "системе эвакуации \"Фултон\"",
 	)
 
 /obj/item/storage/box/contractor/fulton_kit
@@ -36,7 +36,7 @@
 		DATIVE = "набору для эвакуации Фултон",
 		ACCUSATIVE = "набор для эвакуации Фултон",
 		INSTRUMENTAL = "набором для эвакуации Фултон",
-		PREPOSITIONAL = "наборе для эвакуации Фултон"
+		PREPOSITIONAL = "наборе для эвакуации Фултон",
 	)
 
 /obj/item/storage/box/contractor/fulton_kit/populate_contents()

@@ -23,7 +23,6 @@
 	uniform = /obj/item/clothing/under/syndicate
 	suit = /obj/item/clothing/suit/space/deathsquad/officer/syndie
 	neck = /obj/item/clothing/neck/cloak/syndieadm
-	back = /obj/item/storage/backpack
 	head = /obj/item/clothing/head/helmet/space/deathsquad/beret
 	gloves = /obj/item/clothing/gloves/combat/swat/syndicate
 	shoes = /obj/item/clothing/shoes/combat
@@ -39,10 +38,10 @@
 		/obj/item/ammo_box/magazine/m50 = 2,
 		/obj/item/clothing/shoes/magboots/syndie/advance = 1,
 		/obj/item/lighter/zippo/gonzofist = 1,
-		/obj/item/storage/box/matches = 1
+		/obj/item/storage/box/matches = 1,
 	)
 	implants = list(
-		/obj/item/implant/dust
+		/obj/item/implant/dust,
 	)
 
 /datum/outfit/job/syndicateofficer/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE)

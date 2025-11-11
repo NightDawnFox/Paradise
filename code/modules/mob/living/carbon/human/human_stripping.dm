@@ -196,7 +196,7 @@ GLOBAL_LIST_INIT(strippable_human_items, create_strippable_list(list(
 	return result
 
 /datum/strippable_item/mob_item_slot/pocket/proc/warn_owner(atom/owner)
-	owner.balloon_alert(owner, "You feel your [pocket_side] pocket being fumbled with!")
+	owner.balloon_alert(owner, "you feel your [pocket_side] pocket being fumbled with!")
 
 /datum/strippable_item/mob_item_slot/pocket/left
 	key = STRIPPABLE_ITEM_LPOCKET
@@ -255,7 +255,6 @@ GLOBAL_LIST_INIT(strippable_human_items, create_strippable_list(list(
 		span_danger("[user] [isnull(carbon_source.internal) ? "closes": "opens"] the valve on [source]'s [item.name]."),
 		span_userdanger("[user] [isnull(carbon_source.internal) ? "closes": "opens"] the valve on your [item.name]."),
 	)
-
 
 #undef INTERNALS_TOGGLE_DELAY
 #undef POCKET_EQUIP_DELAY

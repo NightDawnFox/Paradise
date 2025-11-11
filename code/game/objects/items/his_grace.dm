@@ -37,7 +37,7 @@
 		DATIVE = "артистическому ящику для инструментов",
 		ACCUSATIVE = "артистический ящик для инструментов",
 		INSTRUMENTAL = "артистическим ящиком для инструментов",
-		PREPOSITIONAL = "артистическом ящике для инструментов"
+		PREPOSITIONAL = "артистическом ящике для инструментов",
 	)
 
 /obj/item/his_grace/ui_action_click(mob/user, datum/action/action, leftclick)
@@ -155,14 +155,14 @@
 	if(awakened)
 		return
 	user.forceMove(get_turf(src))
-	user.visible_message(span_warning("[user] выкарабкива[pluralize_ru(user.gender,"ет","ют")]ся из [declent_ru(GENITIVE)]!"), span_notice("Вы выбираетесь из [declent_ru(GENITIVE)]!"))
+	user.visible_message(span_warning("[user] выкарабкива[PLUR_ET_YUT(user)]ся из [declent_ru(GENITIVE)]!"), span_notice("Вы выбираетесь из [declent_ru(GENITIVE)]!"))
 
 /obj/item/his_grace/process(seconds_per_tick)
 	if(!bloodthirst)
 		drowse()
 		return
 	if(bloodthirst < HIS_GRACE_CONSUME_OWNER && !ascended)
-		adjust_bloodthirst((1 + FLOOR(LAZYLEN(contents) * 0.3, 1)) * seconds_per_tick) //Maybe adjust this?
+		adjust_bloodthirst((1 + FLOOR(count_player_victims() * 0.3, 1)) * seconds_per_tick) //Maybe adjust this?
 	else
 		adjust_bloodthirst(1 * seconds_per_tick) //don't cool off rapidly once we're at the point where His Grace consumes all.
 	var/mob/living/master = get_atom_on_turf(src, /mob/living)
@@ -229,16 +229,24 @@
 /obj/item/his_grace/proc/consume(mob/living/meal) //Here's your dinner, Mr. Grace.
 	if(!meal)
 		return
+
 	meal.visible_message(span_warning("[declent_ru(NOMINATIVE)] открывается нараспашку и пожирает [meal]!"), span_his_grace("[span_big("[declent_ru(NOMINATIVE)] пожирает вас!")]"))
 	meal.adjustBruteLoss(200)
 	meal.death()
 	playsound(meal, 'sound/weapons/bladeslice.ogg', 75, TRUE)
 	playsound(loc, 'sound/goonstation/misc/burp_alien.ogg', 50, FALSE)
+
+	var/datum/mind/mind = meal.mind
+	if(!mind || mind.madeby_sentience_potion)
+		meal.visible_message(span_his_grace("[capitalize(declent_ru(NOMINATIVE))] не получа[PLUR_ET_YUT(src)] насыщения от подобной пищи. [capitalize(declent_ru(NOMINATIVE))] недоволен!"))
+		meal.forceMove(src)
+		return
+
 	meal.forceMove(src)
 	force_bonus += HIS_GRACE_FORCE_BONUS
 	prev_bloodthirst = bloodthirst
 	if(prev_bloodthirst < HIS_GRACE_CONSUME_OWNER)
-		bloodthirst = max(round(LAZYLEN(contents)/2), 1) //Never fully sated, and His hunger will only grow.
+		bloodthirst = max(round(count_player_victims() / 2), 1) //Never fully sated, and His hunger will only grow.
 	else
 		bloodthirst = HIS_GRACE_CONSUME_OWNER
 	try_update_tier()
@@ -341,12 +349,11 @@
 	playsound(src, 'sound/effects/his_grace/his_grace_ascend.ogg', 100)
 	if(!istype(master))
 		return
+	master.client?.give_award(/datum/award/achievement/misc/ascension, master)
 	if(master.is_in_hands(src))
-		master.update_inv_l_hand()
-		master.update_inv_r_hand()
+		master.update_held_items()
 	master.visible_message(span_his_grace("[span_big("Боги заинтересовались тобой.")]"))
 	SEND_SIGNAL(master, COMSIG_MOB_HALO_GAINED)
-
 
 //for thunderdome
 /obj/item/his_grace/no_sound
@@ -363,7 +370,6 @@
 	move_gracefully()
 	init_new_tier(HIS_GRACE_AWAKENED)
 	user.AddElement(/datum/element/halo_attach, GLOB.halo_overlays["his_grace"], GLOB.halo_callbacks["his_grace"])
-
 
 /proc/is_grace_ascended(mob/living/carbon/human/user)
 	if(!istype(user))

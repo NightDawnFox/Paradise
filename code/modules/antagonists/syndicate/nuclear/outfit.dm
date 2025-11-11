@@ -18,8 +18,6 @@
 
 	id_access = SYNDICATE_OPERATIVE
 
-
-
 	backpack_contents = list(
 		/obj/item/storage/box/survival_syndi = 1,
 		/obj/item/gun/projectile/automatic/pistol = 1,
@@ -28,7 +26,7 @@
 		/obj/item/grenade/plastic/c4 = 1,
 		/obj/item/reagent_containers/food/snacks/syndidonkpocket = 1,
 		/obj/item/flashlight = 1,
-		/obj/item/clothing/shoes/combat = 1
+		/obj/item/clothing/shoes/combat = 1,
 	)
 
 /datum/outfit/admin/syndicate/operative/loneop
@@ -41,7 +39,6 @@
 	toggle_helmet = FALSE
 	suit = null
 	belt = /obj/item/gun/projectile/automatic/pistol
-	mask = /obj/item/clothing/mask/gas/syndicate
 	shoes = /obj/item/clothing/shoes/combat
 	l_pocket = null
 	l_hand = null
@@ -53,7 +50,7 @@
 		/obj/item/grenade/plastic/c4 = 1,
 		/obj/item/reagent_containers/food/snacks/syndidonkpocket = 1,
 		/obj/item/flashlight = 1,
-		/obj/item/clothing/shoes/combat = 1
+		/obj/item/clothing/shoes/combat = 1,
 	)
 
 /datum/outfit/admin/syndicate/operative/nuclear/reinf
@@ -67,19 +64,16 @@
 
 /datum/outfit/admin/syndicate/operative/nuclear/vox
 	name = "Syndicate Nuclear Operative (vox)"
-	mask = /obj/item/clothing/mask/gas/syndicate
 	r_hand = /obj/item/tank/internals/emergency_oxygen/double/vox
 	internals_slot = ITEM_SLOT_HAND_RIGHT
 
 /datum/outfit/admin/syndicate/operative/nuclear/leader/vox
 	name = "Syndicate Nuclear Operative Leader (vox)"
-	mask = /obj/item/clothing/mask/gas/syndicate
 	r_hand = /obj/item/tank/internals/emergency_oxygen/double/vox
 	internals_slot = ITEM_SLOT_HAND_RIGHT
 
 /datum/outfit/admin/syndicate/operative/nuclear/plasmaman
 	name = "Syndicate Nuclear Operative (plasmaman)"
-	mask = /obj/item/clothing/mask/gas/syndicate
 	uniform = /obj/item/clothing/under/plasmaman/syndie
 	head = /obj/item/clothing/head/helmet/space/plasmaman/syndie
 	r_hand = /obj/item/tank/internals/plasmaman
@@ -92,12 +86,11 @@
 		/obj/item/reagent_containers/food/snacks/syndidonkpocket = 1,
 		/obj/item/flashlight = 1,
 		/obj/item/clothing/shoes/combat = 1,
-		/obj/item/extinguisher_refill = 2
+		/obj/item/extinguisher_refill = 2,
 	)
 
 /datum/outfit/admin/syndicate/operative/nuclear/leader/plasmaman
 	name = "Syndicate Nuclear Operative Leader (plasmaman)"
-	mask = /obj/item/clothing/mask/gas/syndicate
 	uniform = /obj/item/clothing/under/plasmaman/syndie
 	head = /obj/item/clothing/head/helmet/space/plasmaman/syndie
 	r_hand = /obj/item/tank/internals/plasmaman
@@ -110,7 +103,7 @@
 		/obj/item/reagent_containers/food/snacks/syndidonkpocket = 1,
 		/obj/item/flashlight = 1,
 		/obj/item/clothing/shoes/combat = 1,
-		/obj/item/extinguisher_refill = 2
+		/obj/item/extinguisher_refill = 2,
 	)
 
 /datum/outfit/admin/syndicate/operative/freedom

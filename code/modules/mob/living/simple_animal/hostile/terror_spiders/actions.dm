@@ -44,7 +44,6 @@
 
 /datum/action/innate/terrorspider/knight/attackm
 	name = "Ярость"
-	icon_icon = 'icons/mob/actions/actions.dmi'
 	button_icon_state = "attack"
 
 /datum/action/innate/terrorspider/knight/attackm/Activate()
@@ -53,7 +52,6 @@
 
 /datum/action/innate/terrorspider/knight/defencem
 	name = "Кератоз"
-	icon_icon = 'icons/mob/actions/actions.dmi'
 	button_icon_state = "defence"
 
 /datum/action/innate/terrorspider/knight/defencem/Activate()
@@ -93,7 +91,6 @@
 
 /datum/action/innate/terrorspider/queen/queensense
 	name = "Чувство улья"
-	icon_icon = 'icons/mob/actions/actions.dmi'
 	button_icon_state = "mindswap"
 
 /datum/action/innate/terrorspider/queen/queensense/Activate()
@@ -108,7 +105,6 @@
 /datum/action/innate/terrorspider/queen/queeneggs/Activate()
 	var/mob/living/simple_animal/hostile/poison/terror_spider/queen/user = owner
 	user.LayQueenEggs()
-
 
 // ---------- EMPRESS
 
@@ -129,7 +125,6 @@
 /datum/action/innate/terrorspider/queen/empress/empresslings/Activate()
 	var/mob/living/simple_animal/hostile/poison/terror_spider/queen/empress/user = owner
 	user.EmpressLings()
-
 
 // ---------- WEB
 
@@ -158,27 +153,25 @@
 /obj/structure/spider/terrorweb
 	name = "terror web"
 	desc = "Вязкая и липкая паутина."
-	ru_names = list(
-		NOMINATIVE = "паутина Ужаса",
-		GENITIVE = "паутины Ужаса",
-		DATIVE = "паутине Ужаса",
-		ACCUSATIVE = "паутину Ужаса",
-		INSTRUMENTAL = "паутиной Ужаса",
-		PREPOSITIONAL = "паутине Ужаса"
-	)
-	icon = 'icons/effects/effects.dmi'
-	anchored = TRUE // prevents people dragging it
-	density = FALSE // prevents it blocking all movement
 	max_integrity = 20 // two welders, or one laser shot (15 for the normal spider webs)
 	creates_cover = TRUE
 	icon_state = "stickyweb1"
 	var/creator_ckey = null
 
+/obj/structure/spider/terrorweb/get_ru_names()
+	return list(
+		NOMINATIVE = "паутина Ужаса",
+		GENITIVE = "паутины Ужаса",
+		DATIVE = "паутине Ужаса",
+		ACCUSATIVE = "паутину Ужаса",
+		INSTRUMENTAL = "паутиной Ужаса",
+		PREPOSITIONAL = "паутине Ужаса",
+	)
+
 /obj/structure/spider/terrorweb/Initialize(mapload)
 	. = ..()
 	if(prob(50))
 		icon_state = "stickyweb2"
-
 
 /obj/structure/spider/terrorweb/CanAllowThrough(atom/movable/mover, border_dir)
 	. = ..()
@@ -209,7 +202,6 @@
 
 	if(isprojectile(mover))
 		return prob(20)
-
 
 /obj/structure/spider/terrorweb/bullet_act(obj/projectile/Proj)
 	if(Proj.damage_type != BRUTE && Proj.damage_type != BURN)
@@ -247,7 +239,7 @@
 			if(Adjacent(O) && !O.anchored)
 				if(!istype(O, /obj/structure/spider))
 					choices += O
-		if(choices.len)
+		if(length(choices))
 			cocoon_target = tgui_input_list(src, "Что вы хотите замотать в кокон?", "", choices)
 		else
 			to_chat(src, span_danger("Рядом нет ничего, что можно было бы завернуть в кокон."))
@@ -259,9 +251,9 @@
 			return
 		busy = SPINNING_COCOON
 		visible_message(span_notice("[capitalize(declent_ru(NOMINATIVE))] начинает выделять липкое вещество вокруг [cocoon_target.declent_ru(GENITIVE)]."))
-		playsound(src.loc, 'sound/creatures/terrorspiders/wrap.ogg', 120, 1)
+		playsound(src.loc, 'sound/creatures/terrorspiders/wrap.ogg', 120, TRUE)
 		stop_automated_movement = 1
-		SSmove_manager.stop_looping(src)
+		GLOB.move_manager.stop_looping(src)
 		if(do_after(src, 4 SECONDS, cocoon_target.loc))
 			if(busy == SPINNING_COCOON)
 				if(cocoon_target && isturf(cocoon_target.loc) && get_dist(src,cocoon_target) <= 1)

@@ -11,7 +11,6 @@
 	open_sound = 'sound/machines/wooden_closet_open.ogg'
 	close_sound = 'sound/machines/wooden_closet_close.ogg'
 	open_sound_volume = 25
-	close_sound_volume = 50
 
 /obj/structure/closet/cabinet/add_debris_element()
 	AddElement(/datum/element/debris, DEBRIS_WOOD, -40, 5)
@@ -25,12 +24,10 @@
 	name = "administrative supply closet"
 	desc = "It's a storage unit for things that have no right being here."
 	icon_state = "syndicate1"
-	anchored = FALSE
 
 /obj/structure/closet/gimmick/russian
 	name = "russian surplus closet"
 	desc = "It's a storage unit for Russian standard-issue surplus."
-	icon_state = "syndicate1"
 
 /obj/structure/closet/gimmick/russian/populate_contents()
 	new /obj/item/clothing/head/ushanka(src)
@@ -44,11 +41,9 @@
 	new /obj/item/clothing/under/soviet(src)
 	new /obj/item/clothing/under/soviet(src)
 
-
 /obj/structure/closet/gimmick/tacticool
 	name = "tacticool gear closet"
 	desc = "It's a storage unit for Tacticool gear."
-	icon_state = "syndicate1"
 
 /obj/structure/closet/gimmick/tacticool/populate_contents()
 	new /obj/item/clothing/glasses/eyepatch(src)
@@ -65,7 +60,6 @@
 	new /obj/item/clothing/suit/space/hardsuit/deathsquad(src)
 	new /obj/item/clothing/under/syndicate/tacticool(src)
 	new /obj/item/clothing/under/syndicate/tacticool(src)
-
 
 /obj/structure/closet/thunderdome
 	name = "Thunderdome closet"

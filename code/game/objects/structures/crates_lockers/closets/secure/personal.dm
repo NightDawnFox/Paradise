@@ -40,18 +40,14 @@
 	open_sound = 'sound/machines/wooden_closet_open.ogg'
 	close_sound = 'sound/machines/wooden_closet_close.ogg'
 	open_sound_volume = 25
-	close_sound_volume = 50
-
 
 /obj/structure/closet/secure_closet/personal/cabinet/populate_contents()
 	new /obj/item/storage/backpack/satchel/withwallet(src)
 	new /obj/item/radio/headset(src)
 
-
 /obj/structure/closet/secure_closet/personal/update_desc(updates = ALL)
 	. = ..()
 	desc = registered_name ? "Owned by [registered_name]." : initial(desc)
-
 
 /obj/structure/closet/secure_closet/personal/attackby(obj/item/I, mob/user, params)
 	if(opened)

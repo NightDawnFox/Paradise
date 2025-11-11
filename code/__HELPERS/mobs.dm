@@ -1,4 +1,4 @@
-/proc/GetOppositeDir(var/dir)
+/proc/GetOppositeDir(dir)
 	switch(dir)
 		if(NORTH)     return SOUTH
 		if(SOUTH)     return NORTH
@@ -42,7 +42,7 @@
 			continue
 		valid_picks += test
 
-	if(!valid_picks.len) valid_picks += "Nude"
+	if(!length(valid_picks)) valid_picks += "Nude"
 
 	return pick(valid_picks)
 
@@ -100,7 +100,7 @@
 			if(species in S.species_allowed) //If the user's head is of a species the facial hair style allows, add it to the list.
 				valid_facial_hairstyles += facialhairstyle
 
-	if(valid_facial_hairstyles.len)
+	if(length(valid_facial_hairstyles))
 		f_style = pick(valid_facial_hairstyles)
 
 	return f_style
@@ -115,7 +115,7 @@
 			continue
 		valid_head_accessories += head_accessory
 
-	if(valid_head_accessories.len)
+	if(length(valid_head_accessories))
 		ha_style = pick(valid_head_accessories)
 
 	return ha_style
@@ -165,17 +165,17 @@
 					continue
 		valid_markings += marking
 
-	if(valid_markings.len)
+	if(length(valid_markings))
 		m_style = pick(valid_markings)
 
 	return m_style
 
 /**
-  * Returns a random body accessory for a given species name. Can be null based on is_optional argument.
-  *
-  * Arguments:
-  * * species - The name of the species to filter valid body accessories.
-  * * is_optional - Whether *no* body accessory (null) is an option.
+ * Returns a random body accessory for a given species name. Can be null based on is_optional argument.
+ *
+ * Arguments:
+ * * species - The name of the species to filter valid body accessories.
+ * * is_optional - Whether *no* body accessory (null) is an option.
  */
 /proc/random_body_accessory(species = SPECIES_VULPKANIN, is_optional = FALSE)
 	var/list/valid_body_accessories = list()
@@ -196,7 +196,7 @@
 		if(gender==FEMALE)
 			return capitalize(pick(GLOB.first_names_female)) + " " + capitalize(pick(GLOB.last_names_female))
 		else
-			return capitalize(pick(GLOB.first_names_male)) + " " + capitalize(pick(GLOB.last_names))
+			return capitalize(pick(GLOB.first_names_male)) + " " + capitalize(pick(GLOB.last_names_male))
 	else
 		return current_species.get_random_name(gender)
 
@@ -308,7 +308,6 @@
 	update_all_mob_security_hud()
 	return TRUE
 
-
 /**
  * Timed action involving one mob user. Target is optional.
  * Checks that `user` does not move, change hands, get stunned, etc. for the given `delay`.
@@ -361,7 +360,7 @@
 	var/atom/target_loc = target?.loc
 
 	var/drifting = FALSE
-	if(SSmove_manager.processing_on(user, SSspacedrift))
+	if(GLOB.move_manager.processing_on(user, SSspacedrift))
 		drifting = TRUE
 
 	var/holding = user.get_active_hand()
@@ -405,7 +404,7 @@
 				. = FALSE
 				break
 
-		if(drifting && (!(timed_action_flags & DA_IGNORE_SPACE_DRIFT) || !SSmove_manager.processing_on(user, SSspacedrift)))
+		if(drifting && (!(timed_action_flags & DA_IGNORE_SPACE_DRIFT) || !GLOB.move_manager.processing_on(user, SSspacedrift)))
 			drifting = FALSE
 			user_loc = user.loc
 
@@ -438,7 +437,6 @@
 
 	SEND_SIGNAL(user, COMSIG_DO_AFTER_ENDED)
 
-
 /proc/is_species(A, species_datum)
 	. = FALSE
 	if(ishuman(A))
@@ -446,17 +444,14 @@
 		if(H.dna && istype(H.dna.species, species_datum))
 			. = TRUE
 
-
 /proc/is_monkeybasic(mob/living/carbon/human/target)
 	return ishuman(target) && target.dna.species.is_monkeybasic	// we deserve a runtime if a human has no DNA
-
 
 /proc/is_evolvedslime(mob/living/carbon/human/target)
 	if(!ishuman(target) || !istype(target.dna.species, /datum/species/slime))
 		return FALSE
 	var/datum/species/slime/species = target.dna.species
 	return species.evolved_slime
-
 
 /proc/spawn_atom_to_turf(spawn_type, target, amount, admin_spawn=FALSE, list/extra_args)
 	var/turf/T = get_turf(target)
@@ -472,8 +467,8 @@
 		if(admin_spawn)
 			X.flags |= ADMIN_SPAWNED
 
-/proc/admin_mob_info(mob/M, mob/user = usr)
-	if(!ismob(M))
+/proc/admin_mob_info(mob/subject, mob/user = usr)
+	if(!ismob(subject))
 		to_chat(user, "This can only be used on instances of type /mob")
 		return
 
@@ -481,50 +476,68 @@
 	var/special_role_description = ""
 	var/health_description = ""
 	var/gender_description = ""
-	var/turf/T = get_turf(M)
+	var/turf/position = get_turf(subject)
 
 	//Location
-	if(isturf(T))
-		if(isarea(T.loc))
-			location_description = "([M.loc == T ? "at coordinates " : "in [M.loc] at coordinates "] [T.x], [T.y], [T.z] in area <b>[T.loc]</b>)"
+	if(isturf(position))
+		if(isarea(position.loc))
+			location_description = "[subject.loc == position ? "at coordinates " : "in [position.loc] at coordinates "] [position.x], [position.y], [position.z] in area <b>[position.loc]</b>"
 		else
-			location_description = "([M.loc == T ? "at coordinates " : "in [M.loc] at coordinates "] [T.x], [T.y], [T.z])"
+			location_description = "[subject.loc == position ? "at coordinates " : "in [position.loc] at coordinates "] [position.x], [position.y], [position.z]"
 
 	//Job + antagonist
-	if(M.mind)
-		special_role_description = "Role: <b>[M.mind.assigned_role]</b>; Antagonist: <font color='red'><b>[M.mind.special_role]</b></font>; Has been rev: [(M.mind.has_been_rev)?"Yes":"No"]"
+	if(subject.mind)
+		special_role_description = "Role: <b>[subject.mind.assigned_role]</b>; [subject.mind.special_role ? "Special role (legacy): <span style='color: orange;'><b>[subject.mind.special_role]</b></span>;" : ""]Antagonist: <span class='red'><b>"
+		// subject.mind.special_role – Legacy code, which is needed because we have a lot of non-datum antags.
+
+		if(subject.mind.antag_datums)
+			var/iterable = 0
+			for(var/datum/antagonist/role in subject.mind.antag_datums)
+				special_role_description += "[role.name]"
+				if(++iterable != length(subject.mind.antag_datums))
+					special_role_description += ", "
+			special_role_description += "</b></span>"
+		else
+			special_role_description += "None</b></span>"
 	else
-		special_role_description = "Role: <i>Mind datum missing</i> Antagonist: <i>Mind datum missing</i>; Has been rev: <i>Mind datum missing</i>;"
+		special_role_description = "Role: <i>Mind datum missing</i> Antagonist: <i>Mind datum missing</i>"
 
 	//Health
-	if(isliving(M))
-		var/mob/living/L = M
+	if(isliving(subject))
+		var/mob/living/lifer = subject
 		var/status
-		switch(M.stat)
+		switch(subject.stat)
 			if(CONSCIOUS)
 				status = "Alive"
 			if(UNCONSCIOUS)
-				status = "<font color='orange'><b>Unconscious</b></font>"
+				status = span_bold(span_orange("Unconscious"))
 			if(DEAD)
-				status = "<font color='red'><b>Dead</b></font>"
-		health_description = "Status = [status]"
-		health_description += "<br>Oxy: [L.getOxyLoss()] - Tox: [L.getToxLoss()] - Fire: [L.getFireLoss()] - Brute: [L.getBruteLoss()] - Clone: [L.getCloneLoss()] - Brain: [L.getBrainLoss()]"
+				status = span_bold(span_red("Dead"))
+		health_description = "Status: [status]"
+		health_description += "<br>Brute: [lifer.getBruteLoss()] – Burn: [lifer.getFireLoss()] – Toxin: [lifer.getToxLoss()] – Suffocation: [lifer.getOxyLoss()]"
+		health_description += "<br>Brain: [lifer.getBrainLoss()] – Stamina: [lifer.getStaminaLoss()] – Clone: [lifer.getCloneLoss()]"
 	else
 		health_description = "This mob type has no health to speak of."
 
 	//Gender
-	switch(M.gender)
-		if(MALE, FEMALE)
-			gender_description = "[M.gender]"
+	switch(subject.gender)
+		if(MALE, FEMALE, PLURAL)
+			gender_description = "[subject.gender]"
 		else
-			gender_description = "<font color='red'><b>[M.gender]</b></font>"
+			gender_description = "[span_bold(span_red(subject.gender))]"
 
-	to_chat(user, "<b>Info about [M.name]:</b> ")
-	to_chat(user, "Mob type = [M.type]; Gender = [gender_description] Damage = [health_description]")
-	to_chat(user, "Name = <b>[M.name]</b>; Real_name = [M.real_name]; Mind_name = [M.mind?"[M.mind.name]":""]; Key = <b>[M.key]</b>;")
-	to_chat(user, "Location = [location_description];")
-	to_chat(user, "[special_role_description]")
-	to_chat(user, "(<a href='byond://?src=[usr.UID()];priv_msg=[M.client?.ckey]'>PM</a>) ([ADMIN_PP(M,"PP")]) ([ADMIN_VV(M,"VV")]) ([ADMIN_TP(M,"TP")]) ([ADMIN_SM(M,"SM")]) ([ADMIN_FLW(M,"FLW")]) ([ADMIN_OBS(M, "OBS")])")
+	//Full Output
+	var/exportable_text = "[span_bold("Info about [subject.name]:")]<br>"
+	exportable_text += "Key – [span_bold(subject.key)]<br>"
+	exportable_text += "Mob Type – [subject.type]<br>"
+	exportable_text += "Gender – [gender_description]<br>"
+	exportable_text += "[health_description]<br>"
+	exportable_text += "Name: [span_bold(subject.name)] – Real Name: [subject.real_name] – Mind Name: [subject.mind?"[subject.mind.name]":""]<br>"
+	exportable_text += "Location is [location_description]<br>"
+	exportable_text += "[special_role_description]<br>"
+	exportable_text += ADMIN_FULLMONTY_NONAME(subject)
+
+	to_chat(user, chat_box_examine(exportable_text), confidential = TRUE)
 
 // Gets the first mob contained in an atom, and warns the user if there's not exactly one
 /proc/get_mob_in_atom_with_warning(atom/A, mob/user = usr)
@@ -581,7 +594,6 @@
 		var/mob/living/carbon/human/H = thing
 		H.sec_hud_set_security_status()
 
-
 /proc/getviewsize(view)
 	if(!view) // Just to avoid any runtimes that could otherwise cause constant disconnect loops.
 		stack_trace("Missing value for 'view' in getviewsize(), defaulting to world.view!")
@@ -594,20 +606,18 @@
 		var/list/viewrangelist = splittext(view, "x")
 		return list(text2num(viewrangelist[1]), text2num(viewrangelist[2]))
 
-
 /proc/in_view_range(mob/user, atom/A)
 	var/list/view_range = getviewsize(user.client.view)
 	var/turf/source = get_turf(user)
 	var/turf/target = get_turf(A)
 	return ISINRANGE(target.x, source.x - view_range[1], source.x + view_range[1]) && ISINRANGE(target.y, source.y - view_range[1], source.y + view_range[1])
 
-
 //Used in chemical_mob_spawn. Generates a random mob based on a given gold_core_spawnable value.
 /proc/create_random_mob(spawn_location, mob_class = HOSTILE_SPAWN)
 	var/static/list/mob_spawn_meancritters = list() // list of possible hostile mobs
 	var/static/list/mob_spawn_nicecritters = list() // and possible friendly mobs
 
-	if(mob_spawn_meancritters.len <= 0 || mob_spawn_nicecritters.len <= 0)
+	if(length(mob_spawn_meancritters) <= 0 || length(mob_spawn_nicecritters) <= 0)
 		for(var/T in typesof(/mob/living/simple_animal))
 			var/mob/living/simple_animal/SA = T
 			switch(initial(SA.gold_core_spawnable))
@@ -661,19 +671,18 @@
 				active++
 	return list(total, active, dead, antag)
 
-
 /**
-  * Safe ckey getter
-  *
-  * Should be used whenever broadcasting public information about a mob,
-  * as this proc will make a best effort to hide the users ckey if they request it.
-  * It will first check the mob for a client, then use the mobs last ckey as a directory lookup.
-  * If a client cant be found to check preferences on, it will just show as DC'd.
-  * This proc should only be used for public facing stuff, not administration related things.
-  *
-  * Arguments:
-  * * M - Mob to get a safe ckey of
-  */
+ * Safe ckey getter
+ *
+ * Should be used whenever broadcasting public information about a mob,
+ * as this proc will make a best effort to hide the users ckey if they request it.
+ * It will first check the mob for a client, then use the mobs last ckey as a directory lookup.
+ * If a client cant be found to check preferences on, it will just show as DC'd.
+ * This proc should only be used for public facing stuff, not administration related things.
+ *
+ * Arguments:
+ * * M - Mob to get a safe ckey of
+ */
 /proc/safe_get_ckey(mob/M)
 	var/client/C = null
 	if(M.client)

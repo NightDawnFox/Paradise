@@ -4,7 +4,6 @@
 //   By RemieRichards	//
 //////////////////////////
 
-
 //Movable Screen Object
 //Not tied to the grid, places it's center where the cursor is
 
@@ -25,14 +24,14 @@
 	if(locked) //no! I am locked! begone!
 		return
 
-	var/list/PM = params2list(params)
+	var/list/modifiers = params2list(params)
 
 	//No screen-loc information? abort.
-	if(!PM || !PM["screen-loc"])
+	if(!LAZYACCESS(modifiers, SCREEN_LOC))
 		return
 
 	//Split screen-loc up into X+Pixel_X and Y+Pixel_Y
-	var/list/screen_loc_params = splittext(PM["screen-loc"], ",")
+	var/list/screen_loc_params = splittext(LAZYACCESS(modifiers, SCREEN_LOC), ",")
 
 	//Split X+Pixel_X up into list(X, Pixel_X)
 	var/list/screen_loc_X = splittext(screen_loc_params[1],":")
