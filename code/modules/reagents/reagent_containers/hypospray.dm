@@ -371,8 +371,6 @@
 	list_reagents = list("epinephrine" = 10)
 	/// Whether we can rename and repaint source
 	var/reskin_allowed = FALSE
-	/// Currently selected skin
-	var/current_skin
 	/// Is it usable only on yourself?
 	var/only_self = FALSE
 	/// Is it used?
@@ -478,7 +476,7 @@
 		update_icon(UPDATE_ICON_STATE)
 		playsound(loc, 'sound/effects/stimpak.ogg', 35, TRUE)
 
-/obj/item/reagent_containers/hypospray/autoinjector/examine()
+/obj/item/reagent_containers/hypospray/autoinjector/examine(mob/user)
 	. = ..()
 	if(reagents && length(reagents.reagent_list))
 		. += span_notice("Не использовано.")
@@ -487,6 +485,7 @@
 
 /obj/item/reagent_containers/hypospray/autoinjector/death_book
 	icon = 'icons/obj/death_book.dmi'
+	icon_state = null
 
 /obj/item/reagent_containers/hypospray/autoinjector/death_book/attack(mob/living/carbon/target, mob/living/user, params, def_zone, skip_attack_anim = FALSE)
 	if(!do_after(user, 5 SECONDS, target, DEFAULT_DOAFTER_IGNORE))

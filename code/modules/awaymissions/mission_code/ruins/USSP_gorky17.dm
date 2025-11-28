@@ -233,7 +233,7 @@
 
 /obj/item/paper/researchnotes/mat_bio_prog/Initialize(mapload)
 	. = ..()
-	var/list/possible_techs = list("materials", "biotech", "programming")
+	var/list/possible_techs = list(RESEARCH_TREE_MATERIALS, RESEARCH_TREE_BIOTECH, RESEARCH_TREE_PROGRAMMING)
 	var/mytech = pick(possible_techs)
 	var/mylevel = rand(6, 8)
 	origin_tech = "[mytech]=[mylevel]"
@@ -478,7 +478,7 @@
 	r_pocket = /obj/item/flashlight/seclite
 
 	backpack_contents = list(
-		/obj/item/storage/box/soviet = 1,
+		/obj/item/storage/box/survival/soviet = 1,
 	)
 
 /obj/effect/mob_spawn/human/corpse/usspconscript

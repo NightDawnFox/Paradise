@@ -407,7 +407,7 @@
 		/obj/item/forensics/sample_kit/powder,
 		/obj/item/forensics/sample_kit,
 		/obj/item/eftpos/sec,
-		/obj/item/stock_parts/cell/specter,
+		/obj/item/weapon_cell,
 		/obj/item/radio,
 	)
 
@@ -754,7 +754,7 @@
 /obj/item/storage/belt/bandolier
 	name = "bandolier"
 	desc = "Патронташ для хранения патронов к дробовику."
-	icon_state = "bandolier"
+	icon_state = "bandolier_0"
 	item_state = "bandolier"
 	storage_slots = 16
 	max_combined_w_class = 16
@@ -986,6 +986,7 @@
 		/obj/item/wirecutters,
 		/obj/item/wrench,
 		/obj/item/multitool,
+		/obj/item/handheld_defibrillator,
 	)
 
 /obj/item/storage/belt/bluespace/owlman

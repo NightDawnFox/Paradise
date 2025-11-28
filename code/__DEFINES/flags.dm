@@ -34,6 +34,13 @@
 /// Whether or not this atom shows screentips when hovered over
 #define NO_SCREENTIPS (1<<11)
 
+// Bypass all adjacency checks for mouse drop
+#define INTERACT_ATOM_MOUSEDROP_IGNORE_ADJACENT (1<<12)
+/// Bypass all can_perform_action checks for mouse drop
+#define INTERACT_ATOM_MOUSEDROP_IGNORE_USABILITY (1<<13)
+/// Bypass all adjacency and other checks for mouse drop
+#define INTERACT_ATOM_MOUSEDROP_IGNORE_CHECKS (INTERACT_ATOM_MOUSEDROP_IGNORE_ADJACENT | INTERACT_ATOM_MOUSEDROP_IGNORE_USABILITY)
+
 // Update flags for [/atom/proc/update_appearance]
 /// Update the atom's name
 #define UPDATE_NAME (1<<0)
@@ -243,3 +250,8 @@ GLOBAL_LIST_INIT(bitflags, list(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 204
 /// All ignore flags considered as default old do_after behavior.
 #define DEFAULT_DOAFTER_IGNORE (DA_IGNORE_LYING|DA_IGNORE_RESTRAINED)
 
+#define MAX_BITFIELD_SIZE 24
+
+//alternate appearance flags
+#define AA_TARGET_SEE_APPEARANCE (1<<0)
+#define AA_MATCH_TARGET_OVERLAYS (1<<1)

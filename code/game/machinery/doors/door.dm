@@ -2,7 +2,7 @@
 	name = "door"
 	desc = "It opens and closes."
 	icon = 'icons/obj/doors/doorint.dmi'
-	icon_state = "door1"
+	icon_state = null
 	anchored = TRUE
 	opacity = TRUE
 	density = TRUE
@@ -288,8 +288,9 @@
 			try_to_crowbar(user, I)
 			return ATTACK_CHAIN_BLOCKED_ALL
 
-		if(!(I.item_flags & NOBLUDGEON))
-			try_to_activate_door(user)
+		if(I.item_flags & NOBLUDGEON)
+			return ..()
+		else if(try_to_activate_door(user))
 			return ATTACK_CHAIN_BLOCKED_ALL
 
 	return ..()
