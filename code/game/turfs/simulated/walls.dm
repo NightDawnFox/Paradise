@@ -143,7 +143,7 @@
 
 	return
 
-/turf/simulated/wall/proc/adjacent_fire_act(turf/simulated/wall, radiated_temperature)
+/turf/simulated/wall/proc/adjacent_fire_act(radiated_temperature)
 	if(radiated_temperature > max_temperature)
 		take_damage(rand(10, 20) * (radiated_temperature / max_temperature))
 
@@ -457,7 +457,7 @@
 			take_damage(-damage)
 
 /turf/simulated/wall/proc/try_rot(obj/item/I, mob/user, params)
-	if((!is_sharp(I) && I.force >= 10) || I.force >= 20)
+	if((!I.sharp && I.force >= 10) || I.force >= 20)
 		to_chat(user, span_notice("[capitalize(declent_ru(NOMINATIVE))] рассыпается под воздействием вашего [I.declent_ru(GENITIVE)]."))
 		dismantle_wall(1)
 		return TRUE
@@ -594,8 +594,8 @@
 		if(WALL_DENT_HIT)
 			decal.icon_state = "impact[rand(1, 3)]"
 
-	decal.pixel_x = x
-	decal.pixel_y = y
+	decal.pixel_w = x
+	decal.pixel_z = y
 
 	if(LAZYLEN(dent_decals))
 		cut_overlay(dent_decals)
