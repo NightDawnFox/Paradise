@@ -316,6 +316,20 @@
 	build_path = /obj/item/reagent_containers/food/drinks/shaker
 	category = list(PRINTER_CATEGORY_INITIAL, AUTOLATHE_CATEGORY_DINNERWARE)
 
+/datum/design/coffeepot
+	id = "coffeepot"
+	build_type = AUTOLATHE
+	materials = list(MAT_METAL = 1000, MAT_GLASS = 3500)
+	build_path = /obj/item/reagent_containers/glass/coffeepot
+	category = list(PRINTER_CATEGORY_INITIAL, AUTOLATHE_CATEGORY_DINNERWARE)
+
+/datum/design/syrup_bottle
+	id = "syrup_bottle"
+	build_type = AUTOLATHE
+	materials = list(MAT_METAL = 150, MAT_GLASS = 500)
+	build_path = /obj/item/reagent_containers/glass/bottle/syrup_bottle
+	category = list(PRINTER_CATEGORY_INITIAL, AUTOLATHE_CATEGORY_DINNERWARE)
+
 /datum/design/cultivator
 	id = "cultivator"
 	build_type = AUTOLATHE
@@ -719,7 +733,7 @@
 	id = "9mmTEbox"
 	build_type = AUTOLATHE
 	materials = list(MAT_METAL = 30500)
-	build_path = /obj/item/ammo_box/c9mmte
+	build_path = /obj/item/ammo_box/dot45NR
 	category = list(PRINTER_CATEGORY_HACKED, AUTOLATHE_CATEGORY_SECURITY)
 
 /datum/design/enforcer/disable
@@ -728,13 +742,6 @@
 	materials = list(MAT_METAL = 25000)
 	build_path = /obj/item/ammo_box/enforcer/disabler
 	category = list(PRINTER_CATEGORY_INITIAL, AUTOLATHE_CATEGORY_SECURITY)
-
-/datum/design/enforcer/laser
-	id = "enforcer_laser"
-	build_type = AUTOLATHE
-	materials = list(MAT_METAL = 35000)
-	build_path = /obj/item/ammo_box/enforcer/laser
-	category = list(PRINTER_CATEGORY_HACKED, AUTOLATHE_CATEGORY_SECURITY)
 
 /datum/design/spectermag_disabler
 	id = "spectermag"
@@ -756,7 +763,7 @@
 	build_type = AUTOLATHE
 	materials = list(MAT_METAL = 3000)
 	build_path = /obj/item/ammo_box/magazine/sparkle_a12/empty
-	category = list("hacked", "Security")
+	category = list(PRINTER_CATEGORY_HACKED, AUTOLATHE_CATEGORY_SECURITY)
 
 /datum/design/buckshot_shell
 	id = "buckshot_shell"
@@ -825,7 +832,7 @@
 	id = "c10mm"
 	build_type = AUTOLATHE
 	materials = list(MAT_METAL = 45500)
-	build_path = /obj/item/ammo_box/c10mm
+	build_path = /obj/item/ammo_box/m10mm
 	category = list(PRINTER_CATEGORY_HACKED, AUTOLATHE_CATEGORY_SECURITY)
 
 /datum/design/c45

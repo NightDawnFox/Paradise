@@ -338,6 +338,14 @@
 	SET_PLANE(underlay_appearance, PLANE_SPACE, src)
 	return TRUE
 
+/turf/simulated/floor/holofloor/burn_mix_floor
+	name = "Burn-Mix Floor"
+	icon_state = "engine"
+	nitrogen = 0
+	oxygen = 2500
+	temperature = 370
+	toxins = 5000
+
 /obj/structure/table/holotable/has_prints()
 	return FALSE
 
@@ -528,7 +536,7 @@
 		return
 
 	if(prob(50))
-		visible_message(span_alert("[mover.declent_ru(NOMINATIVE)] отскакивает от края [src.declent_ru(GENITIVE)]!"))
+		visible_message(span_alert("[mover.declent_ru(NOMINATIVE)] отскакивает от края [declent_ru(GENITIVE)]!"))
 		return FALSE
 
 	mover.forceMove(loc)
@@ -540,7 +548,7 @@
 		return ..()
 
 	if(prob(50) && (!throwingdatum || !throwingdatum.thrower || !HAS_TRAIT(throwingdatum.thrower, TRAIT_BADASS)))
-		visible_message(span_danger("[AM.declent_ru(NOMINATIVE)] отскакивает от края [src.declent_ru(GENITIVE)]!"))
+		visible_message(span_danger("[AM.declent_ru(NOMINATIVE)] отскакивает от края [declent_ru(GENITIVE)]!"))
 		return ..()
 
 	AM.forceMove(get_turf(src))

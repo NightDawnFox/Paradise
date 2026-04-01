@@ -59,10 +59,10 @@
 	var/inject_target = pick(BODY_ZONE_CHEST, BODY_ZONE_HEAD)
 	if(HAS_TRAIT(L, TRAIT_INCAPACITATED) || L.can_inject(null, FALSE, inject_target, FALSE))
 		L.reagents.add_reagent("frostoil", 20)
-		visible_message(span_danger("[capitalize(declent_ru(NOMINATIVE))] вонзает свои длинные клыки глубоко в [inject_target] [target.declent_ru(ACCUSATIVE)]!"))
+		visible_message(span_danger("[DECLENT_RU_CAP(src, NOMINATIVE)] вонзает свои длинные клыки глубоко в [inject_target] [target.declent_ru(ACCUSATIVE)]!"))
 	else
 		L.reagents.add_reagent("frostoil", 10)
-		visible_message(span_danger("[capitalize(declent_ru(NOMINATIVE))] вонзает свои длинные клыки глубоко в [inject_target] [target.declent_ru(ACCUSATIVE)]!"))
+		visible_message(span_danger("[DECLENT_RU_CAP(src, NOMINATIVE)] вонзает свои длинные клыки глубоко в [inject_target] [target.declent_ru(ACCUSATIVE)]!"))
 	return TRUE
 
 /mob/living/simple_animal/hostile/poison/terror_spider/builder/Move(atom/newloc, direct = NONE, glide_size_override = 0, update_dir = TRUE)  //moves slow while not in web, but fast while in. does not regenerate if not in web
@@ -91,16 +91,3 @@
 		INSTRUMENTAL = "паутиной Дрона Ужаса",
 		PREPOSITIONAL = "паутине Дрона Ужаса",
 	)
-
-/obj/projectile/terrorspider/builder
-	name = "drone venom"
-	icon_state = "toxin2"
-	damage = 15
-	stamina = 15
-
-/obj/projectile/terrorspider/drone/on_hit(atom/target, blocked = 0, hit_zone)
-	if((blocked != 100) && iscarbon(target))
-		var/mob/living/carbon/C = target
-		C.Slowed(2 SECONDS)
-
-	return ..()

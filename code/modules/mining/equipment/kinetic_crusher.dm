@@ -52,7 +52,7 @@
 		. += span_notice("<b>К Крушителю прикреплены следующие трофеи</b>:")
 		for(var/t in trophies)
 			var/obj/item/crusher_trophy/T = t
-			. += span_notice("[icon2html(t, user)] <b>[capitalize(T.declent_ru(NOMINATIVE))]</b>: [T.effect_desc()].")
+			. += span_notice("[icon2html(t, user)] <b>[DECLENT_RU_CAP(T, NOMINATIVE)]</b>: [T.effect_desc()].")
 
 /obj/item/twohanded/kinetic_crusher/attackby(obj/item/I, mob/user, params)
 	if(istype(I, /obj/item/crusher_trophy))
@@ -77,7 +77,7 @@
 
 /obj/item/twohanded/kinetic_crusher/attack(mob/living/target, mob/living/user, params, def_zone, skip_attack_anim = FALSE)
 	if(!HAS_TRAIT(src, TRAIT_WIELDED))
-		var/warn_message = "[capitalize(declent_ru(NOMINATIVE))] слишком тяжёлый, чтобы использовать его одной рукой."
+		var/warn_message = "[DECLENT_RU_CAP(src, NOMINATIVE)] слишком тяжёлый, чтобы использовать его одной рукой."
 		if(user.drop_item_ground(src))
 			warn_message += " Вы роняете [declent_ru(ACCUSATIVE)] на землю."
 		to_chat(user, span_warning(warn_message))
@@ -191,47 +191,6 @@
 		. += "[icon_state]_uncharged"
 	if(light_on)
 		. += "[icon_state]_lit"
-
-//destablizing force
-/obj/projectile/destabilizer
-	name = "destabilizing force"
-	icon_state = "pulse1"
-	nodamage = TRUE
-	damage = 0 //We're just here to mark people. This is still a melee weapon.
-	flag = "bomb"
-	range = 6
-	log_override = TRUE
-	var/obj/item/twohanded/kinetic_crusher/hammer_synced
-
-/obj/projectile/destabilizer/get_ru_names()
-	return list(
-		NOMINATIVE = "дестабилизирующий заряд",
-		GENITIVE = "дестабилизирующего заряда",
-		DATIVE = "дестабилизирующему заряду",
-		ACCUSATIVE = "дестабилизирующий заряд",
-		INSTRUMENTAL = "дестабилизирующим зарядом",
-		PREPOSITIONAL = "дестабилизирующем заряде",
-	)
-
-/obj/projectile/destabilizer/Destroy()
-	hammer_synced = null
-	return ..()
-
-/obj/projectile/destabilizer/on_hit(atom/target, blocked = FALSE)
-	if(isliving(target))
-		var/mob/living/L = target
-		var/had_effect = (L.has_status_effect(STATUS_EFFECT_CRUSHERMARK)) //used as a boolean
-		var/datum/status_effect/crusher_mark/CM = L.apply_status_effect(STATUS_EFFECT_CRUSHERMARK, hammer_synced)
-		if(hammer_synced)
-			for(var/t in hammer_synced.trophies)
-				var/obj/item/crusher_trophy/T = t
-				T.on_mark_application(target, CM, had_effect)
-	var/target_turf = get_turf(target)
-	if(ismineralturf(target_turf))
-		var/turf/simulated/mineral/mineral = target_turf
-		new /obj/effect/temp_visual/kinetic_blast(mineral)
-		mineral.attempt_drill(firer)
-	..()
 
 //trophies
 /obj/item/crusher_trophy
@@ -776,27 +735,3 @@
 		INSTRUMENTAL = "магмитовым прото-кинетическим крушителем",
 		PREPOSITIONAL = "магмитовом прото-кинетическом крушителе",
 	)
-
-/obj/projectile/destabilizer/mega
-	icon_state = "pulse0"
-	range = 4 //you know....
-
-/obj/projectile/destabilizer/mega/on_hit(atom/target, blocked = FALSE)
-	var/target_turf = get_turf(target)
-	if(ismineralturf(target_turf))
-		if(istype(target_turf, /turf/simulated/mineral/gibtonite))
-			var/turf/simulated/mineral/gibtonite/gib = target
-			if(gib.stage == 0)
-				gib.defuse()
-			var/obj/item/twohanded/required/gibtonite/gibtonite_item = new(gib)
-			gibtonite_item.quality = gib.det_time
-			gibtonite_item.update_icon(UPDATE_ICON_STATE)
-			gib.ChangeTurf(gib.turf_type)
-		else
-			var/turf/simulated/mineral/M = target_turf
-			new /obj/effect/temp_visual/kinetic_blast(M)
-			forcedodge = 1
-			M.attempt_drill(firer)
-	else
-		forcedodge = 0
-	..()

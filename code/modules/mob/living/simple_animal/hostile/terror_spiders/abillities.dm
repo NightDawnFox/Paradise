@@ -21,7 +21,7 @@
 
 /obj/effect/proc_holder/spell/terror_stealth/cast(list/targets, mob/user = usr)
 	user.alpha = 0
-	user.visible_message(span_warning("[capitalize(user.declent_ru(NOMINATIVE))] внезапно исчезает!"), span_purple("Вы теперь невидимы!"))
+	user.visible_message(span_warning("[DECLENT_RU_CAP(user, NOMINATIVE)] внезапно исчезает!"), span_purple("Вы теперь невидимы!"))
 	addtimer(CALLBACK(src, PROC_REF(reveal), user), duration)
 
 /obj/effect/proc_holder/spell/terror_stealth/proc/reveal(mob/user)
@@ -29,7 +29,7 @@
 		return
 
 	user.alpha = initial(user.alpha)
-	user.visible_message(span_warning("[capitalize(user.declent_ru(NOMINATIVE))] появляется из ниоткуда!"), span_purple("Вы снова видимы!"))
+	user.visible_message(span_warning("[DECLENT_RU_CAP(user, NOMINATIVE)] появляется из ниоткуда!"), span_purple("Вы снова видимы!"))
 	playsound(user.loc, 'sound/creatures/terrorspiders/stealth_out.ogg', 150, TRUE)
 
 //HEALER//
@@ -56,7 +56,7 @@
 
 /obj/effect/proc_holder/spell/aoe/terror_healing/cast(list/targets, mob/user = usr)
 	for(var/mob/living/simple_animal/hostile/poison/terror_spider/spider in targets)
-		visible_message(span_green("[capitalize(user.declent_ru(NOMINATIVE))] источает целительные феромоны!"))
+		visible_message(span_green("[DECLENT_RU_CAP(user, NOMINATIVE)] источает целительные феромоны!"))
 		spider.adjustBruteLoss(-heal_amount)
 		if(apply_heal_buff)
 			spider.apply_status_effect(STATUS_EFFECT_TERROR_REGEN)
@@ -75,8 +75,8 @@
 	invocation_type = "none"
 	action_icon_state = "fake_death"
 	action_background_icon_state = "bg_terror"
-	selection_activated_message	= span_notice("Вы подготавливаете свой ядовитый плевок! <b>ЛКМ, чтобы плюнуть в цель</b>.")
-	selection_deactivated_message = span_notice("Вы отменяете свой плевок.")
+	selection_activated_message	= span_notice_alt("Вы подготавливаете свой ядовитый плевок! <b>ЛКМ, чтобы плюнуть в цель</b>.")
+	selection_deactivated_message = span_notice_alt("Вы отменяете свой плевок.")
 	sound = 'sound/creatures/terrorspiders/spit2.ogg'
 	need_active_overlay = TRUE
 	base_cooldown = 25 SECONDS
@@ -85,25 +85,6 @@
 /obj/effect/proc_holder/spell/fireball/venom_spit/update_icon_state()
 	return
 
-/obj/projectile/terrorspider/widow/venom
-	name = "venom acid"
-	damage = 5
-
-/obj/projectile/terrorspider/widow/venom/on_hit(target)
-	. = ..()
-	var/datum/effect_system/fluid_spread/smoke/chem/smoke = new
-	var/turf/T = get_turf(target)
-	create_reagents(1250)
-	reagents.add_reagent("thc", 250)
-	reagents.add_reagent("psilocybin", 250)
-	reagents.add_reagent("lsd", 250)
-	reagents.add_reagent("space_drugs", 250)
-	reagents.add_reagent("terror_black_toxin", 250)
-	smoke.set_up(range = 2, location = T, carry = reagents, silent = TRUE)
-	smoke.start()
-
-	return ..()
-
 //SMOKE SPIT
 /obj/effect/proc_holder/spell/fireball/smoke_spit
 	name = "Плевок дымящейся кислотой"
@@ -111,8 +92,8 @@
 	invocation_type = "none"
 	action_icon_state = "smoke"
 	action_background_icon_state = "bg_terror"
-	selection_activated_message	= span_notice("Вы подготавливаете дымный плевок! <b>ЛКМ, чтобы плюнуть в цель</b>")
-	selection_deactivated_message = span_notice("Вы отменяете свой плевок.")
+	selection_activated_message	= span_notice_alt("Вы подготавливаете дымный плевок! <b>ЛКМ, чтобы плюнуть в цель</b>")
+	selection_deactivated_message = span_notice_alt("Вы отменяете свой плевок.")
 	sound = 'sound/creatures/terrorspiders/spit2.ogg'
 	need_active_overlay = TRUE
 	base_cooldown = 10 SECONDS
@@ -120,22 +101,6 @@
 
 /obj/effect/proc_holder/spell/fireball/smoke_spit/update_icon_state()
 	return
-
-/obj/projectile/terrorspider/widow/smoke
-	name = "smoke acid"
-	damage = 5
-
-/obj/projectile/terrorspider/widow/smoke/on_hit(target)
-	. = ..()
-	var/datum/effect_system/fluid_spread/smoke/smoke = new
-	var/turf/T = get_turf(target)
-	smoke.set_up(amount = 15, location = T)
-	smoke.start()
-	return ..()
-
-//DESTROYER//
-
-//EMP
 
 /obj/effect/proc_holder/spell/emplosion/terror_emp
 	name = "Электро-магнитный визг"
