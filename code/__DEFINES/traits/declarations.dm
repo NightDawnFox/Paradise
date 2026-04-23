@@ -511,3 +511,6 @@
 
 /// An item is ALWAYS considered baseline reachable and will pipe into CanBeReached().
 #define TRAIT_SKIP_BASIC_REACH_CHECK "skip_basic_reach_check"
+
+/// Can use the nuclear device's UI, regardless of a lack of hands
+#define TRAIT_CAN_USE_NUKE "can_use_nuke"

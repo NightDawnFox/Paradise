@@ -42,3 +42,10 @@
 /// Global signal called after the station changes its name.
 /// (new_name, old_name)
 #define COMSIG_GLOB_STATION_NAME_CHANGED "!station_name_changed"
+
+/// global signal sent when a nuclear device is armed (/obj/machinery/nuclearbomb/nuke/exploding_nuke)
+#define COMSIG_GLOB_NUKE_DEVICE_ARMED "!nuclear_device_armed"
+/// global signal sent when a nuclear device is disarmed (/obj/machinery/nuclearbomb/nuke/disarmed_nuke)
+#define COMSIG_GLOB_NUKE_DEVICE_DISARMED "!nuclear_device_disarmed"
+/// global signal sent when a nuclear device is detonating (/obj/machinery/nuclearbomb/nuke/exploding_nuke)
+#define COMSIG_GLOB_NUKE_DEVICE_DETONATING "!nuclear_device_detonating"

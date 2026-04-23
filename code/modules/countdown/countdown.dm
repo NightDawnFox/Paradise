@@ -82,6 +82,17 @@
 /obj/effect/countdown/singularity_act()
 	return
 
+/obj/effect/countdown/nuclearbomb
+	name = "nuclear bomb countdown"
+	color = "#81FF14"
+
+/obj/effect/countdown/nuclearbomb/get_value()
+	var/obj/machinery/nuclearbomb/nuke = attached_to
+	if(!istype(nuke))
+		return
+	else if(nuke.timing)
+		return round(nuke.get_time_left(), 1)
+
 /obj/effect/countdown/syndicatebomb
 	name = "syndicate bomb countdown"
 
