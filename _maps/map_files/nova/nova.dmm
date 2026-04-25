@@ -21939,19 +21939,8 @@
 /turf/simulated/floor/plating,
 /area/maintenance/apmaint)
 "dpn" = (
-/obj/machinery/nuclearbomb,
-/obj/machinery/atmospherics/pipe/simple/hidden/supply{
-	dir = 6
-	},
-/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
-	dir = 5
-	},
 /obj/effect/decal/warning_stripes/red,
-/obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
-	icon_state = "4-8"
-	},
+/obj/machinery/nuclearbomb/selfdestruct,
 /turf/simulated/floor/plasteel{
 	icon_state = "Dark"
 	},
@@ -22500,15 +22489,13 @@
 /area/maintenance/asmaint4)
 "dtu" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
-	dir = 4
+	dir = 6
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
-	dir = 8
+	dir = 5
 	},
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
-	icon_state = "4-8"
+	icon_state = "1-4"
 	},
 /turf/simulated/floor/greengrid,
 /area/security/nuke_storage)
@@ -72192,9 +72179,7 @@
 /area/toxins/rdoffice)
 "ldD" = (
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
-	icon_state = "4-8"
+	icon_state = "1-8"
 	},
 /turf/simulated/floor/greengrid,
 /area/security/nuke_storage)
@@ -81078,7 +81063,9 @@
 /turf/simulated/floor/plating,
 /area/teleporter/abandoned)
 "mAk" = (
-/obj/machinery/atmospherics/pipe/simple/hidden/supply,
+/obj/machinery/atmospherics/pipe/simple/hidden/supply{
+	dir = 6
+	},
 /turf/simulated/floor/greengrid,
 /area/security/nuke_storage)
 "mAn" = (
@@ -102336,6 +102323,12 @@
 	},
 /turf/simulated/floor/plasteel/freezer,
 /area/crew_quarters/toilet2)
+"pMw" = (
+/obj/machinery/atmospherics/pipe/simple/hidden/supply{
+	dir = 9
+	},
+/turf/simulated/floor/greengrid,
+/area/security/nuke_storage)
 "pMx" = (
 /obj/effect/decal/warning_stripes/northeastcorner,
 /obj/effect/decal/cleanable/dirt,
@@ -121971,6 +121964,12 @@
 	},
 /turf/simulated/floor/plating,
 /area/maintenance/casino)
+"sHg" = (
+/obj/structure/cable{
+	icon_state = "2-4"
+	},
+/turf/simulated/floor/greengrid,
+/area/security/nuke_storage)
 "sHk" = (
 /obj/machinery/alarm/directional/north,
 /obj/structure/chair/sofa/bench/command_blue,
@@ -126184,6 +126183,15 @@
 	icon_state = "brown"
 	},
 /area/quartermaster/lobby)
+"too" = (
+/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
+	dir = 10
+	},
+/obj/structure/cable{
+	icon_state = "2-8"
+	},
+/turf/simulated/floor/greengrid,
+/area/security/nuke_storage)
 "tot" = (
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/security/glass{
@@ -133468,7 +133476,12 @@
 	},
 /area/crew_quarters/sleep/secondary)
 "usT" = (
-/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
+/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
+	dir = 5
+	},
+/obj/structure/cable{
+	icon_state = "4-8"
+	},
 /turf/simulated/floor/greengrid,
 /area/security/nuke_storage)
 "usV" = (
@@ -261727,7 +261740,7 @@ bkc
 bkc
 fUX
 kvs
-skc
+sHg
 ldD
 skc
 wFg
@@ -262241,9 +262254,9 @@ bkc
 bkc
 fUX
 aOz
-skc
+too
 dtu
-skc
+pMw
 fwt
 fUX
 bkc

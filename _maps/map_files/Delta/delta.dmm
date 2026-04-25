@@ -20282,7 +20282,12 @@
 	},
 /area/maintenance/tourist)
 "cEA" = (
-/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
+/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
+	dir = 9
+	},
+/obj/structure/cable{
+	icon_state = "4-8"
+	},
 /turf/simulated/floor/greengrid,
 /area/security/nuke_storage)
 "cED" = (
@@ -31427,14 +31432,14 @@
 /turf/simulated/floor/engine,
 /area/maintenance/turbine)
 "dIH" = (
-/obj/structure/cable{
-	icon_state = "4-8"
+/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
+	dir = 9
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
-	dir = 4
+	dir = 10
 	},
-/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
-	dir = 4
+/obj/structure/cable{
+	icon_state = "1-8"
 	},
 /turf/simulated/floor/greengrid,
 /area/security/nuke_storage)
@@ -54654,17 +54659,7 @@
 	},
 /area/hallway/primary/central/north)
 "iwe" = (
-/obj/structure/cable{
-	icon_state = "4-8"
-	},
-/obj/machinery/atmospherics/pipe/simple/hidden/supply{
-	dir = 10
-	},
-/obj/machinery/nuclearbomb,
-/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
-	dir = 9
-	},
-/obj/machinery/hologram/holopad,
+/obj/machinery/nuclearbomb/selfdestruct,
 /turf/simulated/floor/plasteel,
 /area/security/nuke_storage)
 "iwi" = (
@@ -58032,7 +58027,9 @@
 /turf/simulated/floor/plating,
 /area/maintenance/asmaint4)
 "jku" = (
-/obj/machinery/atmospherics/pipe/simple/hidden/supply,
+/obj/machinery/atmospherics/pipe/simple/hidden/supply{
+	dir = 10
+	},
 /turf/simulated/floor/greengrid,
 /area/security/nuke_storage)
 "jkJ" = (
@@ -78943,7 +78940,7 @@
 /area/storage/secure)
 "obl" = (
 /obj/structure/cable{
-	icon_state = "4-8"
+	icon_state = "1-4"
 	},
 /turf/simulated/floor/greengrid,
 /area/security/nuke_storage)
@@ -81431,6 +81428,15 @@
 /obj/effect/decal/warning_stripes/yellow/hollow,
 /turf/simulated/floor/plasteel,
 /area/medical/research/nhallway)
+"oEp" = (
+/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
+	dir = 6
+	},
+/obj/structure/cable{
+	icon_state = "2-4"
+	},
+/turf/simulated/floor/greengrid,
+/area/security/nuke_storage)
 "oEr" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
 	dir = 4
@@ -84040,6 +84046,12 @@
 	icon_state = "dark"
 	},
 /area/maintenance/fpmaint)
+"pkd" = (
+/obj/structure/cable{
+	icon_state = "2-8"
+	},
+/turf/simulated/floor/greengrid,
+/area/security/nuke_storage)
 "pkk" = (
 /obj/structure/table/reinforced,
 /obj/item/storage/firstaid/aquatic_kit/full,
@@ -106105,6 +106117,12 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /turf/simulated/floor/plasteel,
 /area/crew_quarters/fitness)
+"ubp" = (
+/obj/machinery/atmospherics/pipe/simple/hidden/supply{
+	dir = 5
+	},
+/turf/simulated/floor/greengrid,
+/area/security/nuke_storage)
 "ubu" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/structure/chair/comfy/beige{
@@ -168936,9 +168954,9 @@ cqB
 coE
 btL
 uwv
-kkK
+oEp
 dIH
-kkK
+ubp
 tsX
 btL
 coE
@@ -169450,7 +169468,7 @@ cqB
 coE
 btL
 xnF
-kkK
+pkd
 obl
 kkK
 qgq

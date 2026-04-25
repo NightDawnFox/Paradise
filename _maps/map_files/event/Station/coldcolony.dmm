@@ -1546,8 +1546,9 @@
 	},
 /area/coldcolony/malta/quartermaster/ore_production)
 "aAX" = (
-/obj/machinery/atmospherics/unary/vent_pump/on{
-	dir = 4
+/obj/machinery/atmospherics/unary/vent_pump/on,
+/obj/structure/cable{
+	icon_state = "1-2"
 	},
 /turf/simulated/floor/greengrid,
 /area/coldcolony/malta/bridge/nuke_storage)
@@ -7788,7 +7789,7 @@
 /area/coldcolony/malta/medical/biostorage)
 "cPE" = (
 /obj/structure/cable{
-	icon_state = "1-2"
+	icon_state = "1-8"
 	},
 /turf/simulated/floor/greengrid,
 /area/coldcolony/malta/bridge/nuke_storage)
@@ -13880,9 +13881,7 @@
 	},
 /area/coldcolony/malta/maintenance/kitchen)
 "faT" = (
-/obj/machinery/atmospherics/unary/vent_scrubber/on{
-	dir = 8
-	},
+/obj/machinery/atmospherics/unary/vent_scrubber/on,
 /turf/simulated/floor/greengrid,
 /area/coldcolony/malta/bridge/nuke_storage)
 "faV" = (
@@ -17441,10 +17440,14 @@
 /turf/simulated/floor/plating,
 /area/coldcolony/malta/maintenance/brig)
 "gyi" = (
-/obj/machinery/atmospherics/pipe/simple/hidden/supply,
-/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
+/obj/machinery/atmospherics/pipe/simple/hidden/supply{
+	dir = 10
+	},
+/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
+	dir = 6
+	},
 /obj/structure/cable{
-	icon_state = "1-2"
+	icon_state = "2-8"
 	},
 /turf/simulated/floor/greengrid,
 /area/coldcolony/malta/bridge/nuke_storage)
@@ -32516,6 +32519,12 @@
 	},
 /turf/simulated/floor/plasteel/white,
 /area/coldcolony/malta/medical/surgery/east)
+"mjJ" = (
+/obj/structure/cable{
+	icon_state = "2-4"
+	},
+/turf/simulated/floor/greengrid,
+/area/coldcolony/malta/bridge/nuke_storage)
 "mjU" = (
 /obj/structure/table/reinforced,
 /obj/item/apc_electronics,
@@ -36206,16 +36215,7 @@
 	},
 /area/coldcolony/ruin/abandoned_banya)
 "nGU" = (
-/obj/machinery/nuclearbomb,
-/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
-	dir = 6
-	},
-/obj/machinery/atmospherics/pipe/simple/hidden/supply{
-	dir = 10
-	},
-/obj/structure/cable{
-	icon_state = "1-2"
-	},
+/obj/machinery/nuclearbomb/selfdestruct,
 /turf/simulated/floor/plasteel,
 /area/coldcolony/malta/bridge/nuke_storage)
 "nHj" = (
@@ -36728,6 +36728,9 @@
 /area/coldcolony/malta/engineering/break_room)
 "nSL" = (
 /obj/effect/baseturf_helper/asteroid,
+/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
+	dir = 9
+	},
 /turf/simulated/floor/greengrid,
 /area/coldcolony/malta/bridge/nuke_storage)
 "nSM" = (
@@ -59465,6 +59468,15 @@
 	icon_state = "dark"
 	},
 /area/coldcolony/malta/turret_protected/ai)
+"wtQ" = (
+/obj/machinery/atmospherics/pipe/simple/hidden/supply{
+	dir = 5
+	},
+/obj/structure/cable{
+	icon_state = "1-4"
+	},
+/turf/simulated/floor/greengrid,
+/area/coldcolony/malta/bridge/nuke_storage)
 "wub" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/cobweb,
@@ -114603,9 +114615,9 @@ rSb
 rSb
 dlx
 okD
-uiF
+mjJ
 aAX
-uiF
+wtQ
 nxY
 dlx
 yeU

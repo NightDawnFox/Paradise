@@ -11191,6 +11191,9 @@
 	},
 /area/security/prison/cell_block/A)
 "aVj" = (
+/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
+	dir = 5
+	},
 /turf/simulated/floor/plasteel{
 	dir = 6;
 	icon_state = "vault"
@@ -29030,9 +29033,7 @@
 /turf/simulated/floor/plasteel,
 /area/hallway/secondary/exit)
 "cun" = (
-/obj/machinery/atmospherics/unary/vent_scrubber/on{
-	dir = 4
-	},
+/obj/machinery/atmospherics/unary/vent_scrubber/on,
 /turf/simulated/floor/plasteel{
 	dir = 6;
 	icon_state = "vault"
@@ -30574,6 +30575,9 @@
 	},
 /area/engineering/hardsuitstorage)
 "cAn" = (
+/obj/structure/cable{
+	icon_state = "1-8"
+	},
 /turf/simulated/floor/plasteel{
 	dir = 10;
 	icon_state = "vault"
@@ -46267,6 +46271,15 @@
 /obj/machinery/papershredder,
 /turf/simulated/floor/plating,
 /area/maintenance/port)
+"fBn" = (
+/obj/structure/cable{
+	icon_state = "1-2"
+	},
+/turf/simulated/floor/plasteel{
+	dir = 10;
+	icon_state = "vault"
+	},
+/area/security/nuke_storage)
 "fBt" = (
 /obj/structure/closet/firecloset,
 /obj/machinery/camera{
@@ -48729,9 +48742,6 @@
 	dir = 1
 	},
 /obj/machinery/alarm/directional/north,
-/obj/structure/cable{
-	icon_state = "2-4"
-	},
 /turf/simulated/floor/plasteel{
 	icon_state = "vault"
 	},
@@ -55052,13 +55062,7 @@
 /turf/simulated/floor/plasteel,
 /area/hallway/primary/starboard/east)
 "jpz" = (
-/obj/machinery/nuclearbomb,
-/obj/structure/cable{
-	icon_state = "1-2"
-	},
-/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
-	dir = 10
-	},
+/obj/machinery/nuclearbomb/selfdestruct,
 /turf/simulated/floor/plasteel{
 	dir = 8;
 	icon_state = "vault"
@@ -63665,7 +63669,7 @@
 "mXO" = (
 /obj/machinery/power/apc/directional/north,
 /obj/structure/cable{
-	icon_state = "0-8"
+	icon_state = "0-2"
 	},
 /turf/simulated/floor/plasteel{
 	dir = 10;
@@ -77651,12 +77655,14 @@
 /turf/simulated/floor/plasteel,
 /area/medical/chemistry)
 "sTI" = (
-/obj/structure/cable{
-	icon_state = "1-2"
-	},
-/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /obj/machinery/hologram/holopad,
 /obj/effect/turf_decal/box,
+/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
+	dir = 10
+	},
+/obj/structure/cable{
+	icon_state = "2-4"
+	},
 /turf/simulated/floor/plasteel{
 	dir = 1;
 	icon_state = "vault"
@@ -111254,7 +111260,7 @@ ePH
 uTI
 aUE
 mXO
-cAn
+fBn
 cAn
 gRd
 cJw
