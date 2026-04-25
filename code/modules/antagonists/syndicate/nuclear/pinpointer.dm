@@ -193,7 +193,7 @@
 	if(shows_nuke_timer)
 		for(var/obj/machinery/nuclearbomb/bomb in GLOB.poi_list)
 			if(bomb.timing)
-				. += span_warning("Extreme danger. Arming signal detected. Time remaining: [bomb.timeleft]")
+				. += span_warning("Extreme danger. Arming signal detected. Time remaining: [bomb.get_time_left()]")
 
 /obj/item/pinpointer/advpinpointer
 	name = "advanced pinpointer"

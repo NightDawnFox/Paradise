@@ -43,7 +43,7 @@ GLOBAL_VAR(bomb_set)
 	/// The alert level that was set before the nuke started, so we can revert to the correct level after
 	var/previous_level = ""
 	/// The nuke core within the nuke, created in initialize
-	var/obj/item/nuke_core/plutonium/core
+	var/obj/item/nuke_core/plutonium/core = null
 	/// The current state of deconstructing / opening up the nuke to access the core
 	var/deconstruction_state = NUKESTATE_INTACT
 	/// Overlay - flashing lights over the nuke
@@ -54,6 +54,31 @@ GLOBAL_VAR(bomb_set)
 	var/proper_bomb = TRUE //Please
 	/// A reference to the countdown that goes up over the nuke
 	var/obj/effect/countdown/nuclearbomb/countdown
+	/// Cinematic used in explosion
+	var/cinematic_type = STATION_NUKE
+
+/obj/machinery/nuclearbomb/syndicate
+	cinematic_type = SYNDICATE_NUKE
+
+/obj/machinery/nuclearbomb/selfdestruct
+	name = "station self-destruct terminal"
+	desc = "На случай крайне чрезвычайных ситуаций."
+	icon = 'icons/obj/machines/nuke_terminal.dmi'
+	icon_state = "nuclearbomb_base"
+	anchored = TRUE //stops it being moved
+
+/obj/machinery/nuclearbomb/selfdestruct/set_anchor()
+	return
+
+/obj/machinery/nuclearbomb/get_ru_names()
+	return list(
+		NOMINATIVE = "ядерная боеголовка",
+		GENITIVE = "ядерной боеголовки",
+		DATIVE = "ядерной боеголовке",
+		ACCUSATIVE = "ядерную боеголовку",
+		INSTRUMENTAL = "ядерной боеголовкой",
+		PREPOSITIONAL = "ядерной боеголовке",
+	)
 
 /obj/machinery/nuclearbomb/Initialize(mapload)
 	. = ..()
@@ -108,9 +133,9 @@ GLOBAL_VAR(bomb_set)
 			. += span_bolddanger("Боеголовка в процессе взрыва. Возможно вам следует обдумать все ваши последние действия.")
 
 /// Checks if the disk inserted is a real nuke disk or not.
-	/obj/machinery/nuclearbomb/proc/disk_check(obj/item/disk/nuclear/inserted_disk)
+/obj/machinery/nuclearbomb/proc/disk_check(obj/item/disk/nuclear/inserted_disk)
 	if(inserted_disk.fake)
-		say("Ошибка аутенфикации: диск не распознан.")
+		atom_say("Ошибка аутенфикации: диск не распознан.")
 		return FALSE
 
 	return TRUE
@@ -152,7 +177,7 @@ GLOBAL_VAR(bomb_set)
 			if(istype(weapon, /obj/item/nuke_core_container))
 				var/obj/item/nuke_core_container/core_box = weapon
 				balloon_alert(user, "помещение ядра в контейнер...")
-				if(do_after(user, 5 SECONDS, target = src, hidden = TRUE))
+				if(do_after(user, 5 SECONDS, target = src))
 					if(core_box.load(core, user))
 						balloon_alert(user, "ядро помещено в контейнер!")
 						deconstruction_state = NUKESTATE_CORE_REMOVED
@@ -193,12 +218,6 @@ GLOBAL_VAR(bomb_set)
 				START_PROCESSING(SSobj, core)
 			return TRUE
 	return FALSE
-
-/obj/machinery/nuclearbomb/can_interact(mob/user)
-	if(HAS_TRAIT(user, TRAIT_CAN_USE_NUKE))
-		return TRUE
-
-	return ..()
 
 /obj/machinery/nuclearbomb/ui_state(mob/user)
 	if(HAS_TRAIT(user, TRAIT_CAN_USE_NUKE))
@@ -372,7 +391,7 @@ GLOBAL_VAR(bomb_set)
 				if(item && disk_check(item) && usr.drop_transfer_item_to_loc(item, src))
 					playsound(src, 'sound/machines/terminal_insert_disc.ogg', 50, FALSE)
 					playsound(src, 'sound/items/timer.ogg', 50, FALSE)
-					auth = I
+					auth = item
 					. = TRUE
 			update_ui_mode()
 		if("keypad")
@@ -383,7 +402,7 @@ GLOBAL_VAR(bomb_set)
 						if(auth && ui_mode == NUKEUI_AWAIT_ARM)
 							toggle_nuke_safety()
 							yes_code = FALSE
-							playsound(src, 'sound/machines/confirm_beep.ogg', 50, FALSE)
+							playsound(src, 'sound/machines/nuke/confirm_beep.ogg', 50, FALSE)
 							update_ui_mode()
 						else
 							playsound(src, 'sound/items/timer.ogg', 50, FALSE)
@@ -398,7 +417,7 @@ GLOBAL_VAR(bomb_set)
 									playsound(src, 'sound/items/timer.ogg', 50, FALSE)
 									. = TRUE
 								else
-									playsound(src, 'sound/machines/angry_beep.ogg', 50, FALSE)
+									playsound(src, 'sound/machines/nuke/angry_beep.ogg', 50, FALSE)
 									numeric_input = "ERROR"
 							if(NUKEUI_AWAIT_TIMER)
 								var/number_value = text2num(numeric_input)
@@ -419,7 +438,7 @@ GLOBAL_VAR(bomb_set)
 								playsound(src,  'sound/items/timer.ogg', 50, FALSE)
 							. = TRUE
 			else
-				playsound(src, 'sound/machines/angry_beep.ogg', 50, FALSE)
+				playsound(src, 'sound/machines/nuke/angry_beep.ogg', 50, FALSE)
 		if("arm")
 			if(auth && yes_code && !safety && !exploded)
 				playsound(src, 'sound/items/timer.ogg', 50, FALSE)
@@ -427,7 +446,7 @@ GLOBAL_VAR(bomb_set)
 				update_ui_mode()
 				. = TRUE
 			else
-				playsound(src, 'sound/machines/angry_beep.ogg', 50, FALSE)
+				playsound(src, 'sound/machines/nuke/angry_beep.ogg', 50, FALSE)
 		if("anchor")
 			if(auth && yes_code)
 				playsound(src,  'sound/items/timer.ogg', 50, FALSE)
@@ -486,7 +505,7 @@ GLOBAL_VAR(bomb_set)
 	notify_ghosts(
 		"A nuclear device has been armed in [get_area_name(src)]!",
 		source = src,
-		action = NOTIFY_FOLLOW",
+		action = NOTIFY_FOLLOW,
 	)
 	SSshuttle?.add_hostile_environment(src)
 	update_appearance()
@@ -496,7 +515,7 @@ GLOBAL_VAR(bomb_set)
 	var/turf/our_turf = get_turf(src)
 	message_admins("\The [src] at [ADMIN_VERBOSEJMP(our_turf)] was disarmed by [disarmer ? ADMIN_LOOKUPFLW(disarmer) : "an unknown user"].")
 	if(disarmer)
-		log_game("[disarmer] disarmed [src].", LOG_GAME)
+		log_game("[disarmer] disarmed [src].")
 
 	detonation_timer = null
 	SSsecurity_level.set_level(previous_level)
@@ -528,9 +547,9 @@ GLOBAL_VAR(bomb_set)
 		return
 	if(locate(/obj/structure/blob) in T)
 		return
-	var/obj/structure/blob/special/captured_nuke/N = new(T, src)
-	N.overmind = B.overmind
-	N.update_blob()
+	var/obj/structure/blob/special/captured_nuke/nuke = new(T, src)
+	nuke.overmind = attacking_blob.overmind
+	nuke.update_blob()
 
 /obj/machinery/nuclearbomb/zap_act(power, zap_flags)
 	. = ..()
@@ -594,20 +613,6 @@ GLOBAL_VAR(bomb_set)
 				SSticker.reboot_helper("Station destroyed by Nuclear Device.", "nuke - unhandled ending")
 				return
 	return
-
-/obj/machinery/nuclearbomb/proc/reset_lighthack_callback()
-	lighthack = !lighthack
-	update_icon()
-
-/obj/machinery/nuclearbomb/proc/reset_safety_callback()
-	safety = !safety
-	update_icon()
-	if(safety == 1)
-		if(!is_syndicate)
-			SSsecurity_level.set_level(previous_level)
-		visible_message(span_notice("The [src] quiets down."))
-	else
-		visible_message(span_notice("The [src] emits a quiet whirling noise!"))
 
 //==========DAT FUKKEN DISK===============
 /obj/item/disk/nuclear
