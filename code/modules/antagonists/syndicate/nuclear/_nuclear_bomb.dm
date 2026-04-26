@@ -32,7 +32,7 @@ GLOBAL_VAR(bomb_set)
 	var/exploded = FALSE
 	/// world time tracker for when we're going to explode
 	var/detonation_timer = null
-	/// The code we need to detonate this nuke. Starts as "admin", purposefully un-enterable
+	/// The code we need to detonate this nuke, purposefully un-enterable
 	var/r_code = NUKE_CODE_UNSET
 	/// If TRUE, the correct code has been entered and we can start the nuke
 	var/yes_code = FALSE
@@ -105,7 +105,7 @@ GLOBAL_VAR(bomb_set)
 /obj/machinery/nuclearbomb/examine(mob/user)
 	. = ..()
 	if(check_rights(R_ADMIN, FALSE))
-		. += span_notice("Код от боеголовки [GLOB.nuke_codes[type]].")
+		. += span_notice("ADMIN: Код от боеголовки — [GLOB.nuke_codes[type]]. Код, вписанный в VV — [r_code]. Подойдёт любой из них.")
 
 	switch(deconstruction_state)
 		if(NUKESTATE_UNSCREWED)
@@ -199,6 +199,12 @@ GLOBAL_VAR(bomb_set)
 				return TRUE
 
 	return ..()
+
+/obj/machinery/nuclearbomb/attack_hand(mob/user)
+	if(..())
+		return TRUE
+	add_fingerprint(user)
+	return ui_interact(user)
 
 /obj/machinery/nuclearbomb/crowbar_act(mob/user, obj/item/tool)
 	switch(deconstruction_state)
@@ -411,7 +417,7 @@ GLOBAL_VAR(bomb_set)
 					if("E")
 						switch(ui_mode)
 							if(NUKEUI_AWAIT_CODE)
-								if(numeric_input == r_code)
+								if(numeric_input == r_code || numeric_input == GLOB.nuke_codes[type])
 									numeric_input = ""
 									yes_code = TRUE
 									playsound(src, 'sound/items/timer.ogg', 50, FALSE)
@@ -558,7 +564,7 @@ GLOBAL_VAR(bomb_set)
 
 /**
  * Begins the process of exploding the nuke.
- * [proc/explode] -> [proc/actually_explode] -> [proc/really_actually_explode])
+ * [proc/explode] -> [proc/actually_explode]
  *
  * Goes through a few timers and plays a cinematic.
  */
@@ -577,6 +583,7 @@ GLOBAL_VAR(bomb_set)
 
 	if(SSticker?.mode)
 		SSticker.mode.explosion_in_progress = 1
+	playsound(src,'sound/machines/alarm.ogg', 70, FALSE, 5)
 	addtimer(CALLBACK(src, PROC_REF(actually_explode)), 10 SECONDS)
 	return TRUE
 

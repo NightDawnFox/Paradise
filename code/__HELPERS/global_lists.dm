@@ -63,7 +63,8 @@
 		GLOB.all_species[species_instance.name] = species_instance
 
 	for(var/nuke_path in typesof(/obj/machinery/nuclearbomb))
-		GLOB.nuke_codes[nuke_path] = rand(10000, 99999)
+		var/nuke_code = "[rand(10000, 99999)]"
+		GLOB.nuke_codes[nuke_path] = nuke_code
 
 	init_subtypes(/datum/crafting_recipe, GLOB.crafting_recipes)
 
