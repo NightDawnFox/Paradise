@@ -162,7 +162,7 @@
 			readout += "Нет информации о прочности или защите."
 
 		var/formatted_readout = span_notice("<b>ЗАЩИТНЫЕ ХАРАКТЕРИСТИКИ</b><hr>[jointext(readout, "\n")]")
-		to_chat(usr, chat_box_examine(formatted_readout))
+		to_chat(usr, boxed_message(formatted_readout))
 
 /obj/item/clothing/update_icon_state()
 	if(!can_toggle)
@@ -517,16 +517,16 @@
 	else if(ismob(src.loc))
 		switch(sensor_mode)
 			if(0)
-				for(var/mob/V in viewers(user, 1))
+				for(var/mob/V in viewers(1, user))
 					V.show_message(span_warning("[user] отключа[PLUR_ET_YUT(user)] датчики [src.loc]."), 1)
 			if(1)
-				for(var/mob/V in viewers(user, 1))
+				for(var/mob/V in viewers(1, user))
 					V.show_message("[user] устанавлива[PLUR_ET_YUT(user)] датчики [src.loc] в бинарный режим.", 1)
 			if(2)
-				for(var/mob/V in viewers(user, 1))
+				for(var/mob/V in viewers(1, user))
 					V.show_message("[user] устанавлива[PLUR_ET_YUT(user)] датчики [src.loc] в режим мониторинга жизненных показателей.", 1)
 			if(3)
-				for(var/mob/V in viewers(user, 1))
+				for(var/mob/V in viewers(1, user))
 					V.show_message("[user] устанавлива[PLUR_ET_YUT(user)] датчики [src.loc] в режим мониторинга жизненных показателей и текущего местоположения.", 1)
 		if(ishuman(src))
 			var/mob/living/carbon/human/H = src
@@ -1470,4 +1470,6 @@
 	if(istype(user) && user.dna && ("[blood_state]blood" in user.dna.species.get_blood_overlays()))
 		blood_mask = user.dna.species.blood_mask
 
-	return mutable_appearance(blood_mask, "[blood_state]blood", color = blood_color)
+	var/mutable_appearance/blood_overlay = mutable_appearance(blood_mask, "[blood_state]blood")
+	blood_overlay.color = blood_color
+	return blood_overlay

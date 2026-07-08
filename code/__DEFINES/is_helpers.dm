@@ -161,6 +161,8 @@ GLOBAL_VAR_INIT(refid_filter, TYPEID(filter(type="angular_blur")))
 
 #define is_cash(A) (istype(A, /obj/item/coin) || istype(A, /obj/item/stack/spacecash))
 
+#define isvoxcash(W) (istype(W, /obj/item/stack/vox_cash))
+
 #define is_airlock(A) (istype(A, /obj/machinery/door/airlock))
 
 #define is_camera(A) (istype(A, /obj/item/camera))
@@ -182,6 +184,8 @@ GLOBAL_VAR_INIT(refid_filter, TYPEID(filter(type="angular_blur")))
 #define is_module_input(A) (istype(A, /obj/item/circuit_component/module_input))
 
 #define is_mmi(A) (istype(A, /obj/item/mmi))
+
+#define isdisposalunit(A) (istype(A, /obj/machinery/disposal))
 
 #define is_syndi_camera_bug(A) (istype(A, /obj/item/camera_bug/syndicate))
 
@@ -230,6 +234,10 @@ GLOBAL_LIST_INIT(glass_sheet_types, typecacheof(list(
 #define issimulatedturf(A) (istype(A, /turf/simulated))
 
 #define isspaceturf(A) (istype(A, /turf/space))
+
+#define isnearstation(A) (istype(A, /area/space/nearstation))
+
+#define iscordon(A) (istype(A, /turf/cordon))
 
 #define isopenspaceturf(A) (istype(A, /turf/simulated/openspace) || istype(A, /turf/space/openspace))
 
@@ -283,9 +291,12 @@ GLOBAL_LIST_INIT(glass_sheet_types, typecacheof(list(
 #define ismodcore(A) istype(A, /obj/item/mod/core)
 
 GLOBAL_LIST_INIT(turfs_without_ground, typecacheof(list(
-	/turf/space,
+	/turf/simulated/floor/beach/water,
 	/turf/simulated/floor/chasm,
+	/turf/simulated/floor/lava,
 	/turf/simulated/openspace,
+	/turf/space,
+	/turf/space/openspace,
 )))
 
 #define isgroundlessturf(A) (is_type_in_typecache(A, GLOB.turfs_without_ground))
@@ -403,6 +414,9 @@ GLOBAL_LIST_INIT(turfs_without_ground, typecacheof(list(
 #define iswryn(A) (is_species(A, /datum/species/wryn))
 #define ismoth(A) (is_species(A, /datum/species/moth))
 
+// Antag
+#define IS_CHANGELING(A) (A?.mind?.has_antag_datum(/datum/antagonist/changeling))
+
 #define is_clown_job(job_type) (istype(job_type, /datum/job/service/clown))
 
 #define iswelder(A) (istype(A, /obj/item/weldingtool))
@@ -443,3 +457,6 @@ GLOBAL_LIST_INIT(turfs_without_ground, typecacheof(list(
 
 #define is_cargo_shelf(A) (istype(A, /obj/structure/cargo_shelf))
 #define is_crate(A) (istype(A, /obj/structure/closet/crate))
+
+#define is_area_nearby_station(checked_area) (istype(checked_area, /area/space) || istype(checked_area, /area/space/nearstation) || istype(checked_area, /area/centcom/asteroid))
+#define is_area_shuttle(checked_area) (istype(checked_area, /area/shuttle))

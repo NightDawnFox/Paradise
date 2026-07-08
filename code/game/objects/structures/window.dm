@@ -3,8 +3,8 @@ GLOBAL_LIST_INIT(wcBrig, pick(list("#aa0808", "#7f0606", "#ff0000")))
 GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e", "#8fcf44", "#ffffff")))
 
 /obj/proc/color_windows(obj/W)
-	var/list/wcBarAreas = list(/area/crew_quarters/bar)
-	var/list/wcBrigAreas = list(/area/security, /area/shuttle/gamma)
+	var/list/wcBarAreas = list(/area/station/service/bar)
+	var/list/wcBrigAreas = list(/area/station/security, /area/shuttle/gamma)
 
 	var/newcolor
 	var/turf/T = get_turf(W)
@@ -43,6 +43,8 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	var/ini_dir = null
 	var/state = WINDOW_OUT_OF_FRAME
 	var/reinf = FALSE
+	/// Minimum singularity stage that can rip this window from its anchors and start dragging it.
+	var/singularity_unanchor_stage = STAGE_TWO
 	var/heat_resistance = 800
 	var/decon_speed = null
 	var/fulltile = FALSE
@@ -63,7 +65,7 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	var/superconductivity = WINDOW_HEAT_TRANSFER_COEFFICIENT
 
 /obj/structure/window/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "окно",
 		GENITIVE = "окна",
 		DATIVE = "окну",
@@ -166,8 +168,10 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 /obj/structure/window/rpd_act(mob/user, obj/item/rpd/our_rpd, mode)
 	return
 
-/obj/structure/window/singularity_pull(S, current_size)
+/obj/structure/window/singularity_pull(atom/singularity, current_size)
 	..()
+	if(anchored && current_size >= singularity_unanchor_stage)
+		set_anchored(FALSE)
 	if(current_size >= STAGE_FIVE)
 		deconstruct(FALSE)
 
@@ -192,7 +196,7 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 
 	return TRUE
 
-/obj/structure/window/proc/on_exit(datum/source, atom/movable/leaving, atom/newLoc)
+/obj/structure/window/proc/on_exit(datum/source, atom/movable/leaving, direction)
 	SIGNAL_HANDLER
 
 	if(leaving.movement_type & PHASING)
@@ -207,7 +211,7 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	if(fulltile || dir == FULLTILE_WINDOW_DIR)
 		return
 
-	if(density && dir == get_dir(leaving, newLoc))
+	if(density && dir == direction)
 		leaving.Bump(src)
 		return COMPONENT_ATOM_BLOCK_EXIT
 
@@ -538,9 +542,10 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	explosion_block = 1
 	glass_type = /obj/item/stack/sheet/rglass
 	rad_insulation = RAD_LIGHT_INSULATION
+	singularity_unanchor_stage = STAGE_THREE
 
 /obj/structure/window/reinforced/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "укреплённое окно",
 		GENITIVE = "укреплённого окна",
 		DATIVE = "укреплённому окну",
@@ -556,7 +561,7 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	opacity = TRUE
 
 /obj/structure/window/reinforced/tinted/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "тонированное окно",
 		GENITIVE = "тонированного окна",
 		DATIVE = "тонированному окну",
@@ -572,7 +577,7 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	max_integrity = 30
 
 /obj/structure/window/reinforced/tinted/frosted/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "матовое окно",
 		GENITIVE = "матового окна",
 		DATIVE = "матовому окну",
@@ -589,7 +594,7 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	var/ispolzovano
 
 /obj/structure/window/reinforced/polarized/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "электрохромное окно",
 		GENITIVE = "электрохромного окна",
 		DATIVE = "электрохромному окну",
@@ -609,10 +614,14 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 		animate(src, color="#222222", time=5)
 		set_opacity(TRUE)
 
+/obj/machinery/button
+	name = "button"
+	mouse_over_pointer = MOUSE_HAND_POINTER
+
 /obj/machinery/button/windowtint
 	name = "window tint control"
 	icon = 'icons/obj/engines_and_power/power.dmi'
-	icon_state = "light0"
+	icon_state = "light-off"
 	desc = "Пульт дистанционного управления для поляризованных окон."
 	anchored = TRUE
 	var/range = 7
@@ -620,7 +629,7 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	var/active = 0
 
 /obj/machinery/button/windowtint/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "контроллер тонировки окон",
 		GENITIVE = "контроллера тонировки окон",
 		DATIVE = "контроллеру тонировки окон",
@@ -687,9 +696,10 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	armor = list(MELEE = 75, BULLET = 5, LASER = 0, ENERGY = 0, BOMB = 45, BIO = 100, FIRE = 99, ACID = 100)
 	superconductivity = ZERO_HEAT_TRANSFER_COEFFICIENT
 	rad_insulation = RAD_MEDIUM_INSULATION
+	singularity_unanchor_stage = STAGE_THREE
 
 /obj/structure/window/plasmabasic/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "плазменное окно",
 		GENITIVE = "плазменного окна",
 		DATIVE = "плазменному окну",
@@ -713,9 +723,10 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	superconductivity = ZERO_HEAT_TRANSFER_COEFFICIENT
 	rad_insulation = RAD_HEAVY_INSULATION
 	cares_about_temperature = FALSE
+	singularity_unanchor_stage = STAGE_FOUR
 
 /obj/structure/window/plasmareinforced/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "укреплённое плазменное окно",
 		GENITIVE = "укреплённого плазменного окна",
 		DATIVE = "укреплённому плазменному окну",
@@ -738,7 +749,7 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	armor = list(MELEE = 75, BULLET = 5, LASER = 0, ENERGY = 0, BOMB = 45, BIO = 100, FIRE = 80, ACID = 100)
 
 /obj/structure/window/abductor/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "инопланетное окно",
 		GENITIVE = "инопланетного окна",
 		DATIVE = "инопланетному окну",
@@ -791,9 +802,10 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	armor = list(MELEE = 75, BULLET = 5, LASER = 0, ENERGY = 0, BOMB = 45, BIO = 100, FIRE = 99, ACID = 100)
 	superconductivity = ZERO_HEAT_TRANSFER_COEFFICIENT
 	rad_insulation = RAD_MEDIUM_INSULATION
+	singularity_unanchor_stage = STAGE_THREE
 
 /obj/structure/window/full/plasmabasic/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "плазменное окно",
 		GENITIVE = "плазменного окна",
 		DATIVE = "плазменному окну",
@@ -814,7 +826,7 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	canSmoothWith = SMOOTH_GROUP_PAPERFRAME
 
 /obj/structure/window/full/paperframe/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "окно с бумажной рамой",
 		GENITIVE = "окна с бумажной рамой",
 		DATIVE = "окну с бумажной рамой",
@@ -841,9 +853,10 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	superconductivity = ZERO_HEAT_TRANSFER_COEFFICIENT
 	rad_insulation = RAD_HEAVY_INSULATION
 	cares_about_temperature = FALSE
+	singularity_unanchor_stage = STAGE_FOUR
 
 /obj/structure/window/full/plasmareinforced/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "укреплённое плазменное окно",
 		GENITIVE = "укреплённого плазменного окна",
 		DATIVE = "укреплённому плазменному окну",
@@ -872,9 +885,10 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	glass_type = /obj/item/stack/sheet/rglass
 	cancolor = TRUE
 	rad_insulation = RAD_LIGHT_INSULATION
+	singularity_unanchor_stage = STAGE_THREE
 
 /obj/structure/window/full/reinforced/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "укреплённое окно",
 		GENITIVE = "укреплённого окна",
 		DATIVE = "укреплённому окну",
@@ -892,7 +906,7 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	opacity = TRUE
 
 /obj/structure/window/full/reinforced/tinted/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "тонированное окно",
 		GENITIVE = "тонированного окна",
 		DATIVE = "тонированному окну",
@@ -909,7 +923,7 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	var/ispolzovano
 
 /obj/structure/window/full/reinforced/polarized/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "электрохромное окно",
 		GENITIVE = "электрохромного окна",
 		DATIVE = "электрохромному окну",
@@ -952,7 +966,7 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	armor = list(MELEE = 75, BULLET = 5, LASER = 0, ENERGY = 0, BOMB = 45, BIO = 100, FIRE = 80, ACID = 100)
 
 /obj/structure/window/full/abductor/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "инопланетное окно",
 		GENITIVE = "инопланетного окна",
 		DATIVE = "инопланетному окну",
@@ -983,7 +997,7 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	rad_insulation = RAD_MEDIUM_INSULATION
 
 /obj/structure/window/full/shuttle/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "окно шаттла",
 		GENITIVE = "окна шаттла",
 		DATIVE = "окну шаттла",
@@ -1003,7 +1017,7 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	base_icon_state = "shuttle_window_gray"
 
 /obj/structure/window/full/shuttle/gray/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "окно шаттла",
 		GENITIVE = "окна шаттла",
 		DATIVE = "окну шаттла",
@@ -1023,7 +1037,7 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	armor = list(MELEE = 50, BULLET = 30, LASER = 0, ENERGY = 0, BOMB = 50, BIO = 100, FIRE = 100, ACID = 100)
 
 /obj/structure/window/full/shuttle/ninja/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "высокотехнологичное окно шаттла",
 		GENITIVE = "высокотехнологичного окна шаттла",
 		DATIVE = "высокотехнологичному окну шаттла",
@@ -1058,7 +1072,7 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	rad_insulation = RAD_EXTREME_INSULATION
 
 /obj/structure/window/plastitanium/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "пластитановое окно",
 		GENITIVE = "пластитанового окна",
 		DATIVE = "пластитановому окну",
@@ -1082,7 +1096,7 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	var/made_glow = FALSE
 
 /obj/structure/window/reinforced/clockwork/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "латунное окно",
 		GENITIVE = "латунного окна",
 		DATIVE = "латунному окну",
@@ -1106,7 +1120,7 @@ GLOBAL_LIST_INIT(wcCommon, pick(list("#379963", "#0d8395", "#58b5c3", "#49e46e",
 	var/made_glow = FALSE
 
 /obj/structure/window/reinforced/clockworkfake/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "латунное окно",
 		GENITIVE = "латунного окна",
 		DATIVE = "латунному окну",

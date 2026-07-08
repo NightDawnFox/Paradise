@@ -131,10 +131,6 @@
 /obj/structure/closet/secure_closet/engineering_electrical,
 /turf/simulated/floor/plasteel/airless,
 /area/awaymission/northblock)
-"aB" = (
-/obj/effect/decal/warning_stripes/yellow/hollow,
-/turf/simulated/floor/plasteel,
-/area/awaymission/northblock)
 "aC" = (
 /turf/simulated/wall/shuttle,
 /area/awaymission/syndishuttle)
@@ -323,11 +319,6 @@
 	dir = 6
 	},
 /area/awaymission/northblock)
-"bv" = (
-/obj/effect/decal/warning_stripes/northwest,
-/mob/living/simple_animal/hostile/alien/sentinel,
-/turf/simulated/floor/plasteel,
-/area/awaymission/research)
 "bw" = (
 /obj/effect/mapping_helpers/turfs/damage,
 /turf/simulated/floor/plating/airless,
@@ -371,10 +362,6 @@
 	dir = 1
 	},
 /area/awaymission/northblock)
-"bF" = (
-/obj/effect/decal/warning_stripes/north,
-/turf/simulated/floor/plasteel,
-/area/awaymission/research)
 "bG" = (
 /obj/machinery/light{
 	dir = 4
@@ -391,11 +378,6 @@
 /turf/simulated/floor/plasteel{
 	icon_state = "showroomfloor"
 	},
-/area/awaymission/research)
-"bH" = (
-/obj/item/shard,
-/obj/effect/decal/warning_stripes/northeast,
-/turf/simulated/floor/plasteel,
 /area/awaymission/research)
 "bI" = (
 /obj/structure/sign/securearea{
@@ -422,30 +404,6 @@
 /turf/simulated/floor/plasteel{
 	icon_state = "showroomfloor"
 	},
-/area/awaymission/research)
-"bL" = (
-/obj/structure/window/reinforced{
-	dir = 8
-	},
-/obj/effect/decal/warning_stripes/northwest,
-/turf/simulated/floor/plasteel,
-/area/awaymission/research)
-"bM" = (
-/obj/machinery/door/window/eastleft,
-/obj/effect/decal/warning_stripes/northeast,
-/turf/simulated/floor/plasteel,
-/area/awaymission/research)
-"bN" = (
-/obj/machinery/door/window/westright,
-/obj/effect/decal/warning_stripes/northwest,
-/turf/simulated/floor/plasteel,
-/area/awaymission/research)
-"bO" = (
-/obj/structure/window/reinforced{
-	dir = 4
-	},
-/obj/effect/decal/warning_stripes/northeast,
-/turf/simulated/floor/plasteel,
 /area/awaymission/research)
 "bP" = (
 /obj/structure/filingcabinet/filingcabinet,
@@ -487,26 +445,7 @@
 	dir = 5
 	},
 /area/awaymission/northblock)
-"bY" = (
-/obj/effect/decal/warning_stripes/west,
-/turf/simulated/floor/plasteel,
-/area/awaymission/research)
-"bZ" = (
-/obj/structure/window/reinforced{
-	dir = 4
-	},
-/obj/effect/decal/warning_stripes/east,
-/mob/living/simple_animal/hostile/alien,
-/turf/simulated/floor/plasteel,
-/area/awaymission/research)
 "ca" = (
-/turf/simulated/floor/plasteel,
-/area/awaymission/research)
-"cb" = (
-/obj/structure/window/reinforced{
-	dir = 8
-	},
-/obj/effect/decal/warning_stripes/west,
 /turf/simulated/floor/plasteel,
 /area/awaymission/research)
 "cc" = (
@@ -519,13 +458,6 @@
 /turf/simulated/floor/plasteel{
 	icon_state = "showroomfloor"
 	},
-/area/awaymission/research)
-"cd" = (
-/obj/structure/window/reinforced{
-	dir = 4
-	},
-/obj/effect/decal/warning_stripes/east,
-/turf/simulated/floor/plasteel,
 /area/awaymission/research)
 "ce" = (
 /mob/living/simple_animal/hostile/creature{
@@ -560,11 +492,6 @@
 /obj/effect/mapping_helpers/turfs/damage,
 /turf/simulated/floor/plating/airless,
 /area/awaymission/northblock)
-"cj" = (
-/obj/machinery/door/window/southleft,
-/obj/effect/decal/warning_stripes/southwest,
-/turf/simulated/floor/plasteel,
-/area/awaymission/research)
 "ck" = (
 /obj/item/clothing/suit/space/syndicate,
 /obj/item/clothing/under/syndicate,
@@ -580,13 +507,6 @@
 	icon_state = "grimy"
 	},
 /area/awaymission/northblock)
-"cl" = (
-/obj/item/shard{
-	icon_state = "small"
-	},
-/obj/effect/decal/warning_stripes/south,
-/turf/simulated/floor/plasteel,
-/area/awaymission/research)
 "cm" = (
 /obj/structure/table,
 /obj/item/clipboard,
@@ -596,44 +516,11 @@
 	icon_state = "showroomfloor"
 	},
 /area/awaymission/research)
-"cn" = (
-/obj/item/shard{
-	icon_state = "medium"
-	},
-/obj/item/shard{
-	icon_state = "small"
-	},
-/obj/structure/alien/weeds/node,
-/obj/effect/decal/warning_stripes/southeast,
-/turf/simulated/floor/plasteel,
-/area/awaymission/research)
-"co" = (
-/obj/structure/window/reinforced{
-	dir = 8
-	},
-/obj/structure/window/reinforced,
-/obj/effect/decal/warning_stripes/southwest,
-/mob/living/basic/hivebot,
-/turf/simulated/floor/plasteel,
-/area/awaymission/research)
-"cp" = (
-/obj/structure/window/reinforced,
-/obj/effect/decal/warning_stripes/south,
-/turf/simulated/floor/plasteel,
-/area/awaymission/research)
 "cq" = (
 /obj/machinery/door/window/southright,
 /turf/simulated/floor/plasteel{
 	icon_state = "showroomfloor"
 	},
-/area/awaymission/research)
-"cr" = (
-/obj/structure/window/reinforced{
-	dir = 4
-	},
-/obj/structure/window/reinforced,
-/obj/effect/decal/warning_stripes/southeast,
-/turf/simulated/floor/plasteel,
 /area/awaymission/research)
 "cs" = (
 /obj/structure/chair/office/light{
@@ -700,14 +587,6 @@
 /turf/simulated/floor/plasteel{
 	icon_state = "dark"
 	},
-/area/awaymission/research)
-"cE" = (
-/obj/structure/window/reinforced{
-	dir = 8
-	},
-/obj/structure/window/reinforced,
-/obj/effect/decal/warning_stripes/southwest,
-/turf/simulated/floor/plasteel,
 /area/awaymission/research)
 "cF" = (
 /obj/machinery/door/window/eastleft,
@@ -897,13 +776,6 @@
 /obj/effect/mapping_helpers/turfs/damage,
 /turf/simulated/floor/plating/airless,
 /area/awaymission/northblock)
-"dd" = (
-/obj/machinery/light/small{
-	dir = 1
-	},
-/obj/effect/decal/warning_stripes/yellow,
-/turf/simulated/floor/plasteel,
-/area/awaymission/research)
 "de" = (
 /obj/machinery/light{
 	dir = 8
@@ -931,16 +803,6 @@
 	icon_state = "showroomfloor"
 	},
 /area/awaymission/research)
-"dh" = (
-/obj/machinery/power/apc/noalarm/directional/west{
-	cell_type = 5000
-	},
-/obj/structure/cable{
-	icon_state = "0-4";
-	d2 = 4
-	},
-/turf/simulated/floor/plasteel,
-/area/awaymission/midblock)
 "di" = (
 /obj/machinery/light/small{
 	dir = 1
@@ -994,11 +856,6 @@
 /obj/structure/closet/firecloset,
 /turf/simulated/floor/plasteel,
 /area/awaymission/northblock)
-"dq" = (
-/obj/structure/closet/l3closet/scientist,
-/obj/effect/decal/warning_stripes/yellow,
-/turf/simulated/floor/plasteel,
-/area/awaymission/research)
 "dr" = (
 /obj/machinery/door/airlock/highsecurity{
 	name = "Security Airlock"
@@ -1073,13 +930,6 @@
 	dir = 4
 	},
 /area/awaymission/northblock)
-"dA" = (
-/obj/structure/cable{
-	icon_state = "4-8"
-	},
-/obj/effect/decal/warning_stripes/yellow,
-/turf/simulated/floor/plasteel,
-/area/awaymission/research)
 "dB" = (
 /obj/machinery/shower{
 	dir = 4;
@@ -1229,10 +1079,6 @@
 /obj/effect/mapping_helpers/turfs/damage,
 /turf/simulated/floor/plasteel/airless,
 /area/awaymission/northblock)
-"dU" = (
-/obj/effect/decal/warning_stripes/yellow,
-/turf/simulated/floor/plasteel,
-/area/awaymission/research)
 "dV" = (
 /obj/structure/window/reinforced{
 	dir = 4
@@ -2254,19 +2100,6 @@
 	},
 /turf/simulated/floor/plasteel,
 /area/awaymission/midblock)
-"gD" = (
-/obj/structure/sign/vacuum{
-	pixel_y = 32
-	},
-/obj/effect/decal/remains/human,
-/obj/effect/decal/warning_stripes/south,
-/turf/simulated/floor/plasteel,
-/area/awaymission/arrivalblock)
-"gE" = (
-/obj/effect/decal/remains/human,
-/obj/effect/decal/warning_stripes/southwestcorner,
-/turf/simulated/floor/plasteel,
-/area/awaymission/arrivalblock)
 "gF" = (
 /turf/simulated/floor/plating/airless,
 /area/awaymission/midblock)
@@ -2357,10 +2190,6 @@
 	},
 /turf/simulated/floor/plating,
 /area/awaymission/arrivalblock)
-"gT" = (
-/obj/effect/decal/warning_stripes/southwest,
-/turf/simulated/floor/plasteel,
-/area/awaymission/arrivalblock)
 "gU" = (
 /obj/structure/girder,
 /obj/effect/mapping_helpers/turfs/damage,
@@ -2416,10 +2245,6 @@
 	dir = 5
 	},
 /area/awaymission/arrivalblock)
-"hb" = (
-/obj/effect/decal/warning_stripes/east,
-/turf/simulated/floor/plasteel,
-/area/awaymission/gateroom)
 "hc" = (
 /obj/structure/bed,
 /obj/item/bedsheet/blue,
@@ -2550,10 +2375,6 @@
 /obj/effect/decal/remains/human,
 /turf/simulated/floor/plasteel,
 /area/awaymission/arrivalblock)
-"hr" = (
-/obj/effect/decal/warning_stripes/west,
-/turf/simulated/floor/plasteel,
-/area/awaymission/gateroom)
 "hs" = (
 /obj/structure/table/reinforced,
 /turf/simulated/floor/plasteel,
@@ -2749,19 +2570,6 @@
 /obj/item/ammo_casing/c10mm,
 /obj/item/ammo_casing/c10mm,
 /turf/simulated/floor/plasteel,
-/area/awaymission/arrivalblock)
-"hX" = (
-/obj/machinery/power/apc/noalarm/directional/west{
-	cell_type = 7500
-	},
-/obj/structure/cable{
-	icon_state = "0-4";
-	d2 = 4
-	},
-/turf/simulated/floor/plasteel{
-	icon_state = "red";
-	dir = 8
-	},
 /area/awaymission/arrivalblock)
 "hY" = (
 /obj/structure/cable{
@@ -3045,20 +2853,6 @@
 	dir = 1
 	},
 /area/awaymission/arrivalblock)
-"iP" = (
-/obj/machinery/light{
-	dir = 8
-	},
-/obj/effect/decal/warning_stripes/east,
-/turf/simulated/floor/plasteel,
-/area/awaymission/gateroom)
-"iQ" = (
-/obj/machinery/light{
-	dir = 4
-	},
-/obj/effect/decal/warning_stripes/west,
-/turf/simulated/floor/plasteel,
-/area/awaymission/gateroom)
 "iR" = (
 /obj/machinery/light{
 	dir = 8
@@ -3349,19 +3143,6 @@
 "jK" = (
 /turf/simulated/floor/plasteel,
 /area/awaymission/southblock)
-"jL" = (
-/obj/structure/table,
-/obj/item/paper/pamphlet{
-	pixel_x = 2;
-	pixel_y = 2
-	},
-/obj/item/paper/pamphlet{
-	pixel_x = -2;
-	pixel_y = -2
-	},
-/obj/effect/decal/warning_stripes/northeastcorner,
-/turf/simulated/floor/plasteel,
-/area/awaymission/gateroom)
 "jM" = (
 /obj/machinery/gateway{
 	dir = 9
@@ -3378,11 +3159,6 @@
 /obj/machinery/gateway{
 	dir = 5
 	},
-/turf/simulated/floor/plasteel,
-/area/awaymission/gateroom)
-"jP" = (
-/obj/effect/landmark/awaystart,
-/obj/effect/decal/warning_stripes/north,
 /turf/simulated/floor/plasteel,
 /area/awaymission/gateroom)
 "jQ" = (
@@ -3490,29 +3266,10 @@
 	},
 /turf/simulated/floor/plasteel,
 /area/awaymission/gateroom)
-"ki" = (
-/obj/structure/cable{
-	icon_state = "0-2";
-	pixel_y = 1;
-	d2 = 2
-	},
-/obj/machinery/gateway/centeraway{
-	calibrated = 0
-	},
-/turf/simulated/floor/plasteel,
-/area/awaymission/gateroom)
 "kj" = (
 /obj/machinery/gateway{
 	dir = 4
 	},
-/turf/simulated/floor/plasteel,
-/area/awaymission/gateroom)
-"kk" = (
-/obj/structure/cable{
-	icon_state = "1-2"
-	},
-/obj/effect/landmark/awaystart,
-/obj/effect/decal/warning_stripes/north,
 /turf/simulated/floor/plasteel,
 /area/awaymission/gateroom)
 "kl" = (
@@ -3554,12 +3311,6 @@
 /obj/machinery/door/airlock/medical,
 /turf/simulated/floor/plasteel,
 /area/awaymission/southblock)
-"kq" = (
-/obj/structure/table,
-/obj/item/camera,
-/obj/effect/decal/warning_stripes/northwestcorner,
-/turf/simulated/floor/plasteel,
-/area/awaymission/gateroom)
 "kr" = (
 /obj/machinery/gateway{
 	dir = 10
@@ -3595,21 +3346,6 @@
 /obj/structure/chair/comfy/brown,
 /turf/simulated/floor/wood,
 /area/awaymission/southblock)
-"kx" = (
-/obj/machinery/suit_storage_unit/standard_unit,
-/obj/effect/decal/warning_stripes/northeast,
-/turf/simulated/floor/plasteel,
-/area/awaymission/gateroom)
-"ky" = (
-/obj/machinery/suit_storage_unit/standard_unit,
-/obj/effect/decal/warning_stripes/northwest,
-/turf/simulated/floor/plasteel,
-/area/awaymission/gateroom)
-"kz" = (
-/obj/machinery/suit_storage_unit/standard_unit,
-/obj/effect/decal/warning_stripes/east,
-/turf/simulated/floor/plasteel,
-/area/awaymission/gateroom)
 "kA" = (
 /obj/structure/shuttle/engine/propulsion{
 	icon_state = "propulsion_l";
@@ -3626,11 +3362,6 @@
 /obj/structure/window/reinforced,
 /turf/simulated/floor/shuttle/plating,
 /area/awaymission/arrivalblock)
-"kC" = (
-/obj/machinery/suit_storage_unit/standard_unit,
-/obj/effect/decal/warning_stripes/west,
-/turf/simulated/floor/plasteel,
-/area/awaymission/gateroom)
 "kD" = (
 /obj/machinery/vending/hydronutrients,
 /turf/simulated/floor/plasteel,
@@ -3667,40 +3398,6 @@
 	icon_state = "whitehall";
 	dir = 1
 	},
-/area/awaymission/southblock)
-"kJ" = (
-/obj/machinery/suit_storage_unit/standard_unit,
-/obj/effect/decal/warning_stripes/southeast,
-/turf/simulated/floor/plasteel,
-/area/awaymission/gateroom)
-"kK" = (
-/obj/machinery/suit_storage_unit/standard_unit,
-/obj/effect/decal/warning_stripes/southwest,
-/turf/simulated/floor/plasteel,
-/area/awaymission/gateroom)
-"kL" = (
-/obj/structure/cable{
-	icon_state = "4-8"
-	},
-/obj/effect/decal/warning_stripes/north,
-/turf/simulated/floor/plasteel,
-/area/awaymission/southblock)
-"kM" = (
-/obj/structure/cable{
-	icon_state = "1-4"
-	},
-/obj/structure/cable{
-	icon_state = "4-8"
-	},
-/obj/effect/decal/warning_stripes/north,
-/turf/simulated/floor/plasteel,
-/area/awaymission/southblock)
-"kN" = (
-/obj/structure/cable{
-	icon_state = "4-8"
-	},
-/obj/effect/decal/warning_stripes/northeast,
-/turf/simulated/floor/plasteel,
 /area/awaymission/southblock)
 "kO" = (
 /obj/structure/chair/comfy/shuttle{
@@ -3745,10 +3442,6 @@
 	dir = 4
 	},
 /area/awaymission/southblock)
-"kU" = (
-/obj/effect/decal/warning_stripes/south,
-/turf/simulated/floor/plasteel,
-/area/awaymission/southblock)
 "kV" = (
 /obj/effect/landmark/awaystart,
 /turf/simulated/floor/plasteel,
@@ -3760,10 +3453,6 @@
 /obj/effect/landmark/awaystart,
 /turf/simulated/floor/plasteel,
 /area/awaymission/gateroom)
-"kX" = (
-/obj/effect/decal/warning_stripes/southeast,
-/turf/simulated/floor/plasteel,
-/area/awaymission/southblock)
 "kY" = (
 /obj/structure/window/reinforced/tinted{
 	dir = 8
@@ -3952,17 +3641,6 @@
 	},
 /turf/simulated/floor/plasteel,
 /area/awaymission/gateroom)
-"lE" = (
-/obj/structure/cable{
-	d2 = 8;
-	icon_state = "0-8"
-	},
-/obj/machinery/power/smes/magical{
-	desc = "A high-capacity superconducting magnetic energy storage (SMES) unit.";
-	name = "power storage unit"
-	},
-/turf/simulated/floor/plasteel,
-/area/awaymission/gateroom)
 "lF" = (
 /obj/structure/closet/secure_closet/hydroponics,
 /turf/simulated/floor/plasteel,
@@ -4042,16 +3720,6 @@
 	},
 /turf/simulated/floor/plasteel,
 /area/awaymission/gateroom)
-"lU" = (
-/obj/machinery/power/terminal{
-	dir = 1
-	},
-/obj/structure/cable{
-	d2 = 8;
-	icon_state = "0-8"
-	},
-/turf/simulated/floor/plasteel,
-/area/awaymission/gateroom)
 "lV" = (
 /obj/structure/closet/secure_closet/medical2,
 /turf/simulated/floor/plasteel{
@@ -4101,14 +3769,431 @@
 /obj/machinery/light/small,
 /turf/simulated/floor/plasteel,
 /area/awaymission/gateroom)
-"me" = (
-/obj/machinery/power/apc/noalarm/directional/east,
+"nh" = (
+/obj/effect/turf_decal/stripes/line{
+	dir = 10
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/arrivalblock)
+"nH" = (
+/obj/structure/window/reinforced{
+	dir = 8
+	},
+/obj/structure/window/reinforced,
+/obj/effect/turf_decal/stripes/line{
+	dir = 10
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"nT" = (
 /obj/structure/cable{
-	d2 = 8;
+	icon_state = "4-8"
+	},
+/obj/effect/turf_decal/stripes/line{
+	dir = 1
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/southblock)
+"pz" = (
+/obj/structure/cable{
+	icon_state = "1-2"
+	},
+/obj/effect/landmark/awaystart,
+/obj/effect/turf_decal/stripes/line{
+	dir = 1
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/gateroom)
+"pE" = (
+/obj/machinery/power/apc/noalarm/directional/west{
+	cell_type = 7500
+	},
+/obj/structure/cable{
+	icon_state = "0-4"
+	},
+/turf/simulated/floor/plasteel{
+	icon_state = "red";
+	dir = 8
+	},
+/area/awaymission/arrivalblock)
+"tk" = (
+/obj/effect/turf_decal/stripes/line{
+	dir = 4
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/gateroom)
+"tF" = (
+/obj/item/shard,
+/obj/effect/turf_decal/stripes/line{
+	dir = 5
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"uz" = (
+/obj/machinery/door/window/eastleft,
+/obj/effect/turf_decal/stripes/line{
+	dir = 5
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"uF" = (
+/obj/effect/turf_decal/stripes/line{
+	dir = 6
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/southblock)
+"vf" = (
+/obj/machinery/light/small{
+	dir = 1
+	},
+/obj/effect/turf_decal/delivery,
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"xo" = (
+/obj/item/shard{
+	icon_state = "medium"
+	},
+/obj/item/shard{
+	icon_state = "small"
+	},
+/obj/structure/alien/weeds/node,
+/obj/effect/turf_decal/stripes/line{
+	dir = 6
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"xD" = (
+/obj/structure/cable{
+	icon_state = "4-8"
+	},
+/obj/effect/turf_decal/delivery,
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"xY" = (
+/obj/effect/turf_decal/stripes/line{
+	dir = 8
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/gateroom)
+"Ak" = (
+/obj/machinery/light{
+	dir = 8
+	},
+/obj/effect/turf_decal/stripes/line{
+	dir = 4
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/gateroom)
+"As" = (
+/obj/effect/turf_decal/stripes/line{
+	dir = 9
+	},
+/mob/living/simple_animal/hostile/alien/sentinel,
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"At" = (
+/obj/item/shard{
+	icon_state = "small"
+	},
+/obj/effect/turf_decal/stripes/line{
+	dir = 2
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"Bn" = (
+/obj/machinery/power/apc/noalarm/directional/west{
+	cell_type = 5000
+	},
+/obj/structure/cable{
+	icon_state = "0-4"
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/midblock)
+"CM" = (
+/obj/structure/cable{
+	icon_state = "1-4"
+	},
+/obj/structure/cable{
+	icon_state = "4-8"
+	},
+/obj/effect/turf_decal/stripes/line{
+	dir = 1
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/southblock)
+"CX" = (
+/obj/effect/turf_decal/stripes/line{
+	dir = 2
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/southblock)
+"Ed" = (
+/obj/effect/landmark/awaystart,
+/obj/effect/turf_decal/stripes/line{
+	dir = 1
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/gateroom)
+"EF" = (
+/obj/structure/window/reinforced{
+	dir = 4
+	},
+/obj/effect/turf_decal/stripes/line{
+	dir = 4
+	},
+/mob/living/simple_animal/hostile/alien,
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"Fi" = (
+/obj/structure/cable{
+	icon_state = "0-8"
+	},
+/obj/machinery/power/smes/magical{
+	desc = "A high-capacity superconducting magnetic energy storage (SMES) unit.";
+	name = "power storage unit"
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/gateroom)
+"Gg" = (
+/obj/structure/window/reinforced{
+	dir = 4
+	},
+/obj/effect/turf_decal/stripes/line{
+	dir = 5
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"Hr" = (
+/obj/machinery/door/window/westright,
+/obj/effect/turf_decal/stripes/line{
+	dir = 9
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"Hy" = (
+/obj/structure/window/reinforced{
+	dir = 8
+	},
+/obj/effect/turf_decal/stripes/line{
+	dir = 9
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"HK" = (
+/obj/effect/decal/remains/human,
+/obj/effect/turf_decal/stripes/corner{
+	dir = 8
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/arrivalblock)
+"HN" = (
+/obj/structure/window/reinforced{
+	dir = 8
+	},
+/obj/effect/turf_decal/stripes/line{
+	dir = 8
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"Jr" = (
+/obj/machinery/light{
+	dir = 4
+	},
+/obj/effect/turf_decal/stripes/line{
+	dir = 8
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/gateroom)
+"JB" = (
+/obj/effect/turf_decal/stripes/line{
+	dir = 1
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"Kb" = (
+/obj/effect/turf_decal/delivery,
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"Ln" = (
+/obj/machinery/power/terminal{
+	dir = 1
+	},
+/obj/structure/cable{
 	icon_state = "0-8"
 	},
 /turf/simulated/floor/plasteel,
 /area/awaymission/gateroom)
+"Mr" = (
+/obj/machinery/suit_storage_unit/standard_unit,
+/obj/effect/turf_decal/stripes/line{
+	dir = 8
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/gateroom)
+"Mz" = (
+/obj/machinery/suit_storage_unit/standard_unit,
+/obj/effect/turf_decal/stripes/line{
+	dir = 4
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/gateroom)
+"Od" = (
+/obj/structure/table,
+/obj/item/camera,
+/obj/effect/turf_decal/stripes/corner{
+	dir = 1
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/gateroom)
+"Pi" = (
+/obj/structure/window/reinforced{
+	dir = 4
+	},
+/obj/effect/turf_decal/stripes/line{
+	dir = 4
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"Po" = (
+/obj/machinery/door/window/southleft,
+/obj/effect/turf_decal/stripes/line{
+	dir = 10
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"PI" = (
+/obj/machinery/suit_storage_unit/standard_unit,
+/obj/effect/turf_decal/stripes/line{
+	dir = 5
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/gateroom)
+"PS" = (
+/obj/structure/window/reinforced,
+/obj/effect/turf_decal/stripes/line{
+	dir = 2
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"QW" = (
+/obj/machinery/suit_storage_unit/standard_unit,
+/obj/effect/turf_decal/stripes/line{
+	dir = 10
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/gateroom)
+"QZ" = (
+/obj/machinery/power/apc/noalarm/directional/east,
+/obj/structure/cable{
+	icon_state = "0-8"
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/gateroom)
+"RJ" = (
+/obj/structure/window/reinforced{
+	dir = 4
+	},
+/obj/structure/window/reinforced,
+/obj/effect/turf_decal/stripes/line{
+	dir = 6
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"Tr" = (
+/obj/structure/cable{
+	icon_state = "4-8"
+	},
+/obj/effect/turf_decal/stripes/line{
+	dir = 5
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/southblock)
+"Tv" = (
+/obj/structure/table,
+/obj/item/paper/pamphlet{
+	pixel_x = 2;
+	pixel_y = 2
+	},
+/obj/item/paper/pamphlet{
+	pixel_x = -2;
+	pixel_y = -2
+	},
+/obj/effect/turf_decal/stripes/corner{
+	dir = 4
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/gateroom)
+"Va" = (
+/obj/effect/turf_decal/stripes/line{
+	dir = 8
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"VW" = (
+/obj/effect/turf_decal/delivery/hollow,
+/turf/simulated/floor/plasteel,
+/area/awaymission/northblock)
+"Wk" = (
+/obj/machinery/suit_storage_unit/standard_unit,
+/obj/effect/turf_decal/stripes/line{
+	dir = 6
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/gateroom)
+"WW" = (
+/obj/machinery/suit_storage_unit/standard_unit,
+/obj/effect/turf_decal/stripes/line{
+	dir = 9
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/gateroom)
+"Xg" = (
+/obj/structure/sign/vacuum{
+	pixel_y = 32
+	},
+/obj/effect/decal/remains/human,
+/obj/effect/turf_decal/stripes/line{
+	dir = 2
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/arrivalblock)
+"XL" = (
+/obj/structure/closet/l3closet/scientist,
+/obj/effect/turf_decal/delivery,
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
+"YZ" = (
+/obj/structure/cable{
+	icon_state = "0-2";
+	pixel_y = 1
+	},
+/obj/machinery/gateway/centeraway{
+	calibrated = 0
+	},
+/turf/simulated/floor/plasteel,
+/area/awaymission/gateroom)
+"Zu" = (
+/obj/structure/window/reinforced{
+	dir = 8
+	},
+/obj/structure/window/reinforced,
+/obj/effect/decal/warning_stripes/southwest,
+/mob/living/basic/hivebot,
+/obj/merge_conflict_marker{
+	name = "---Merge Conflict Marker---";
+	
+	desc = "A best-effort merge was performed. You must resolve this conflict yourself (manually) and remove this object once complete."
+	},
+/obj/structure/window/reinforced{
+	dir = 8
+	},
+/obj/structure/window/reinforced,
+/obj/effect/turf_decal/stripes/line{
+	dir = 10
+	},
+/mob/living/simple_animal/hostile/hivebot,
+/turf/simulated/floor/plasteel,
+/area/awaymission/research)
 
 (1,1,1) = {"
 aa
@@ -4749,7 +4834,7 @@ aa
 aa
 aa
 gz
-gD
+Xg
 hq
 hu
 hW
@@ -4815,8 +4900,8 @@ aa
 aa
 aa
 gz
-gE
-gT
+HK
+nh
 hq
 hu
 im
@@ -4950,7 +5035,7 @@ gz
 gV
 ht
 hF
-hX
+pE
 in
 gz
 iN
@@ -5786,13 +5871,13 @@ aj
 aF
 aq
 aW
-bv
-bY
-cj
+As
+Va
+Po
 bJ
 bx
 db
-dA
+xD
 dB
 bx
 dF
@@ -5852,14 +5937,14 @@ aj
 aF
 aq
 bx
-bF
+JB
 ca
-cl
+At
 bJ
 bx
-dd
-dA
-dU
+vf
+xD
+Kb
 bx
 dF
 eB
@@ -5918,14 +6003,14 @@ bb
 ap
 aF
 bx
-bH
-bZ
-cn
+tF
+EF
+xo
 cF
 bx
-dq
-dA
-dq
+XL
+xD
+XL
 bx
 dF
 eC
@@ -6116,9 +6201,9 @@ aj
 aa
 aa
 bx
-bL
-cb
-co
+Hy
+HN
+Zu
 bJ
 cT
 df
@@ -6182,9 +6267,9 @@ aj
 aa
 aa
 bx
-bF
+JB
 ca
-cp
+PS
 cG
 cU
 dg
@@ -6248,9 +6333,9 @@ aj
 aa
 aa
 bx
-bM
-cd
-cr
+uz
+Pi
+RJ
 hh
 bJ
 dg
@@ -6266,7 +6351,7 @@ fv
 bx
 fU
 go
-dh
+Bn
 gi
 gi
 gi
@@ -6375,14 +6460,14 @@ au
 ag
 ag
 aN
-aB
+VW
 aj
 aa
 aa
 bx
-bN
-cb
-cE
+Hr
+HN
+nH
 bJ
 bJ
 dg
@@ -6446,9 +6531,9 @@ aj
 aa
 aa
 bx
-bF
+JB
 ce
-cp
+PS
 cG
 bJ
 dg
@@ -6512,9 +6597,9 @@ aa
 aa
 aa
 bx
-bO
-cd
-cr
+Gg
+Pi
+RJ
 cm
 cT
 dg
@@ -6606,16 +6691,16 @@ iJ
 iT
 iT
 ju
-hb
-hb
-iP
-jL
-kx
-kz
-kJ
+tk
+tk
+Ak
+Tv
+PI
+Mz
+Wk
 ju
-kL
-kU
+nT
+CX
 iY
 "}
 (39,1,1) = {"
@@ -6675,13 +6760,13 @@ ju
 jM
 kh
 kr
-jP
+Ed
 kV
 kV
 kV
 ju
-kL
-kU
+nT
+CX
 iY
 "}
 (40,1,1) = {"
@@ -6739,15 +6824,15 @@ iT
 iT
 ju
 jN
-ki
+YZ
 ks
-kk
+pz
 kW
 kW
 kW
 lB
-kM
-kU
+CM
+CX
 iY
 "}
 (41,1,1) = {"
@@ -6807,13 +6892,13 @@ ju
 jO
 kj
 kt
-jP
+Ed
 kV
 kV
 kV
 ju
-kL
-kU
+nT
+CX
 iY
 "}
 (42,1,1) = {"
@@ -6870,16 +6955,16 @@ fU
 iT
 iT
 ju
-hr
-hr
-iQ
-kq
-ky
-kC
-kK
+xY
+xY
+Jr
+Od
+WW
+Mr
+QW
 ju
-kN
-kX
+Tr
+uF
 iY
 "}
 (43,1,1) = {"
@@ -7141,9 +7226,9 @@ jQ
 jS
 jQ
 ju
-lE
-lU
-me
+Fi
+Ln
+QZ
 ju
 "}
 (47,1,1) = {"

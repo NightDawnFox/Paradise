@@ -97,6 +97,16 @@
 #define COMSIG_LIVING_PERCEIVE_EXAMINE_NAME "living_perceive_examine_name"
 	#define COMPONENT_EXAMINE_NAME_OVERRIDEN (1<<0)
 
+/// From /obj/item/gun/interact_with_atom_secondary(): (mob/user)
+/// Sent to a target mob to determine if they are currently being held up at gunpoint.
+#define COMSIG_LIVING_GUNPOINT_START "living_gunpoint_start"
+	/// Return this flag if the target is already held up by another shooter.
+	#define COMPONENT_LIVING_ALREADY_HELD_UP (1<<0)
+
+/// From /atom/movable/screen/alert/status_effect/holdup/Click(): ()
+/// Sent to the owner mob when they click the "Holding Up" alert to break their aim.
+#define COMSIG_LIVING_GUNPOINT_CANCEL "living_gunpoint_cancel"
+
 // Organ signals
 ///from [/obj/item/organ/internal/insert]:
 #define COMSIG_ORGAN_IMPLANTED "organ_implanted"
@@ -196,3 +206,6 @@
 	#define COMPONENT_NO_LOOT_DROP (1<<0)
 /// From /datum/element/death_drops/on_death(mob/living/target, gibbed) : (list/loot, gibbed)
 #define COMSIG_LIVING_DROPPED_LOOT "living_dropped_loot"
+
+/// From /mob/living/update_offsets(animate) : (new_x, new_y, new_w, new_z, animate)
+#define COMSIG_LIVING_UPDATE_OFFSETS "living_update_offsets"

@@ -54,10 +54,10 @@
 ///Call qdel on the atom after initialization
 #define INITIALIZE_HINT_QDEL 2
 
-///type and all subtypes should always immediately call Initialize in New()
+/// Type and all subtypes should always immediately call Initialize in New()
 #define INITIALIZE_IMMEDIATE(X) ##X/New(loc, ...){\
 	..();\
-	if(!(flags & INITIALIZED)) {\
+	if(!(flags & INITIALIZED) && SSatoms) {\
 		var/previous_initialized_value = SSatoms.initialized;\
 		SSatoms.initialized = INITIALIZATION_INNEW_MAPLOAD;\
 		args[1] = TRUE;\
@@ -149,11 +149,13 @@
 #define FIRE_PRIORITY_IDLE_NPC 5
 #define FIRE_PRIORITY_CLEANUP 10
 #define FIRE_PRIORITY_TICKETS 10
+#define FIRE_PRIORITY_VIS 10
 #define FIRE_PRIORITY_AMBIENCE 10
 #define FIRE_PRIORITY_GARBAGE 15
 #define FIRE_PRIORITY_TERRAFORMING 15
 #define FIRE_PRIORITY_TURFS_VISUALIZATION 15
 #define FIRE_PRIORITY_DONATIONS 15
+#define FIRE_PRIORITY_DATABASE 16
 #define FIRE_PRIORITY_WET_FLOORS 20
 #define FIRE_PRIORITY_AIR 20
 #define FIRE_PRIORITY_NPC 20
@@ -169,6 +171,7 @@
 #define FIRE_PRIORITY_BURNING 40
 #define FIRE_PRIORITY_DEFAULT 50
 #define FIRE_PRIORITY_PARALLAX 65
+#define FIRE_PRIORITY_INSTRUMENTS 80
 #define FIRE_PRIORITY_FLUIDS 80
 #define FIRE_PRIORITY_MOBS 100
 #define FIRE_PRIORITY_ASSETS 105
@@ -179,6 +182,7 @@
 #define FIRE_PRIORITY_STATPANEL 390
 #define FIRE_PRIORITY_CHAT 400
 #define FIRE_PRIORITY_RUNECHAT 410 // I hate how high the fire priority on this is -aa
+#define FIRE_PRIORITY_TTS 425
 #define FIRE_PRIORITY_AUTOFIRE 449
 #define FIRE_PRIORITY_MOUSE_ENTERED 450
 #define FIRE_PRIORITY_OVERLAYS 500
@@ -196,14 +200,22 @@
 #define RUNLEVEL_POSTGAME (1<<3)
 #define RUNLEVELS_DEFAULT (RUNLEVEL_SETUP|RUNLEVEL_GAME|RUNLEVEL_POSTGAME)
 
+// SS hibernation states
+#define SS_NOT_HIBERNATING 0
+#define SS_WAKING_UP 1
+#define SS_IS_HIBERNATING 2
+
 // Subsystem delta times or tickrates, in seconds. I.e, how many seconds in between each process() call for objects being processed by that subsystem.
 // Only use these defines if you want to access some other objects processing seconds_per_tick, otherwise use the seconds_per_tick that is sent as a parameter to process()
 #define SSMACHINES_DT (SSmachines.wait / 10)
 #define SSMOBS_DT (SSmobs.wait / 10)
 #define SSOBJ_DT (SSobj.wait / 10)
 
-// The change in the world's time from the subsystem's last fire in seconds.
+/// The change in the world's time from the subsystem's last fire in seconds.
 #define DELTA_WORLD_TIME(ss) ((world.time - ss.last_fire) * 0.1)
+
+/// Same as DELTA_WORLD_TIME but we ignore time spent hibernating
+#define DELTA_WORLD_TIME_WITHOUT_HIBERNATION(ss) ss.hibernation_state ? ss.wait : DELTA_WORLD_TIME(ss)
 
 /// The timer key used to know how long subsystem initialization takes
 #define SS_INIT_TIMER_KEY "ss_init"

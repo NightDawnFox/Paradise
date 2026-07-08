@@ -201,5 +201,22 @@
 /// Traits related to guns
 #define GUN_TRAIT "gun"
 
+
 /// Trait applied to a mob when it gets a required "operational datum" (components/elements). Sends out the source as the type of the element.
 #define TRAIT_SUBTREE_REQUIRED_OPERATIONAL_DATUM "element-required"
+
+/// Trait from mob/living/update_offsets()
+#define UPDATE_OFFSET_TRAIT "update_offset"
+
+/// From grabbing someone
+#define GRABBING_TRAIT "grabbing"
+
+/// A trait gained by leaning against a wall
+#define LEANING_TRAIT "leaning"
+
+#define GIVE_TRAIT "give"
+/// Trait from mob/living/update_transform()
+#define UPDATE_TRANSFORM_TRAIT "update_transform"
+
+/// Trait acquired from being painted a certain color
+#define ATOM_COLOR_TRAIT "atom_color"

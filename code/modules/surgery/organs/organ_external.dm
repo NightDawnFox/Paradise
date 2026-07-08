@@ -17,15 +17,14 @@
 /// Chance for arterial bleeding based on inflicting damage
 #define LIMB_ARTERIAL_BLEEDING_CHANCE_MOD 0.5
 /// Arterial bleeding size
-#define LIMB_ARTERIAL_BLEEDING_SIZE 21
+#define LIMB_ARTERIAL_BLEEDING_SIZE 25
 
 // MARK: External organs
 
 /obj/item/organ/external
 	name = "external"
 	max_damage = 0
-	blocks_emissive = FALSE
-	light_system = MOVABLE_LIGHT
+	light_system = OVERLAY_LIGHT
 	light_on = FALSE
 
 	/// External body part zone
@@ -250,11 +249,14 @@
 			var/atom/movable/thing = childpart.remove(organ_owner, special)
 			if(!QDELETED(thing))
 				thing.forceMove(src)
-		organ_owner.updatehealth("limb remove")
 
 	release_restraints(organ_owner)
 	organ_owner.bodyparts -= src
 	organ_owner.bodyparts_by_name[limb_zone] = null	// Remove from owner's vars.
+
+	// Must happen after bodyparts cleanup
+	if(!ignore_children)
+		organ_owner.updatehealth("limb remove")
 
 	//Robotic limbs explode if sabotaged.
 	if(is_robotic() && sabotaged && !special)
@@ -355,6 +357,9 @@
 		remove_splint(splint_break = TRUE, silent = silent)	// Taking damage to splinted limbs removes the splints
 
 	if(used_weapon)
+		if(isobj(used_weapon))
+			var/obj/weapon_obj = used_weapon
+			used_weapon = weapon_obj.declent_ru(NOMINATIVE)
 		add_autopsy_data("[used_weapon]", brute + burn)
 	else
 		add_autopsy_data(null, brute + burn)

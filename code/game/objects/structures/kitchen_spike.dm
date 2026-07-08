@@ -46,6 +46,7 @@
 	buckle_lying = 0
 	can_buckle = TRUE
 	max_integrity = 250
+	buckle_lying = 180
 
 /obj/structure/kitchenspike/Initialize(mapload)
 	. = ..()
@@ -136,7 +137,9 @@
 
 	var/y_offset = PIXEL_Y_OFFSET_LYING + ismonkey(target) ? 3 : 0
 
-	target.add_offsets(type, y_add = y_offset)
+	target.add_offsets(type, x_add = -1, y_add = y_offset)
+	target.set_lying_angle(buckle_lying)
+
 
 /obj/structure/kitchenspike/post_unbuckle_mob(mob/living/target)
 	target.adjustBruteLoss(30)

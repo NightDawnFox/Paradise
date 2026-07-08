@@ -75,6 +75,8 @@
 #define TRAIT_RELAYING_ATTACKER "relaying_attacker"
 /// Trait given to mobs that have the basic eating element
 #define TRAIT_MOB_EATER "mob_eater"
+/// This just means that the carbon will always have functional liverless metabolism
+#define TRAIT_LIVERLESS_METABOLISM "liverless_metabolism"
 
 /// Makes the user handcuff others faster
 #define TRAIT_FAST_CUFFING "fast_cuffing"
@@ -355,6 +357,8 @@
 
 #define TRAIT_BLOB_ZOMBIFIED "blob_zombified"
 
+#define TRAIT_BLOB_WAS_BURSTED "blob_was_bursted"
+
 #define TRAIT_BEING_OFFERED "offered"
 
 #define TRAIT_TOXIC_FUEL_PROTECTED "toxic_fuel_protected"
@@ -448,6 +452,10 @@
 
 #define TRAIT_PRESSURE_VISION "pressure_vision"
 
+/// GLOB trait, applied whenever something in the world wants to use the distortion plane
+/// Distortion is an expensive effect, so it's worthwhile to keep it off until we care
+#define TRAIT_DISTORTION_IN_USE(z_layer) "distortion_in_use_#[z_layer]"
+
 /// Traits given by station traits
 #define STATION_TRAIT_CARP_INFESTATION "station_trait_carp_infestation"
 #define STATION_TRAIT_LATE_ARRIVALS "station_trait_late_arrivals"
@@ -528,6 +536,8 @@
 // Hud traits
 /// This hud is owned by a client with an open escape menu
 #define TRAIT_ESCAPE_MENU_OPEN "escape_menu_open"
+/// This hud has parallax displayed on it
+#define TRAIT_PARALLAX_DISPLAYED "parallax_displayed"
 
 /// If a human has a fracture in their legs or feet (for optimization)
 #define TRAIT_FRACTURE_FALL "fracture_fall"
@@ -591,3 +601,38 @@
 #define TRAIT_BEAST_EMPATHY "beast_empathy" // you're good with animals, such as with taming them Похуй потом в мозг примата
 /// Stops a movable from being removed from the mob it's in by the content_barfer component.
 #define TRAIT_NOT_BARFABLE "not_barfable"
+
+/// Does the mob ignore elevation? (e.g. xeno larvas on hiding)
+#define TRAIT_IGNORE_ELEVATION "ignore_elevation"
+/// Is the mob currently elevated? (eg standing on a table)
+#define TRAIT_MOB_ELEVATED "mob_elevated"
+
+/// From [/datum/element/elevation] for purpose of checking if the object causes things in its turf to become elevated
+#define TRAIT_ELEVATING_OBJECT "elevating_object"
+/// From [/datum/element/elevation_core] for purpose of checking if the turf has the trait from an instance of the element
+#define TRAIT_ELEVATED_TURF "elevated_turf"
+
+/// Climbable trait, given and taken by the climbable element when added or removed. Exists to be easily checked via HAS_TRAIT().
+#define TRAIT_CLIMBABLE "trait_climbable"
+
+/// Trait which lets you clamber over a barrier
+#define TRAIT_FENCE_CLIMBER "can_climb_fences"
+
+/// Trait that means you are capable of holding items in some form
+#define TRAIT_CAN_HOLD_ITEMS "can_hold_items"
+
+///Attached to objects currently on tables and such, allowing them to walk on other objects without the climbing delay
+#define TRAIT_ON_CLIMBABLE "on_climbable"
+
+#define TRAIT_DISK_VERIFIER "disk-verifier"
+
+/// Trait which means whatever has this is dancing by a dance machine
+#define TRAIT_DISCO_DANCER "disco_dancer"
+
+#define TRAIT_GIVE_READY "give_ready"
+
+/// Mob has fov applied to it
+#define TRAIT_FOV_APPLIED "fov_applied"
+
+/// Used for managing KEEP_TOGETHER in [/atom/var/appearance_flags]
+#define TRAIT_KEEP_TOGETHER "keep-together"

@@ -87,7 +87,7 @@
 		span_notice("Вы прислоняетесь к [lean_target.declent_ru(DATIVE)]."),
 	)
 	leaned_object = lean_target
-	RegisterSignal(src, list(
+	RegisterSignals(src, list(
 		COMSIG_MOB_CLIENT_MOVED,
 		COMSIG_LIVING_START_PULL,
 		COMSIG_LIVING_GET_PULLED,
@@ -118,6 +118,7 @@
 		COMSIG_LIVING_RESTING,
 		COMSIG_LIVING_SET_BUCKLED,
 	))
+	remove_offsets(LEANING_TRAIT)
 	UnregisterSignal(leaned_object, list(COMSIG_AIRLOCK_OPEN, COMSIG_VEHICLE_MOVE, COMSIG_MOVABLE_MOVED))
 	leaned_object = null
 	remove_offsets(LEANING_TRAIT)

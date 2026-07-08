@@ -122,3 +122,11 @@
 
 ///from base of atom/handle_atom_del(): (atom/deleted)
 #define COMSIG_ATOM_CONTENTS_DEL "atom_contents_del"
+
+///from base of atom/Exited(): (atom/exited, direction)
+#define COMSIG_ATOM_EXITING "atom_exiting"
+
+/// From /atom/proc/update_atom_colour() : (color_changed)
+#define COMSIG_ATOM_COLOR_UPDATED "atom_color_updated"
+	/// Cancels update_appearance call in case you are somehow forced to call it manually to prevent dupe calls
+	#define COMPONENT_CANCEL_COLOR_APPEARANCE_UPDATE (1<<0)

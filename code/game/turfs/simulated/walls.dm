@@ -1,9 +1,11 @@
 /turf/simulated/wall
 	name = "wall"
-	desc = "A huge chunk of metal used to seperate rooms."
+	gender = FEMALE
+	desc = "Массивный блок металла, используемый для разделения отсеков."
 	icon = 'icons/turf/walls/wall.dmi'
 	icon_state = "wall-0"
 	base_icon_state = "wall"
+	layer = CLOSED_TURF_LAYER
 	plane = WALL_PLANE
 	var/rotting = 0
 
@@ -52,7 +54,7 @@
 /turf/simulated/wall/BeforeChange()
 	for(var/obj/effect/overlay/wall_rot/WR in src)
 		qdel(WR)
-	. = ..()
+	return ..()
 
 /turf/simulated/wall/Initialize(mapload)
 	. = ..()
@@ -212,19 +214,19 @@
 
 /turf/simulated/wall/rcd_deconstruct_act(mob/user, obj/item/rcd/our_rcd)
 	. = ..()
-	if(our_rcd.checkResource(5, user))
-		to_chat(user, "Разборка стены...")
+	if(our_rcd.checkResource(RCD_COST_WALL * 2, user))
+		to_chat(user, "Деконструкция стены...")
 		playsound(get_turf(our_rcd), 'sound/machines/click.ogg', 50, TRUE)
 		if(do_after(user, 4 SECONDS * our_rcd.toolspeed, src, category = DA_CAT_TOOL))
-			if(!our_rcd.useResource(5, user))
+			if(!our_rcd.useResource(RCD_COST_WALL * 2, user))
 				return RCD_ACT_FAILED
 			playsound(get_turf(our_rcd), our_rcd.usesound, 50, TRUE)
 			add_attack_logs(user, src, "Deconstructed wall with RCD")
 			src.ChangeTurf(our_rcd.floor_type)
 			return RCD_ACT_SUCCESSFULL
-		to_chat(user, span_warning("ОШИБКА! Прервана разборка!"))
+		to_chat(user, span_warning("ОШИБКА! Деконструкция прервана!"))
 		return RCD_ACT_FAILED
-	to_chat(user, span_warning("ОШИБКА! Недостаточно вещества в устройстве для разборки этой стены!"))
+	to_chat(user, span_warning("ОШИБКА! Недостаточно материи для деконструкции стены!"))
 	playsound(get_turf(our_rcd), 'sound/machines/click.ogg', 50, TRUE)
 	return RCD_ACT_FAILED
 
@@ -556,7 +558,7 @@
 		return TRUE
 	return FALSE
 
-/turf/simulated/wall/singularity_pull(S, current_size)
+/turf/simulated/wall/singularity_pull(atom/singularity, current_size)
 	..()
 	wall_singularity_pull(current_size)
 

@@ -23,7 +23,7 @@ GLOBAL_LIST_INIT(major_hallutinations, list("fake"=20,"death"=10,"xeno"=10,"sing
 	target = null
 	. = ..()
 
-/obj/effect/hallucination/singularity_pull()
+/obj/effect/hallucination/singularity_pull(atom/singularity, current_size)
 	return
 
 /obj/effect/hallucination/singularity_act()
@@ -1150,5 +1150,6 @@ GLOBAL_LIST_INIT(non_fakeattack_weapons, list(/obj/item/gun/projectile, /obj/ite
 	if(!halitem)
 		return
 	if(client)
+		client.screen -= halitem
 		client.images -= halitem
 	QDEL_NULL(halitem)

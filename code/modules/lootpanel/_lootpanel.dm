@@ -21,6 +21,8 @@
 	src.owner = owner
 
 /datum/lootpanel/Destroy(force)
+	SSlooting.backlog -= src
+	SSlooting.processing -= src
 	reset_contents()
 	owner = null
 	source_turf = null
@@ -34,12 +36,13 @@
 		ui.set_autoupdate(FALSE)
 		ui.open()
 
-/datum/lootpanel/ui_state(mob/user)
-	return GLOB.range_state
+/datum/lootpanel/ui_host(mob/user)
+	return source_turf
 
 /datum/lootpanel/ui_close(mob/user)
 	. = ..()
 
+	UnregisterSignal(source_turf, list(COMSIG_ATOM_ENTERED, COMSIG_ATOM_AFTER_SUCCESSFUL_INITIALIZED_ON))
 	source_turf = null
 	reset_contents()
 
@@ -47,6 +50,7 @@
 	var/list/data = list()
 
 	data["contents"] = get_contents()
+	data["is_blind"] = !!user.is_blind()
 	data["searching"] = length(to_image)
 
 	return data
@@ -81,7 +85,5 @@
 	switch(action)
 		if("grab")
 			return grab(usr, params)
-		if("refresh")
-			return populate_contents()
 
 	return FALSE

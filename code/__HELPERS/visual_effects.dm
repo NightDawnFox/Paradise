@@ -26,7 +26,7 @@
 		var/mob/living/__living_target = target; \
 		__final_pixel_z += __living_target.has_offset(pixel = PIXEL_Z_OFFSET); \
 	}; \
-	animate(target, pixel_z = __final_pixel_z, time = 0.2 SECONDS)
+	animate(target, pixel_z = __final_pixel_z, time = 1 SECONDS)
 
 /// The duration of the animate call in mob/living/update_transform
 #define UPDATE_TRANSFORM_ANIMATION_TIME (0.2 SECONDS)

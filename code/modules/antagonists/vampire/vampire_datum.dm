@@ -62,6 +62,7 @@
 	owner.current.create_log(CONVERSION_LOG, "De-vampired")
 	draining = null
 	QDEL_NULL(subclass)
+	QDEL_NULL(diablerie)
 	return ..()
 
 /datum/antagonist/vampire/greet()
@@ -390,8 +391,7 @@
 		pixel_x_diff = 8
 	else if(vampire_dir & WEST)
 		pixel_x_diff = -8
-	animate(owner.current, pixel_x = owner.current.pixel_x + pixel_x_diff, pixel_y = owner.current.pixel_y + pixel_y_diff, time = 0.5)
-	animate(pixel_x = owner.current.pixel_x - pixel_x_diff, pixel_y = owner.current.pixel_y - pixel_y_diff, time = 7)
+	owner.current.add_offsets(UID(), x_add = pixel_x_diff, y_add = pixel_y_diff)
 	owner.current.do_item_attack_animation(target, ATTACK_EFFECT_BITE)
 
 /// Checks vampire's sucking target blood volume and sends a warning message if it's low. Returns FALSE if the target is drained dry
@@ -430,7 +430,7 @@
 
 	to_chat(owner.current, span_notice("Вы прекращаете пить кровь [draining.name]."))
 	draining = null
-	owner.current.update_offsets(animate = TRUE)
+	owner.current.update_offsets(UID())
 	owner.current.layer = initial(owner.current.layer)
 
 #undef BLOOD_GAINED_MODIFIER

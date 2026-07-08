@@ -1,11 +1,10 @@
 SUBSYSTEM_DEF(jobs)
 	name = "Jobs"
-	init_order = INIT_ORDER_JOBS // 9
+	dependencies = list(
+		/datum/controller/subsystem/processing/station,
+	)
 	wait = 5 MINUTES // Dont ever make this a super low value since EXP updates are calculated from this value
 	runlevels = RUNLEVEL_GAME
-	offline_implications = "Время игры на профессиях больше не будет сохраняться. Немедленных действий не требуется."
-	cpu_display = SS_CPUDISPLAY_LOW
-	ss_id = "jobs"
 
 	/// List of all jobs
 	var/list/occupations = list()
@@ -540,7 +539,7 @@ SUBSYSTEM_DEF(jobs)
 	if(job.is_novice)
 		L.Add("<b>Ваша должность ограничена во всех взаимодействиях с рабочим имуществом отдела и экипажем станции, при отсутствии приставленного к нему квалифицированного сотрудника или полученного разрешения от вышестоящего начальства. Не забудьте ознакомиться с СРП вашей должности. По истечению срока прохождения стажировки, данная должность более не будет вам доступна. Используйте её для обучения, не стесняйтесь задавать вопросы вашим старшим коллегам!</b>")
 
-	to_chat(human, chat_box_green(L.Join("<br>")))
+	to_chat(human, custom_boxed_message("green_box", L.Join("<br>")))
 
 	return human
 
@@ -566,7 +565,7 @@ SUBSYSTEM_DEF(jobs)
 
 	if(HAS_TRAIT(SSstation, STATION_TRAIT_RANDOM_ARRIVALS))
 		if(rank == JOB_TITLE_PRISONER)
-			mark_spawn = get_safe_random_station_turf(typesof(/area/security))  || pick(GLOB.latejoin_prisoner)
+			mark_spawn = get_safe_random_station_turf(typesof(/area/station/security))  || pick(GLOB.latejoin_prisoner)
 		else
 			mark_spawn = get_safe_random_station_turf()  || pick(GLOB.latejoin)
 
@@ -596,7 +595,7 @@ SUBSYSTEM_DEF(jobs)
 
 	if(!mark_spawn || HAS_TRAIT(SSstation, STATION_TRAIT_LATE_ARRIVALS)) // still no spawn, fall back to the arrivals shuttle
 		if(rank == JOB_TITLE_PRISONER)
-			mark_spawn = get_random_area_turf_for_spawn(/area/security/permabrig)
+			mark_spawn = get_random_area_turf_for_spawn(/area/station/security/prison/perma)
 		else
 			mark_spawn = get_random_area_turf_for_spawn(/area/shuttle/arrival/station)
 
@@ -943,7 +942,7 @@ SUBSYSTEM_DEF(jobs)
 	var/start_time = start_watch()
 	// First calculate minutes
 	var/divider = 10 // By default, 10 deciseconds in 1 second
-	if(flags & SS_TICKER)
+	if(ss_flags & SS_TICKER)
 		divider = 20 // If this SS ever gets made into a ticker SS, account for that
 
 	var/minutes = (wait / divider) / 60 // Calculate minutes based on the SS wait time (How often this proc fires)

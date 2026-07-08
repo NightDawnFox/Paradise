@@ -857,7 +857,7 @@
 	if(dreamer.get_drunkenness() > 0)
 		comfort += 1 //Aren't naps SO much better when drunk?
 		dreamer.AdjustDrunk(-0.4 SECONDS * comfort) //reduce drunkenness while sleeping.
-	if(comfort > 1 && prob(3))//You don't heal if you're just sleeping on the floor without a blanket.
+	if(comfort > 1)//You don't heal if you're just sleeping on the floor without a blanket.
 		brute_heal += 1 * comfort
 		burn_heal += 1 * comfort
 	if(brute_heal > 0 || burn_heal > 0)
@@ -950,6 +950,10 @@
 /datum/status_effect/transient/jittery/calc_decay()
 	return (-0.2 + (owner.resting ? -0.8 : 0)) SECONDS
 
+/datum/status_effect/transient/jittery/on_remove()
+	. = ..()
+	owner.update_offsets()
+
 /datum/status_effect/transient/jittery/get_examine_text()
 	switch(strength)
 		if(600 SECONDS to INFINITY)
@@ -1028,7 +1032,7 @@
 		return FALSE
 
 	// Refresh the blur when a client jumps into the mob, in case we get put on a clientless mob with no hud
-	RegisterSignal(owner, list(COMSIG_MOB_LOGIN, SIGNAL_ADDTRAIT(TRAIT_SIGHT_BYPASS), SIGNAL_REMOVETRAIT(TRAIT_SIGHT_BYPASS)), PROC_REF(update_blur))
+	RegisterSignals(owner, list(COMSIG_MOB_LOGIN, SIGNAL_ADDTRAIT(TRAIT_SIGHT_BYPASS), SIGNAL_REMOVETRAIT(TRAIT_SIGHT_BYPASS)), PROC_REF(update_blur))
 
 	// Apply initial blur
 	update_blur()
@@ -1045,6 +1049,7 @@
 	// Maybe this should be bad for server perfomance, but i dont test it on production server
 	for(var/mob/dead/observer/observe in owner.inventory_observers)
 		if(!observe.client)
+			observe.handle_when_autoobserve_move()
 			LAZYREMOVE(owner.inventory_observers, observe)
 			continue
 		game_plane_master_controller = observe.hud_used.plane_master_controllers[PLANE_MASTERS_GAME]
@@ -1066,6 +1071,7 @@
 	// Maybe this should be bad for server perfomance, but i dont test it on production server
 	for(var/mob/dead/observer/observe in owner.inventory_observers)
 		if(!observe.client)
+			observe.handle_when_autoobserve_move()
 			LAZYREMOVE(owner.inventory_observers, observe)
 			continue
 		game_plane_master_controller = observe.hud_used.plane_master_controllers[PLANE_MASTERS_GAME]
@@ -1592,3 +1598,18 @@
 
 /datum/movespeed_modifier/freezing_blast
 	multiplicative_slowdown = 1
+
+// MARK: Capitulated
+/datum/status_effect/incapacitating/capitulated
+	id = "capitulated"
+	duration = 20 SECONDS
+	status_type = STATUS_EFFECT_UNIQUE
+	alert_type = null
+	traits_to_apply = list(TRAIT_INCAPACITATED, TRAIT_IMMOBILIZED, TRAIT_HANDS_BLOCKED)
+
+/datum/status_effect/incapacitating/capitulated/on_apply()
+	. = ..()
+	if(!.)
+		return
+	owner.drop_all_held_items()
+

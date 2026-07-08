@@ -126,8 +126,6 @@
 #define COMSIG_REAGENT_INJECTED "reagent_inject"
 
 // /datum/element/movetype_handler signals
-/// Called when the floating anim has to be temporarily stopped and restarted later: (timer)
-#define COMSIG_PAUSE_FLOATING_ANIM "pause_floating_anim"
 /// From base of datum/element/movetype_handler/on_movement_type_trait_gain: (flag, old_movement_type)
 #define COMSIG_MOVETYPE_FLAG_ENABLED "movetype_flag_enabled"
 /// From base of datum/element/movetype_handler/on_movement_type_trait_loss: (flag, old_movement_type)
@@ -145,3 +143,6 @@
 
 /// Sent after removing a camera from the cameranet datum (/datum/cameranet/proc/removeCamera(obj/machinery/camera/c))
 #define COMSIG_CAMERANET_CAMERA_REMOVED "cameranet_camera_removed"
+
+/// from /datum/species/proc/spec_hitby()
+#define COMSIG_SPECIES_HITBY "species_hitby"

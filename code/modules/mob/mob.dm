@@ -1,22 +1,39 @@
-/mob/Destroy()//This makes sure that mobs with clients/keys are not just deleted from the game.
+// This makes sure that mobs with clients/keys are not just deleted from the game.
+/mob/Destroy()
 	persistent_client?.set_mob(null)
 	remove_from_mob_list()
 	remove_from_alive_mob_list()
 	remove_from_dead_mob_list()
 	focus = null
+	if(s_active)
+		s_active.close(src)
 	for(var/mob/dead/observer/observe in orbiters)
 		if(!istype(observe))
 			continue
 		observe.stop_orbit()
 		observe.reset_perspective(null)
+
+	for(var/mob/dead/observer/ghost as anything in inventory_observers)
+		ghost.handle_when_autoobserve_move()
+
 	QDEL_NULL(hud_used)
 	lose_hearing_sensitivity()
 	if(mind && mind.current == src)
 		spellremove(src)
 	mobspellremove(src)
 	QDEL_LIST(diseases)
+	for(var/datum/action/action in actions)
+		action.HideFrom(src)
+		action.clear_ref(src)
+	LAZYCLEARLIST(actions)
+
+	if(length(progressbars))
+		stack_trace("[src] destroyed with elements in its progressbars list")
+		progressbars = null
+
 	for(var/alert in alerts)
-		clear_alert(alert)
+		clear_alert(alert, TRUE)
+
 	if(client)
 		clear_client_in_contents()
 	ghostize()
@@ -29,6 +46,9 @@
 
 	if(mind?.current == src)
 		mind.current = null
+
+	LAZYCLEARLIST(screens)
+	clear_fullscreens()
 
 	key = null
 	ckey = null
@@ -446,7 +466,7 @@
 			var/list/result = examinify.examine_more(src)
 			if(!length(result))
 				result += span_notice("<i>Вы внимательно осматриваете [examinify.declent_ru(ACCUSATIVE)], но не замечаете новых деталей...</i>")
-			result_combined = chat_box_examine(jointext(result, "<br>"))
+			result_combined = boxed_message(jointext(result, "<br>"))
 		else
 			client.recent_examines[ref_to_atom] = world.time // set to when we last normal examine'd them
 			addtimer(CALLBACK(src, PROC_REF(clear_from_recent_examines), ref_to_atom), RECENT_EXAMINE_MAX_WINDOW)
@@ -458,7 +478,7 @@
 		examining(examinify, result)
 		SEND_SIGNAL(src, COMSIG_MOB_EXAMINING, examinify, result)
 		result += span_notice("<i>Вы можете <a href='byond://?src=[UID()];run_examinate=[examinify.UID()]'>осмотреть</a> [examinify.declent_ru(ACCUSATIVE)] более тщательно...</i>")
-		result_combined = (atom_title ? fieldset_block("[atom_title].", jointext(result, "<br>"), "boxed_message left_align_text") : chat_box_examine(jointext(result, "<br>")))
+		result_combined = (atom_title ? fieldset_block("[atom_title].", jointext(result, "<br>"), "boxed_message left_align_text") : boxed_message(jointext(result, "<br>")))
 
 	to_chat(src, span_infoplain(result_combined))
 	SEND_SIGNAL(src, COMSIG_MOB_EXAMINATE, examinify)
@@ -739,7 +759,7 @@
 		add_game_logs("respawn failed due to disconnect.", usr)
 		return
 
-	GLOB.respawnable_list -= usr
+	usr.remove_from_respawnable_list()
 	var/mob/new_player/M = new /mob/new_player()
 	if(!client)
 		add_game_logs("respawn failed due to disconnect.", usr)
@@ -747,7 +767,7 @@
 		return
 
 	M.possess_by_player(key)
-	GLOB.respawnable_list += usr
+	usr.add_to_respawnable_list()
 	return
 
 /mob/proc/is_dead()
@@ -833,7 +853,7 @@
 
 	// They should be in a cell or the Brig portion of the shuttle.
 	var/area/A = loc.loc
-	if(!istype(A, /area/security/prison))
+	if(!istype(A, /area/station/security/prison))
 		if(!istype(A, /area/shuttle/escape) || loc.name != "Brig floor")
 			return 0
 
@@ -950,7 +970,7 @@
 		return
 
 	to_chat(usr, span_notice(message))
-	GLOB.respawnable_list -= usr
+	usr.remove_from_respawnable_list()
 	picked_mob.possess_by_player(key)
 
 /mob/proc/become_mouse()
@@ -963,7 +983,7 @@
 	//find a viable mouse candidate
 	var/list/found_vents = get_valid_vent_spawns(min_network_size = 0)
 	if(length(found_vents))
-		GLOB.respawnable_list -= src
+		remove_from_respawnable_list()
 		client.time_joined_as_mouse = world.time
 		var/obj/vent_found = pick(found_vents)
 		var/choosen_type = prob(90) ? /mob/living/simple_animal/mouse : /mob/living/simple_animal/mouse/rat
@@ -1196,6 +1216,7 @@
 	return FALSE
 
 /mob/proc/update_sight()
+	//SHOULD_CALL_PARENT(TRUE)
 	SEND_SIGNAL(src, COMSIG_MOB_UPDATE_SIGHT)
 	sync_lighting_plane_alpha()
 
@@ -1219,6 +1240,7 @@
 		vision_type = new O
 		for(var/mob/dead/observer/observe as anything in inventory_observers)
 			if(!observe.client)
+				observe.handle_when_autoobserve_move()
 				LAZYREMOVE(inventory_observers, observe)
 				continue
 			observe.vision_type = vision_type
@@ -1227,7 +1249,7 @@
 /mob/proc/sync_lighting_plane_alpha()
 	if(!hud_used)
 		return
-	for(var/atom/movable/screen/plane_master/rendering_plate/lighting/light_plane in hud_used.get_true_plane_masters(RENDER_PLANE_LIGHTING))
+	for(var/atom/movable/screen/plane_master/rendering_plate/lighting/light_plane as anything in hud_used.get_true_plane_masters(RENDER_PLANE_LIGHTING))
 		light_plane.set_alpha(lighting_alpha)
 
 	sync_nightvision_screen() //Sync up the overlay used for nightvision to the amount of see_in_dark a mob has. This needs to be called everywhere sync_lighting_plane_alpha() is.
@@ -1283,8 +1305,8 @@
 	usr = temp
 
 GLOBAL_LIST_INIT(holy_areas, typecacheof(list(
-	/area/chapel,
-	/area/maintenance/chapel
+	/area/station/service/chapel,
+	/area/station/maintenance/chapel
 )))
 
 /mob/proc/holy_check()
@@ -1483,3 +1505,20 @@ GLOBAL_LIST_INIT(holy_areas, typecacheof(list(
 		return TRUE
 
 	return FALSE
+
+/**
+ * Helpful for when a players uplink window gets glitched to above their screen.
+ * preventing them from moving the UPLINK window.
+ */
+/mob/verb/reset_ui_positions_for_mob()
+	set name = "Reset UI Positions"
+	set category = VERB_CATEGORY_SPECIALVERBS
+	SStgui.reset_ui_position(src)
+
+/mob/proc/add_to_respawnable_list()
+	GLOB.respawnable_list |= src
+	RegisterSignal(src, COMSIG_QDELETING, PROC_REF(remove_from_respawnable_list))
+
+/mob/proc/remove_from_respawnable_list()
+	GLOB.respawnable_list -= src
+	UnregisterSignal(src, COMSIG_QDELETING)

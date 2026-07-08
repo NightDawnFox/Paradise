@@ -16,7 +16,7 @@
 	for(var/V in components)
 		var/datum/robot_component/C = components[V]
 
-		if(C.installed != 0 && (!repairable_only || C.installed != -1)) // Installed ones only and if repair only remove the borked ones
+		if(C.installed || (!repairable_only && C.is_destroyed())) // Installed ones only and if repair only remove the borked ones
 			amount += C.brute_damage
 
 	return amount
@@ -29,7 +29,7 @@
 	for(var/V in components)
 		var/datum/robot_component/C = components[V]
 
-		if(C.installed != 0 && (!repairable_only || C.installed != -1)) // Installed ones only and if repair only remove the borked ones
+		if(C.installed || (!repairable_only && C.is_destroyed())) // Installed ones only and if repair only remove the borked ones
 			amount += C.electronics_damage
 
 	return amount
@@ -92,7 +92,7 @@
 
 	for(var/V in components)
 		var/datum/robot_component/C = components[V]
-		if((C.installed == 1 || (get_borked && C.installed == -1) || (get_missing && C.installed == 0)) && ((get_brute && C.brute_damage) || (get_burn && C.electronics_damage)))
+		if((C.installed || (get_borked && C.is_destroyed()) || (get_missing && C.is_missing())) && ((get_brute && C.brute_damage) || (get_burn && C.electronics_damage)))
 			parts += C
 
 	return parts
@@ -102,7 +102,7 @@
 
 	for(var/V in components)
 		var/datum/robot_component/C = components[V]
-		if(C.installed == 0)
+		if(C.is_missing())
 			parts += C
 
 	return parts
@@ -112,7 +112,7 @@
 
 	for(var/V in components)
 		var/datum/robot_component/C = components[V]
-		if(C.installed == 1)
+		if(C.installed)
 			rval += C
 
 	return rval
@@ -122,7 +122,7 @@
 		return FALSE
 
 	var/datum/robot_component/C = components["armour"]
-	if(C && C.installed == 1)
+	if(C && C.installed)
 		return C
 
 	return FALSE
