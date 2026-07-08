@@ -18,7 +18,7 @@
 	src.collar_icon_state = collar_icon_state
 	src.collar_resting_icon_state = collar_resting_icon_state
 
-	RegisterSignal(target, COMSIG_PARENT_ATTACKBY, PROC_REF(attach_collar))
+	RegisterSignal(target, COMSIG_ATOM_ATTACKBY, PROC_REF(attach_collar))
 	RegisterSignal(target, COMSIG_ATOM_UPDATE_OVERLAYS, PROC_REF(on_overlays_updated))
 	RegisterSignal(target, COMSIG_ATOM_EXITED, PROC_REF(on_content_exit))
 	RegisterSignal(target, COMSIG_ATOM_ENTERED, PROC_REF(on_content_enter))
@@ -28,7 +28,7 @@
 /datum/element/wears_collar/Detach(datum/target)
 	. = ..()
 	UnregisterSignal(target, list(
-		COMSIG_PARENT_ATTACKBY,
+		COMSIG_ATOM_ATTACKBY,
 		COMSIG_ATOM_UPDATE_OVERLAYS,
 		COMSIG_ATOM_EXITED,
 		COMSIG_ATOM_ENTERED,

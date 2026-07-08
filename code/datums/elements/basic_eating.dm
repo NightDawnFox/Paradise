@@ -36,7 +36,7 @@
 	src.consume_healing = consume_healing
 	src.food_types = food_types
 
-	RegisterSignal(target, COMSIG_PARENT_ATTACKBY, PROC_REF(try_feed))
+	RegisterSignal(target, COMSIG_ATOM_ATTACKBY, PROC_REF(try_feed))
 	RegisterSignal(target, COMSIG_LIVING_UNARMED_ATTACK, PROC_REF(on_unarm_attack))
 
 /datum/element/basic_eating/Detach(datum/target)
@@ -44,7 +44,7 @@
 
 	UnregisterSignal(target, list(
 		COMSIG_LIVING_UNARMED_ATTACK,
-		COMSIG_PARENT_ATTACKBY,
+		COMSIG_ATOM_ATTACKBY,
 	))
 	return ..()
 

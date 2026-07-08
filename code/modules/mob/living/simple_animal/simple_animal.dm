@@ -135,7 +135,7 @@
 	/// Lower the delay faster the mob can response.
 	/// Set this to zero for critical mobs, like megafauna.
 	var/AI_delay_max = 3 SECONDS
-	/// Current delay for the next mob's move/action. Used by SSnpcpool and SSidlenpcpool.
+	/// Current delay for the next mob's move/action. Used by SSnpcpool.
 	var/AI_delay_current
 
 	/// Domestication.
@@ -210,7 +210,6 @@
 	master_commander = null
 	GLOB.simple_animals[AIStatus] -= src
 	SSnpcpool.currentrun -= src
-	SSidlenpcpool.currentrun -= src
 	walk(src, NONE)
 
 	return ..()

@@ -61333,18 +61333,6 @@
 	},
 /obj/machinery/alarm/directional/north,
 /obj/machinery/power/apc/directional/east,
-/obj/merge_conflict_marker{
-	name = "---Merge Conflict Marker---";
-	
-	desc = "A best-effort merge was performed. You must resolve this conflict yourself (manually) and remove this object once complete."
-	},
-/obj/structure/bed/dogbed,
-/mob/living/simple_animal/pet/dog/fox/fennec/Fenya,
-/obj/structure/cable{
-	icon_state = "0-8"
-	},
-/obj/machinery/alarm/directional/north,
-/obj/machinery/power/apc/directional/east,
 /turf/simulated/floor/wood/fancy/cherry,
 /area/station/legal/office/magistrate)
 "jrY" = (

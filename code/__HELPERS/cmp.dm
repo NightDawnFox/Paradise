@@ -149,10 +149,6 @@
 /proc/cmp_sheet_list(list/a, list/b)
 	return a["value"] - b["value"]
 
-/// Orders by integrated circuit weight
-/proc/cmp_port_order_asc(datum/port/compare1, datum/port/compare2)
-	return compare1.order - compare2.order
-
 /// Orders mobs by health
 /proc/cmp_mob_health(mob/living/mob_a, mob/living/mob_b)
 	return mob_b.health - mob_a.health

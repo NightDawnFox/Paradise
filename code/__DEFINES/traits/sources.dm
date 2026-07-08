@@ -73,8 +73,6 @@
 
 /// A trait gained from a mob's leap action, like the leaper
 #define LEAPING_TRAIT "leaping"
-/// From grabbing someone
-#define GRABBING_TRAIT "grabbing"
 
 #define INCORPOREAL_TRAIT "incorporeal"
 
@@ -129,11 +127,6 @@
 #define SLIME_TRAIT "slime"
 
 #define FULTON_TRAIT "fulton"
-
-/// Trait from mob/living/update_transform()
-#define UPDATE_TRANSFORM_TRAIT "update_transform"
-/// Trait from mob/living/update_offsets()
-#define UPDATE_OFFSET_TRAIT "update_offset"
 
 #define ANOMALOUS_CRYSTAL_TRAIT "anomalous_crystal"
 

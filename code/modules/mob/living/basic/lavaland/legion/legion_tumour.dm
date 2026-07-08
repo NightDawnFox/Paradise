@@ -26,7 +26,7 @@
 	)
 
 /obj/item/organ/internal/legion_tumour/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "опухоль легиона",
 		GENITIVE = "опухоли легиона",
 		DATIVE = "опухоли легиона",

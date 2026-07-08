@@ -39,7 +39,7 @@
 	)
 
 /mob/living/basic/pet/fox/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "лиса",
 		GENITIVE = "лисы",
 		DATIVE = "лисе",
@@ -90,7 +90,7 @@
 	minimum_survivable_temperature = 0
 
 /mob/living/basic/pet/fox/forest/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "дикая лиса",
 		GENITIVE = "дикой лисы",
 		DATIVE = "дикой лисе",

@@ -374,9 +374,6 @@
 
 #define TRAIT_SPACEWALK "spacewalk"
 
-/// A trait gained by leaning against a wall
-#define LEANING_TRAIT "leaning"
-
 /// used for dead mobs that are observing, but should not be afforded all the same platitudes as full ghosts.
 /// This is a mind trait because ghosts can be frequently deleted and we want to be sure this sticks.
 #define TRAIT_OBSERVING_INVENTORY "observe_inventory"

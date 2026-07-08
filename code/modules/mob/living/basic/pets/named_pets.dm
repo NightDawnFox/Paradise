@@ -8,7 +8,7 @@
 	tts_seed = "Barney"
 
 /mob/living/basic/pet/fox/Renault/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "ренальд",
 		GENITIVE = "ренальда",
 		DATIVE = "ренальду",
@@ -34,7 +34,7 @@
 	minimum_survivable_temperature = 0
 
 /mob/living/basic/pet/fox/Syndifox/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "Синдилис",
 		GENITIVE = "Синдилиса",
 		DATIVE = "Синдилису",
@@ -64,7 +64,7 @@
 	minimum_survivable_temperature = 0
 
 /mob/living/basic/pet/fox/alisa/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "Алиса",
 		GENITIVE = "Алисы",
 		DATIVE = "Алисе",
@@ -89,7 +89,7 @@
 	tts_seed = "Riffleman"
 
 /mob/living/basic/pet/fox/fennec/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "фенек",
 		GENITIVE = "фенека",
 		DATIVE = "фенеку",
@@ -106,7 +106,7 @@
 	gold_core_spawnable = NO_SPAWN
 
 /mob/living/basic/pet/fox/fennec/Fenya/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "Феня",
 		GENITIVE = "Фени",
 		DATIVE = "Фене",

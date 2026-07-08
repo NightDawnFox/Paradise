@@ -62,7 +62,7 @@
 	if(action != "choose_school")
 		return TRUE
 
-	if(teacher.incapacitated || HAS_TRAIT(teacher, TRAIT_HANDS_BLOCKED))
+	if(usr.incapacitated || HAS_TRAIT(usr, TRAIT_HANDS_BLOCKED))
 		return FALSE
 
 	handle_choose_school(usr, params["school"])

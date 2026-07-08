@@ -88,6 +88,7 @@ GLOBAL_LIST_INIT(hex_characters, list("0","1","2","3","4","5","6","7","8","9","a
 		if(5)
 			return "#[num2hex(c, 2)][num2hex(m, 2)][num2hex(x, 2)]"
 
+/*
  * Generates an HSL color transition matrix filter which nicely paints an object
  * without making it a deep fried blob of color.
  *

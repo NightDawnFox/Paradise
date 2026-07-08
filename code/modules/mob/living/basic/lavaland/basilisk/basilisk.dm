@@ -39,7 +39,7 @@
 	return ..()
 
 /mob/living/basic/mining/basilisk/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "базилиск",
 		GENITIVE = "базилиска",
 		DATIVE = "базилиску",
