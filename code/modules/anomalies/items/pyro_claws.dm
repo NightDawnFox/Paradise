@@ -15,7 +15,7 @@
 	toolspeed = 0.5
 
 /obj/item/twohanded/required/pyro_claws/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "энергокогти", \
 		GENITIVE = "энергокогтей", \
 		DATIVE = "энергокогтям", \
@@ -49,10 +49,10 @@
 	if(prob(15))
 		do_sparks(rand(1,6), TRUE, loc)
 
-/obj/item/twohanded/required/pyro_claws/afterattack(atom/target, mob/user, proximity, params)
+/obj/item/twohanded/required/pyro_claws/afterattack(atom/target, mob/user, proximity_flag, list/modifiers, status)
 	. = ..()
 
-	if(!proximity)
+	if(!proximity_flag)
 		return
 
 	if(prob(60))
@@ -104,7 +104,7 @@
 	var/obj/item/assembly/signaler/core/atmospheric/core
 
 /obj/item/clothing/gloves/color/black/pyro_claws/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "плавящие перчатки", \
 		GENITIVE = "плавящих перчаток", \
 		DATIVE = "плавящим перчаткам", \

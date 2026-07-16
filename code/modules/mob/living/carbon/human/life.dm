@@ -17,6 +17,8 @@
 	if(.) // not dead
 		handle_pain()
 		handle_heartbeat()
+		// Handles liver failure effects, if we lack a liver
+		handle_liver(seconds)
 		dna.species.handle_life(src)
 
 		if(!client)
@@ -81,7 +83,7 @@
 		var/obj/item/clothing/suit = wear_suit
 		var/obj/item/clothing/helmet = head
 		// Complete set of pressure-proof suit worn, assume fully sealed.
-		if((suit.clothing_flags & STOPSPRESSUREDMAGE) && (helmet.clothing_flags & STOPSPRESSUREDMAGE))
+		if((suit.clothing_flags & STOPSPRESSUREDAMAGE) && (helmet.clothing_flags & STOPSPRESSUREDAMAGE))
 			return ONE_ATMOSPHERE
 
 	if(ismovable(loc))
@@ -338,6 +340,26 @@
 			var/pressure_damage = LOW_PRESSURE_DAMAGE * physiology.pressure_mod * physiology.brute_mod
 			take_overall_damage(brute = pressure_damage, used_weapon = "Low Pressure")
 			throw_alert("pressure", /atom/movable/screen/alert/lowpressure, 2)
+
+	handle_gas_interaction(src, readonly_environment)
+
+/**
+ *	Handles exposure to the skin of various gases.
+ */
+/mob/living/carbon/human/proc/handle_gas_interaction(mob/living/carbon/human/human, datum/gas_mixture/environment)
+	/// Some non-clothing items may end up in these slots, e.g. flowers worn on the head, so we should consider clothing_flags as potentially nonexistant as a var.
+	/// Otherwise we will get a very spammy runtime.
+	var/suit_flags = astype(human?.wear_suit, /obj/item/clothing)?.clothing_flags
+	var/head_flags = astype(human?.head, /obj/item/clothing)?.clothing_flags
+
+	if((suit_flags & STOPSPRESSUREDAMAGE) && (head_flags & STOPSPRESSUREDAMAGE))
+		return
+
+	for(var/gas_id, gas_amount in environment.get_interesting())
+		switch(gas_id)
+			if(TLV_ANTINOBLIUM) // Antinoblium - irradiates the target.
+				if(gas_amount >= MOLES_GAS_VISIBLE && prob(min(gas_amount, 100)))
+					SSradiation.irradiate(human)
 
 ///FIRE CODE
 /mob/living/carbon/human/handle_fire()

@@ -202,7 +202,7 @@
 	ui_interact(user)
 	add_fingerprint(user)
 
-/obj/item/analyzer/afterattack(atom/target, mob/user, proximity, params)
+/obj/item/analyzer/afterattack(atom/target, mob/user, proximity_flag, list/modifiers, status)
 	. = ..()
 	if(!user.can_see(target, scan_range))
 		return
@@ -301,7 +301,7 @@
 		message += span_notice("Fuel burnt last tick: [milla[MILLA_INDEX_FUEL_BURNT]] moles")
 
 	// we let the join apply newlines so we do need handholding
-	to_chat(user, chat_box_examine((jointext(message, "\n"))), type = MESSAGE_TYPE_INFO)
+	to_chat(user, boxed_message((jointext(message, "\n"))), type = MESSAGE_TYPE_INFO)
 	return TRUE
 
 #undef ANALYZER_MODE_SURROUNDINGS

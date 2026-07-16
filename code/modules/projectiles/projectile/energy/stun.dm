@@ -6,7 +6,7 @@
 	shockbull = TRUE
 	nodamage = TRUE
 	confused = 2.5 SECONDS
-	stamina = 20
+	stamina = 25
 	stutter = 8 SECONDS
 	jitter = 30 SECONDS
 	hitsound = 'sound/weapons/tase.ogg'
@@ -18,7 +18,7 @@
 	var/tasered_duration = 8 SECONDS
 
 /obj/projectile/energy/electrode/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "электрод",
 		GENITIVE = "электрода",
 		DATIVE = "электроду",

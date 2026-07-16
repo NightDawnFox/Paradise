@@ -235,6 +235,8 @@
 	/// If true, this light cannot ever have an emergency mode
 	var/no_emergency = FALSE
 
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/light, 0, 0)
+
 /**
  * # Small light fixture
  *
@@ -251,6 +253,8 @@
 	nightshift_light_color = "#ffefa0"
 	light_type = /obj/item/light/bulb
 	deconstruct_type = /obj/machinery/light_construct/small
+
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/light/small, 0, 0)
 
 /obj/machinery/light/spot
 	name = "spotlight"
@@ -745,7 +749,13 @@
 	// create a light tube/bulb item and put it in the user's hand
 	drop_light_tube(user)
 
-// break the light and make sparks if was on
+/obj/machinery/light/proc/set_major_emergency_light()
+	emergency_mode = TRUE //major_emergency = TRUE
+	update()
+
+/obj/machinery/light/proc/unset_major_emergency_light()
+	emergency_mode = TRUE //major_emergency = FALSE
+	update()
 
 /obj/machinery/light/proc/drop_light_tube(mob/user)
 	if(status == LIGHT_EMPTY)
@@ -868,7 +878,6 @@
 	force = 2
 	throwforce = 5
 	w_class = WEIGHT_CLASS_TINY
-	blocks_emissive = FALSE
 	/// Light status (LIGHT_OK | LIGHT_BURNED | LIGHT_BROKEN)
 	var/status = LIGHT_OK
 	/// How many times has the light been switched on/off?

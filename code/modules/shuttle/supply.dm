@@ -5,7 +5,7 @@
 	var/ordernumber = 0
 
 /obj/item/paper/manifest/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "манифест снабжения",
 		GENITIVE = "манифеста снабжения",
 		DATIVE = "манифесту снабжения",
@@ -78,7 +78,8 @@
 
 /obj/docking_port/mobile/supply/dock(obj/docking_port/stationary/S1, force, transit)
 	. = ..()
-	if(.)	return .
+	if(.)
+		return .
 
 	buy(S1)
 	sell(S1)
@@ -149,7 +150,7 @@
 	for(var/atom/movable/MA in areaInstance)
 		if(MA.anchored)
 			continue
-		if(istype(MA, /mob/dead))
+		if(isdead(MA))
 			continue
 		SSshuttle.sold_atoms += " [MA.declent_ru(NOMINATIVE)]"
 
@@ -157,7 +158,7 @@
 			quest_reward += SScargo_quests.check_delivery(MA)
 
 		// Must be in a crate (or a critter crate)!
-		if(istype(MA,/obj/structure/closet/crate) || istype(MA,/obj/structure/closet/crate/critter))
+		if(is_crate(MA) || istype(MA,/obj/structure/closet/crate/critter))
 			SSshuttle.sold_atoms += ":"
 			if(!length(MA.contents))
 				SSshuttle.sold_atoms += " (пусто)"
@@ -285,15 +286,15 @@
 
 	var/obj/item/paper/reqform = new /obj/item/paper(_loc)
 	playsound(_loc, 'sound/goonstation/machines/printer_thermal.ogg', 50, TRUE)
-	reqform.name = "запрос на поставку — [crates] \"[object.name]\" для [orderedby]"
-	reqform.ru_names = new /list(6)
-	reqform.ru_names = list(
-		NOMINATIVE = "запрос на поставку — [crates] \"[object.name]\" для [orderedby]",
-		GENITIVE = "запроса на поставку — [crates] \"[object.name]\" для [orderedby]",
-		DATIVE = "запросу на поставку — [crates] \"[object.name]\" для [orderedby]",
-		ACCUSATIVE = "запрос на поставку — [crates] \"[object.name]\" для [orderedby]",
-		INSTRUMENTAL = "запросом на поставку — [crates] \"[object.name]\" для [orderedby]",
-		PREPOSITIONAL = "запросе на поставку — [crates] \"[object.name]\" для [orderedby]",
+	var/request_desc = "на поставку — [crates] \"[object.name]\" для [orderedby]"
+	reqform.name = "запрос [request_desc]"
+	reqform.ru_names = alist(
+		NOMINATIVE = "запрос [request_desc]",
+		GENITIVE = "запроса [request_desc]",
+		DATIVE = "запросу [request_desc]",
+		ACCUSATIVE = "запрос [request_desc]",
+		INSTRUMENTAL = "запросом [request_desc]",
+		PREPOSITIONAL = "запросе [request_desc]",
 	)
 	reqform.info += "<h3>[station_name()] — запрос на поставку грузов</h3><hr>"
 	reqform.info += "ИНДЕКС: №[SSshuttle.ordernum]<br>"
@@ -317,19 +318,19 @@
 		return
 	//create the crate
 	var/atom/Crate = new object.containertype(_loc)
-	Crate.name = "[object.containername] [comment ? "([comment])":"" ]"
-	Crate.ru_names = new /list(6)
-	for(var/i = 1; i <= 6; i++)
-		if(i < length(object.container_ru_names))
-			Crate.ru_names[i] = "[object.container_ru_names[i]] [comment ? "([comment])":"" ]"
-		else
-			Crate.ru_names[i] = Crate.name
+	var/comment_suffix = comment ? " ([comment])" : ""
+	Crate.name = "[object.containername][comment_suffix]"
+	var/alist/base_names = object.container_ru_names
+	Crate.ru_names = alist()
+	for(var/case_id in NOMINATIVE to PREPOSITIONAL)
+		var/base_name = length(base_names) ? base_names[case_id] : null
+		Crate.ru_names[case_id] = base_name ? "[base_name][comment_suffix]" : Crate.name
 
 	if(object.access)
 		Crate:req_access = list(text2num(object.access))
 
 	//create the manifest slip
-	var/obj/item/paper/manifest/slip = new /obj/item/paper/manifest()
+	var/obj/item/paper/manifest/slip = new()
 	slip.erroneous = errors
 	slip.points = object.cost
 	slip.ordernumber = ordernum
@@ -337,15 +338,15 @@
 	var/stationName = (errors & MANIFEST_ERROR_NAME) ? new_station_name() : station_name()
 	var/packagesAmt = length(SSshuttle.shoppinglist) + ((errors & MANIFEST_ERROR_COUNT) ? rand(1,2) : 0)
 
-	slip.name = "Манифест поставки – \"[object.name]\" для [orderedby]"
-	slip.ru_names = new /list(6)
-	slip.ru_names = list(
-		NOMINATIVE = "манифест поставки – \"[object.name]\" для [orderedby]",
-		GENITIVE = "манифеста поставки – \"[object.name]\" для [orderedby]",
-		DATIVE = "манифесту поставки – \"[object.name]\" для [orderedby]",
-		ACCUSATIVE = "манифест поставки – \"[object.name]\" для [orderedby]",
-		INSTRUMENTAL = "манифестом поставки – \"[object.name]\" для [orderedby]",
-		PREPOSITIONAL = "манифесте поставки – \"[object.name]\" для [orderedby]",
+	var/order_desc = "поставки – \"[object.name]\" для [orderedby]"
+	slip.name = "Манифест [order_desc]"
+	slip.ru_names = alist(
+		NOMINATIVE = "манифест [order_desc]",
+		GENITIVE = "манифеста [order_desc]",
+		DATIVE = "манифесту [order_desc]",
+		ACCUSATIVE = "манифест [order_desc]",
+		INSTRUMENTAL = "манифестом [order_desc]",
+		PREPOSITIONAL = "манифесте [order_desc]",
 	)
 	slip.info = "<h3>[command_name()] Манифест поставки</h3><hr><br>"
 	slip.info +="Заказ: №[ordernum]<br>"
@@ -395,16 +396,13 @@
 	//manifest finalisation
 	slip.info += "</ul><br>"
 	slip.info += "ПРОВЕРЬТЕ СОДЕРЖИМОЕ И ПОСТАВЬТЕ ПЕЧАТЬ ПОД ЛИНИЕЙ, ЧТОБЫ ПОДТВЕРДИТЬ КОРРЕКТНОСТЬ МАНИФЕСТА<hr>" // And now this is actually meaningful.
+	slip.update_appearance()
 	slip.loc = Crate
-	if(istype(Crate, /obj/structure/closet/crate))
+	if(is_crate(Crate))
 		var/obj/structure/closet/crate/CR = Crate
-		CR.manifest = slip
-		CR.update_icon(UPDATE_OVERLAYS)
+		CR.manifest = WEAKREF(slip)
+		CR.update_appearance()
 		CR.announce_beacons = object.announce_beacons.Copy()
-	if(istype(Crate, /obj/structure/closet/crate/large))
-		var/obj/structure/closet/crate/large/LC = Crate
-		LC.manifest = slip
-		LC.update_icon(UPDATE_OVERLAYS)
 
 	return Crate
 
@@ -425,7 +423,7 @@
 	var/can_order_contraband = FALSE
 
 /obj/machinery/computer/supplycomp/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "консоль оформления заказов",
 		GENITIVE = "консоли оформления заказов",
 		DATIVE = "консоли оформления заказов",
@@ -443,7 +441,7 @@
 	is_public = TRUE
 
 /obj/machinery/computer/supplycomp/public/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "публичная консоль оформления заказов",
 		GENITIVE = "публичной консоли оформления заказов",
 		DATIVE = "публичной консоли оформления заказов",

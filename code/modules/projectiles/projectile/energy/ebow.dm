@@ -11,7 +11,7 @@
 	shockbull = TRUE
 
 /obj/projectile/energy/bolt/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "болт",
 		GENITIVE = "болта",
 		DATIVE = "болту",
@@ -49,14 +49,11 @@
 	name = "bolttoy"
 	icon_state = "cbbolttoy"
 	hitsound = 'sound/weapons/pierce.ogg'
-	damage_type = STAMINA
 	nodamage = TRUE
-	weaken = 0.1 SECONDS
-	stutter = 2 SECONDS
 	shockbull = TRUE
 
 /obj/projectile/energy/bolttoy/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "игрушечный болт",
 		GENITIVE = "игрушечного болта",
 		DATIVE = "игрушечному болту",
@@ -64,3 +61,10 @@
 		INSTRUMENTAL = "игрушечным болтом",
 		PREPOSITIONAL = "игрушечном болте",
 	)
+
+/obj/projectile/energy/bolttoy/on_hit(atom/target, blocked, hit_zone)
+	. = ..()
+	if(!.)
+		return
+	var/mob/living/mob = target
+	mob.Slowed(1 SECONDS, 2)

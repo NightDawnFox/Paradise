@@ -58,6 +58,8 @@
 	var/foldable_amt = 0
 	/// Lazy list of mobs which are currently viewing the storage inventory.
 	var/list/mobs_viewing
+	/// Increase "w_class" of storage when something inside it
+	var/dynamic_storage_size = FALSE
 
 /obj/item/storage/Initialize(mapload)
 	. = ..()
@@ -80,16 +82,21 @@
 	if(display_contents_with_number)
 		boxes = new /atom/movable/screen/storage()
 		boxes.name = "storage"
-		boxes.master = src
+		boxes.master_ref = WEAKREF(src)
 		boxes.icon_state = "block"
 		boxes.screen_loc = "7,7 to 10,8"
 		boxes.layer = HUD_LAYER
 		boxes.plane = HUD_PLANE
 
 	closer = new /atom/movable/screen/close()
-	closer.master = src
+	closer.master_ref = WEAKREF(src)
 
 	orient2hud()
+
+
+/obj/item/storage/ComponentInitialize()
+	. = ..()
+	AddElement(/datum/element/contextual_screentip_bare_hands, rmb_text = "Открыть")
 
 /obj/item/storage/Destroy()
 	for(var/obj/O in contents)
@@ -122,16 +129,16 @@
 		target.handle_item_insertion(thing, user)
 
 /obj/item/storage/mouse_drop_dragged(atom/over_object, mob/user, src_location, over_location, params)
-	if(!isliving(usr))
-		return FALSE
+	if(!isliving(user))
+		return
 
 	// Stops inventory actions in a mech, while ventcrawling and while being incapacitated
 	if(ismecha(user.loc) || is_ventcrawling(user) || user.incapacitated())
-		return FALSE
+		return
 
-	if(over_object == user && user.Adjacent(src)) // this must come before the screen objects only block
+	if(over_object == user && IsReachableBy(user)) // this must come before the screen objects only block
 		open(user)
-		return FALSE
+		return
 
 	if(isstorage(over_object))
 		var/obj/item/storage = over_object
@@ -139,31 +146,29 @@
 			dump_storage(user, over_object)
 			return
 
-	if((!istype(src, /obj/item/storage/lockbox) && (istable(over_object) || isfloorturf(over_object)) \
-		&& length(contents) && loc == user && !user.incapacitated() && user.Adjacent(over_object)))
+	if(istype(src, /obj/item/storage/lockbox) || (!istable(over_object) && !isfloorturf(over_object)) \
+		|| !length(contents) || loc != user || user.incapacitated() || !over_object.IsReachableBy(user))
+		return
 
-		if(tgui_alert(user, "Опустошить содержимое [declent_ru(GENITIVE)] на [over_object.declent_ru(ACCUSATIVE)]?", "Подтверждение", list("Да", "Нет")) != "Да")
-			return FALSE
+	if(tgui_alert(user, "Опустошить содержимое [declent_ru(GENITIVE)] на [over_object.declent_ru(ACCUSATIVE)]?", "Подтверждение", list("Да", "Нет")) != "Да")
+		return
 
-		if(!user || !over_object || user.incapacitated() || loc != user || !user.Adjacent(over_object))
-			return FALSE
+	if(!user || !over_object || user.incapacitated() || loc != user || !over_object.IsReachableBy(user))
+		return
 
-		if(user.s_active == src)
-			close(user)
+	if(user.s_active == src)
+		close(user)
 
-		user.face_atom(over_object)
-		user.visible_message(
-			span_notice("[user] опустоша[PLUR_ET_YUT(user)] содерижмое [declent_ru(GENITIVE)] на [over_object.declent_ru(ACCUSATIVE)]."),
-			span_notice("Вы опустошаете содержимое [declent_ru(ACCUSATIVE)] на [over_object.declent_ru(ACCUSATIVE)]."),
-		)
-		var/turf/object_turf = get_turf(over_object)
-		for(var/obj/item/item in src)
-			remove_from_storage(item, object_turf)
+	user.face_atom(over_object)
+	user.visible_message(
+		span_notice("[user] опустоша[PLUR_ET_YUT(user)] содерижмое [declent_ru(GENITIVE)] на [over_object.declent_ru(ACCUSATIVE)]."),
+		span_notice("Вы опустошаете содержимое [declent_ru(ACCUSATIVE)] на [over_object.declent_ru(ACCUSATIVE)]."),
+	)
+	var/turf/object_turf = get_turf(over_object)
+	for(var/obj/item/item in src)
+		remove_from_storage(item, object_turf)
 
-		update_icon() // For content-sensitive icons
-		return FALSE
-
-	return ..()
+	update_appearance() // For content-sensitive icons
 
 /obj/item/storage/click_alt(mob/user)
 	if(isobserver(user))
@@ -171,6 +176,18 @@
 		return CLICK_ACTION_SUCCESS
 	open(user)
 	return CLICK_ACTION_SUCCESS
+
+/obj/item/storage/attack_hand_secondary(mob/user, list/modifiers)
+	. = ..()
+	if(. == SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN)
+		return
+
+	click_alt(user)
+	return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+
+/obj/item/storage/attack_self_secondary(mob/user, list/modifiers)
+	open(user)
+	return TRUE
 
 /obj/item/storage/proc/return_inv()
 	var/list/L = list()
@@ -222,21 +239,24 @@
 
 	for(var/mob/dead/observer/observe in user.inventory_observers)
 		if(!observe.client)
+			observe.handle_when_autoobserve_move()
 			LAZYREMOVE(user.inventory_observers, observe)
 			continue
 		show_to(observe, TRUE)
 
 /obj/item/storage/proc/hide_from(mob/user, from_inv_observers = FALSE)
 	LAZYREMOVE(mobs_viewing, user) // Remove clientless mobs too
-	if(!user.client)
-		return
-	user.client.screen -= boxes
 	var/datum/storage_box/box = LAZYACCESS(storage_boxes, user)
-	if(box)
-		user.client.screen -= box.screens_list()
+	var/client/user_client = user.client
+	if(storage_boxes)
 		storage_boxes -= user
-	user.client.screen -= closer
-	user.client.screen -= contents
+	if(user_client)
+		if(box)
+			user_client.screen -= box.screens_list()
+		user_client.screen -= boxes
+		user_client.screen -= closer
+		user_client.screen -= contents
+
 	if(user.s_active == src)
 		user.s_active = null
 
@@ -247,8 +267,8 @@
 
 	for(var/mob/dead/observer/observe in user.inventory_observers)
 		if(!observe.client)
+			observe.handle_when_autoobserve_move()
 			LAZYREMOVE(user.inventory_observers, observe)
-			continue
 		hide_from(observe, TRUE)
 
 /obj/item/storage/proc/on_mob_qdeleting(mob/source, force)
@@ -376,33 +396,33 @@
 	/// Storage closer ref
 	var/atom/movable/screen/close/closer
 
-/datum/storage_box/New(master)
+/datum/storage_box/New(new_master)
 	// Making ref to parent storage
-	storage = master
+	storage = new_master
 
 	// Initialize screen objects
 	start = new
 	start.icon_state = "storage_start"
-	start.master = master
+	start.master_ref = WEAKREF(new_master)
 
 	end = new
 	end.icon_state = "storage_end"
-	end.master = master
+	end.master_ref = WEAKREF(new_master)
 
 	continued = new
 	continued.icon_state = "storage_continue"
-	continued.master = master
+	continued.master_ref = WEAKREF(new_master)
 
 	top = new
 	top.icon_state = "storage_top"
-	top.master = master
+	top.master_ref = WEAKREF(new_master)
 
 	bottom = new
 	bottom.icon_state = "storage_bottom"
-	bottom.master = master
+	bottom.master_ref = WEAKREF(new_master)
 
 	closer = new
-	closer.master = master
+	closer.master_ref = WEAKREF(new_master)
 
 	place_items = new
 
@@ -683,6 +703,11 @@
 		if(!usr.can_unEquip(W))
 			return FALSE
 
+	if(dynamic_storage_size && isstorage(loc) && !istype(loc, /obj/item/storage/backpack/holding))
+		if(!stop_messages)
+			balloon_alert(usr, "не хватит места!")
+		return FALSE
+
 	return TRUE
 
 /// This proc handles items being inserted. It does not perform any checks of whether an item can or can't be inserted. That's done by can_be_inserted()
@@ -719,6 +744,7 @@
 
 		for(var/mob/dead/observer/observe in usr.inventory_observers)
 			if(!observe.client)
+				observe.handle_when_autoobserve_move()
 				LAZYREMOVE(usr.inventory_observers, observe)
 				continue
 			observe.client.screen -= W
@@ -742,6 +768,7 @@
 	W.pixel_x = initial(W.pixel_x)
 	W.mouse_opacity = MOUSE_OPACITY_OPAQUE //So you can click on the area around the item to equip it, instead of having to pixel hunt
 	update_icon()
+	SEND_SIGNAL(src, COMSIG_ITEM_INSERTED_INTO_STORAGE)
 	return TRUE
 
 /// Call this proc to handle the removal of an item from the storage item. The item will be moved to the atom sent as new_target
@@ -783,11 +810,12 @@
 		W.maptext = ""
 	W.on_exit_storage(src)
 	update_icon()
+	SEND_SIGNAL(src, COMSIG_ITEM_REMOVED_FROM_STORAGE)
 	return TRUE
 
-/obj/item/storage/Exited(atom/movable/departed, atom/newLoc)
-	remove_from_storage(departed, newLoc) //worry not, comrade; this only gets called once
-	. = ..()
+/obj/item/storage/Exited(atom/movable/gone, direction)
+	remove_from_storage(gone) //worry not, comrade; this only gets called once
+	return ..()
 
 /obj/item/storage/deconstruct(disassembled = TRUE)
 	var/drop_loc = loc
@@ -810,13 +838,24 @@
 	if(isrobot(user))
 		return .|ATTACK_CHAIN_BLOCKED_ALL //Robots can't interact with storage items.
 
-	if(!can_be_inserted(I))
-		if(length(contents) >= storage_slots) //don't use items on the backpack if they don't fit
-			return .|ATTACK_CHAIN_BLOCKED_ALL
+	if(!attempt_insert(I))
 		return .
 
-	handle_item_insertion(I)
 	return .|ATTACK_CHAIN_BLOCKED_ALL
+
+/obj/item/storage/proc/attempt_insert(obj/item/item)
+	if(!can_be_inserted(item))
+		if(length(contents) >= storage_slots) //don't use items on the backpack if they don't fit
+			return TRUE
+		return FALSE
+
+	handle_item_insertion(item)
+	return TRUE
+
+/obj/item/storage/attackby_secondary(obj/item/weapon, mob/user, list/modifiers, list/attack_modifiers)
+	. = ..()
+	open(user)
+	return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
 
 /obj/item/storage/attack_hand(mob/user)
 	if(ishuman(user))
@@ -870,16 +909,11 @@
 	drop_inventory(usr)
 
 /obj/item/storage/proc/drop_inventory(user)
-	var/turf/T = get_turf(src)
+	var/turf/current_turf = get_turf(src)
 	hide_from(user)
-	for(var/obj/item/I in contents)
-		remove_from_storage(I, T)
+	for(var/obj/item/item in contents)
+		remove_from_storage(item, current_turf)
 		CHECK_TICK
-
-/obj/item/storage/proc/force_drop_inventory()
-	var/turf/T = get_turf(src)
-	for(var/obj/item/I in contents)
-		remove_from_storage(I, T)
 
 /**
  * Populates the container with items
@@ -932,42 +966,6 @@
 	var/obj/item/stack/I = new foldable(get_turf(src), foldable_amt)
 	user.put_in_hands(I)
 	qdel(src)
-
-//Returns the storage depth of an atom. This is the number of storage items the atom is contained in before reaching toplevel (the area).
-//Returns -1 if the atom was not found on container.
-/atom/proc/storage_depth(atom/container)
-	var/depth = 0
-	var/atom/cur_atom = src
-
-	while(cur_atom && !(cur_atom in container.contents))
-		if(isarea(cur_atom))
-			return -1
-		if(isstorage(cur_atom.loc))
-			depth++
-		cur_atom = cur_atom.loc
-
-	if(!cur_atom)
-		return -1	//inside something with a null loc.
-
-	return depth
-
-//Like storage depth, but returns the depth to the nearest turf
-//Returns -1 if no top level turf (a loc was null somewhere, or a non-turf atom's loc was an area somehow).
-/atom/proc/storage_depth_turf()
-	var/depth = 0
-	var/atom/cur_atom = src
-
-	while(cur_atom && !isturf(cur_atom))
-		if(isarea(cur_atom))
-			return -1
-		if(isstorage(cur_atom.loc))
-			depth++
-		cur_atom = cur_atom.loc
-
-	if(!cur_atom)
-		return -1	//inside something with a null loc.
-
-	return depth
 
 /obj/item/storage/serialize()
 	var/data = ..()
@@ -1033,6 +1031,11 @@
 		orient2hud(user)
 		show_to(user)
 	return TRUE
+
+/obj/item/storage/examine(mob/user)
+	. = ..()
+	if(dynamic_storage_size)
+		. += span_notice("Размер <b>изменяется</b> в зависимости от наличия содержимого.")
 
 #undef STORAGE_CAP_WIDTH
 #undef STORED_CAP_WIDTH

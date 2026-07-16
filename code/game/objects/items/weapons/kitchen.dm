@@ -43,7 +43,8 @@
 	. = ..()
 	var/obj/item/reagent_containers/food/snack = locate() in src
 	if(snack)
-		var/mutable_appearance/food_olay = mutable_appearance('icons/obj/kitchen.dmi', "loadedfood", color = snack.filling_color)
+		var/mutable_appearance/food_olay = mutable_appearance('icons/obj/kitchen.dmi', "loadedfood")
+		food_olay.color = snack.filling_color
 		food_olay.pixel_w = pixel_w
 		food_olay.pixel_z = pixel_y
 		. += food_olay
@@ -274,7 +275,7 @@
 	w_class = WEIGHT_CLASS_NORMAL
 
 /obj/item/kitchen/knife/butcher/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "мясницкий тесак",
 		GENITIVE = "мясницкого тесака",
 		DATIVE = "мясницкому тесаку",
@@ -292,13 +293,6 @@
 		swing_sound = SFX_CHOP_SWING_LIGHT \
 	)
 
-/obj/item/kitchen/knife/butcher/sharped
-	desc = "Огромный мясницкий тесак, предназначенный для измельчения мяса. В том числе и клоунов и их субпродуктов. Блестит от заточки."
-
-/obj/item/kitchen/knife/butcher/sharped/Initialize(mapload)
-	. = ..()
-	SEND_SIGNAL(src, COMSIG_ITEM_SHARPEN_ACT, 4, 30)
-
 /obj/item/kitchen/knife/butcher/meatcleaver
 	name = "meat cleaver"
 	icon_state = "mcleaver"
@@ -307,7 +301,7 @@
 	throwforce = 15
 
 /obj/item/kitchen/knife/butcher/meatcleaver/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "тесак для мяса",
 		GENITIVE = "тесака для мяса",
 		DATIVE = "тесаку для мяса",
@@ -358,7 +352,7 @@
 	throwforce = 15
 
 /obj/item/kitchen/knife/combat/survival/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "нож для выживания",
 		GENITIVE = "ножа для выживания",
 		DATIVE = "ножу для выживания",
@@ -387,7 +381,7 @@
 	drop_sound = 'sound/items/handling/drop/bone_drop.ogg'
 
 /obj/item/kitchen/knife/combat/survival/bone/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "костяной кинжал",
 		GENITIVE = "костяного кинжала",
 		DATIVE = "костяному кинжалу",
@@ -406,7 +400,7 @@
 	item_state = "eel_sharpened_tail"
 
 /obj/item/kitchen/knife/combat/survival/bone/eel/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "хвост донного угря",
 		GENITIVE = "хвоста донного угря",
 		DATIVE = "хвосту донного угря",
@@ -490,7 +484,7 @@
 	attack_verb = list("полоснул", "уколол", "поранил", "порезал", "рубанул")
 
 /obj/item/kitchen/knife/ghostface_knife/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "старый нож",
 		GENITIVE = "старого ножа",
 		DATIVE = "старому ножу",
@@ -515,7 +509,7 @@
 	icon_state = "devil_ghostface_knife"
 
 /obj/item/kitchen/knife/ghostface_knife/devil/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "старый ржавый нож",
 		GENITIVE = "старого ржавого ножа",
 		DATIVE = "старому ржавому ножу",

@@ -743,13 +743,13 @@
 				to_chat(user, span_warning("Nothing happens..."))
 
 /obj/machinery/hydroponics/attackby(obj/item/I, mob/user, params)
-	var/is_reagent_container = istype(I, /obj/item/reagent_containers)
+	var/is_reagent_container = is_reagent_container(I)
 	if(user.a_intent == INTENT_HARM)
 		if(is_reagent_container)
 			return ..() | ATTACK_CHAIN_NO_AFTERATTACK
 		return ..()
 
-	if(istype(I, /obj/item/reagent_containers))  // Syringe stuff (and other reagent containers now too)
+	if(is_reagent_container(I))  // Syringe stuff (and other reagent containers now too)
 		add_fingerprint(user)
 		var/obj/item/reagent_containers/reagent_source = I
 		var/is_syringe = issyringe(reagent_source)
@@ -757,15 +757,15 @@
 			var/obj/item/reagent_containers/syringe/syringe = reagent_source
 			if(syringe.mode != 1)
 				to_chat(user, span_warning("You cannot get any extract out of this plant."))		//That. Gives me an idea...
-				return ATTACK_CHAIN_PROCEED|ATTACK_CHAIN_NO_AFTERATTACK
+				return ATTACK_CHAIN_PROCEED_NO_AFTERATTACK
 
 		if(!reagent_source.reagents.total_volume)
 			to_chat(user, span_warning("The [reagent_source.name] is empty."))
-			return ATTACK_CHAIN_PROCEED|ATTACK_CHAIN_NO_AFTERATTACK
+			return ATTACK_CHAIN_PROCEED_NO_AFTERATTACK
 
 		if(reagent_source.has_lid && !reagent_source.is_drainable()) //if theres a LID then cannot transfer reagents.
 			to_chat(user, span_warning("You need to open [reagent_source] first."))
-			return ATTACK_CHAIN_PROCEED|ATTACK_CHAIN_NO_AFTERATTACK
+			return ATTACK_CHAIN_PROCEED_NO_AFTERATTACK
 
 		var/list/trays = list(src)//makes the list just this in cases of syringes and compost etc
 		var/target = myseed ? myseed.plantname : name
@@ -1123,7 +1123,7 @@
 	msg += "- Toxicity level: [span_notice("[toxic] / 100")]"
 	msg += "- Water level: [span_notice("[waterlevel] / [maxwater]")]"
 	msg += "- Nutrition level: [span_notice("[nutrilevel] / [maxnutri]")]"
-	to_chat(user, chat_box_examine(msg.Join("\n")))
+	to_chat(user, boxed_message(msg.Join("\n")))
 
 /obj/machinery/hydroponics/attack_ghost(mob/dead/observer/user)
 	if(!istype(user)) // Make sure user is actually an observer. Revenents also use attack_ghost, but do not have the toggle plant analyzer var.

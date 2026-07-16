@@ -33,8 +33,8 @@
 
 /obj/projectile/bullet/midbullet3/hp/on_hit(atom/target, blocked, hit_zone)
 	if(..(target, blocked))
-		var/mob/living/M = target
-		M.Slowed(2 SECONDS)
+		var/mob/living/target_mob = target
+		target_mob.Slowed(2 SECONDS, 2)
 
 /obj/projectile/bullet/midbullet3/ap
 	damage = 27
@@ -50,7 +50,7 @@
 	stamina = 20
 
 /obj/projectile/bullet/weakbullet3/fortynr/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "пуля",
 		GENITIVE = "пули",
 		DATIVE = "пуле",
@@ -60,7 +60,7 @@
 	)
 
 /obj/projectile/bullet/weakbullet4/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "резиновая пуля",
 		GENITIVE = "резиновой пули",
 		DATIVE = "резиновой пуле",
@@ -86,8 +86,8 @@
 // MARK: .45 N&R
 /obj/projectile/bullet/weakbullet4/c45nr
 	name = "45 N&R"
-	damage = 12
-	stamina = 15
+	damage = 15
+	stamina = 10
 	ricochet_chance = 10
 
 // MARK: .45 Colt
@@ -109,6 +109,13 @@
 	icon_state = "bullet-r"
 	ricochet_chance = 20
 
+//MARK: 12.7x55
+/obj/projectile/bullet/c12_dot_7X55
+	damage = 75
+	ricochet_chance = 33
+	speed = 1
+
+
 // MARK: .50AE
 /obj/projectile/bullet/desert_eagle
 	stamina = 33
@@ -123,7 +130,7 @@
 	ricochet_chance = 10
 
 /obj/projectile/bullet/ftt762/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "старая пуля FMJ 7,62x25 мм TT",
 		GENITIVE = "старой пули FMJ 7,62x25 мм TT",
 		DATIVE = "старой пуле FMJ 7,62x25 мм TT",

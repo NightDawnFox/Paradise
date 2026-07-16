@@ -3,7 +3,6 @@
 	icon_state = "girder"
 	anchored = TRUE
 	density = TRUE
-	layer = BELOW_OBJ_LAYER
 	cares_about_temperature = TRUE
 	max_integrity = 200
 	rad_insulation = RAD_VERY_LIGHT_INSULATION
@@ -17,7 +16,7 @@
 	var/metal_type = /obj/item/stack/sheet/metal
 
 /obj/structure/girder/add_debris_element()
-	AddElement(/datum/element/debris, DEBRIS_SPARKS, -40, 8, 1)
+	generate_debris_handler(DEBRIS_SPARKS, -40, 8, 1)
 
 /obj/structure/girder/examine(mob/user)
 	. = ..()
@@ -247,11 +246,11 @@
 				return ATTACK_CHAIN_BLOCKED_ALL
 
 			if(GIRDER_REINF)
-				if(plasteel.get_amount() < 2)
-					to_chat(user, span_warning("You need at least two sheets of plasteel to finalize the reinforced wall!"))
+				if(plasteel.get_amount() < 1)
+					to_chat(user, span_warning("You need at least one sheet of plasteel to finalize the reinforced wall!"))
 					return .
 				to_chat(user, span_notice("You start finalizing the reinforced wall..."))
-				if(!do_after(user, 2 SECONDS * plasteel.toolspeed, src, category = DA_CAT_TOOL) || state != GIRDER_REINF || !isfloorturf(loc) || QDELETED(plasteel) || !plasteel.use(2))
+				if(!do_after(user, 2 SECONDS * plasteel.toolspeed, src, category = DA_CAT_TOOL) || state != GIRDER_REINF || !isfloorturf(loc) || QDELETED(plasteel) || !plasteel.use(1))
 					return .
 				to_chat(user, span_notice("You have finalized the reinforced wall."))
 				var/turf/floor = loc
@@ -262,11 +261,11 @@
 				return ATTACK_CHAIN_BLOCKED_ALL
 
 			else
-				if(plasteel.get_amount() < 2)
-					to_chat(user, span_warning("You need at least two sheets of plasteel to reinforce the girder!"))
+				if(plasteel.get_amount() < 1)
+					to_chat(user, span_warning("You need at least one sheet of plasteel to reinforce the girder!"))
 					return .
 				to_chat(user, span_notice("You start reinforcing the girder..."))
-				if(!do_after(user, 6 SECONDS * plasteel.toolspeed, src, category = DA_CAT_TOOL) || state == GIRDER_DISPLACED || state == GIRDER_REINF || QDELETED(plasteel) || !plasteel.use(2))
+				if(!do_after(user, 6 SECONDS * plasteel.toolspeed, src, category = DA_CAT_TOOL) || state == GIRDER_DISPLACED || state == GIRDER_REINF || QDELETED(plasteel) || !plasteel.use(1))
 					return .
 				to_chat(user, span_notice("You reinforce the girder."))
 				var/obj/structure/girder/reinforced/girder = new(loc)

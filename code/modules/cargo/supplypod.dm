@@ -14,6 +14,7 @@
 	density = FALSE
 	ignore_shoves = TRUE
 	no_throw_opens = TRUE
+	anchorable = FALSE
 	///List of bitflags for supply pods, see: code\__DEFINES\obj_flags.dm
 	var/pod_flags = NONE
 
@@ -57,7 +58,7 @@
 	var/list/reverse_option_list = list(MOB_OPTION=FALSE, UNANCHORED_OPTION=FALSE, ANCHORED_OPTION=FALSE, MECHA_OPTION=FALSE)
 
 /obj/structure/closet/supplypod/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "капсула снабжения",
 		GENITIVE = "капсулы снабжения",
 		DATIVE = "капсуле снабжения",
@@ -111,7 +112,7 @@
 	reverse_option_list = list(MOB_OPTION = FALSE, UNANCHORED_OPTION = FALSE, ANCHORED_OPTION = FALSE, MECHA_OPTION = FALSE)
 
 /obj/structure/closet/supplypod/extractionpod/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "капсула эвакуации \"Синдиката\"",
 		GENITIVE = "капсулы эвакуации \"Синдиката\"",
 		DATIVE = "капсуле эвакуации \"Синдиката\"",
@@ -201,7 +202,7 @@
 	specialised = TRUE
 
 /obj/structure/closet/supplypod/back_to_station/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "кроваво-красная капсула снабжения",
 		GENITIVE = "кроваво-красной капсулы снабжения",
 		DATIVE = "кроваво-красной капсуле снабжения",
@@ -221,7 +222,7 @@
 	effectMissile = TRUE
 
 /obj/structure/closet/supplypod/deadmatch_missile/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "крылатая ракета",
 		GENITIVE = "крылатой ракеты",
 		DATIVE = "крылатой ракете",
@@ -267,7 +268,7 @@
 /obj/structure/closet/supplypod/Initialize(mapload, customStyle = FALSE)
 	. = ..()
 	if(!loc)
-		var/shippingLane = GLOB.areas_by_type[/area/centcom/supplypod/supplypod_temp_holding] //temporary holder for supplypods mid-transit
+		var/shippingLane = GLOB.areas_by_type[/area/centcom/central_command_areas/supplypod/supplypod_temp_holding] //temporary holder for supplypods mid-transit
 		forceMove(shippingLane)
 	if(customStyle)
 		style = customStyle
@@ -282,9 +283,9 @@
 	SIGNAL_HANDLER
 	SEND_SIGNAL(src, COMSIG_SUPPLYPOD_ENTERED, arrived, old_loc, old_locs)
 
-/obj/structure/closet/supplypod/proc/on_exited(datum/source, mob/living/exited, atom/new_loc)
+/obj/structure/closet/supplypod/proc/on_exited(datum/source, mob/living/exited, direction)
 	SIGNAL_HANDLER
-	SEND_SIGNAL(src, COMSIG_SUPPLYPOD_EXITED, exited, new_loc)
+	SEND_SIGNAL(src, COMSIG_SUPPLYPOD_EXITED, exited, direction)
 
 /obj/structure/closet/supplypod/proc/setStyle(datum/pod_style/chosen_style) //Used to give the sprite an icon state, name, and description.
 	style = chosen_style
@@ -368,7 +369,7 @@
 	if(decal)
 		. += decal
 
-/obj/structure/closet/supplypod/tool_act(mob/living/user, obj/item/I, tool_type)
+/obj/structure/closet/supplypod/tool_act(mob/living/user, obj/item/tool, list/modifiers)
 	if(bluespace) //We dont want to worry about interacting with bluespace pods, as they are due to delete themselves soon anyways.
 		return FALSE
 	else
@@ -413,7 +414,7 @@
 	if(holder != src)
 		contents |= holder.contents
 		qdel(holder)
-	var/shippingLane = GLOB.areas_by_type[/area/centcom/supplypod/supplypod_temp_holding]
+	var/shippingLane = GLOB.areas_by_type[/area/centcom/central_command_areas/supplypod/supplypod_temp_holding]
 	forceMove(shippingLane) //Move to the centcom-z-level until the pod_landingzone says we can drop back down again
 	if(custom_rev_delay)
 		delays = reverse_delays
@@ -495,7 +496,7 @@
 		return
 	if(opened) //This is to ensure we don't open something that has already been opened
 		return
-	holder.setOpened()
+	holder.set_opened()
 	var/turf/turf_underneath = get_turf(holder) //Get the turf of whoever's contents we're talking about
 	if(ismob(holder)) //Allows mobs to assume the role of the holder, meaning we look at the mob's contents rather than the supplypod's contents. Typically by this point the supplypod's contents have already been moved over to the mob's contents
 		var/mob/holder_as_mob = holder
@@ -536,7 +537,7 @@
 		return
 	take_contents(holder)
 	playsound(holder, close_sound, soundVolume * 0.75, TRUE, -3)
-	holder.setClosed()
+	holder.set_closed()
 	addtimer(CALLBACK(src, PROC_REF(preReturn), holder), delays[POD_LEAVING] * 0.2) //Start to leave a bit after closing for cinematic effect
 
 /obj/structure/closet/supplypod/take_contents(atom/movable/holder)
@@ -605,40 +606,37 @@
 	reverse_dropoff_coords = list(picked_turf.x, picked_turf.y, picked_turf.z)
 	return ..()
 
-/obj/structure/closet/supplypod/MouseDrop_T(atom/movable/O, mob/living/user, params)
-	if(!(SEND_SIGNAL(src, COMSIG_SUPPLYPOD_CLIMB_CHECK, O, user) & COMPONENT_CLIMB))
+/obj/structure/closet/supplypod/mouse_drop_receive(atom/movable/target_movable, mob/living/user, params)
+	if(!(SEND_SIGNAL(src, COMSIG_SUPPLYPOD_CLIMB_CHECK, target_movable, user) & COMPONENT_CLIMB))
 		return ..()
 
-	to_chat(user, span_notice("Вы начинаетезаталкивать"))
-	user.visible_message(span_notice("[DECLENT_RU_CAP(user, NOMINATIVE)] начинает запихивать [O.declent_ru(ACCUSATIVE)] в [declent_ru(ACCUSATIVE)]."),
-						span_notice("Вы начинаете запихивать [O.declent_ru(ACCUSATIVE)] в [declent_ru(ACCUSATIVE)]."))
+	balloon_alert(user, "заталкивание...")
+	user.visible_message(
+		span_notice("[DECLENT_RU_CAP(user, NOMINATIVE)] начинает запихивать [target_movable.declent_ru(ACCUSATIVE)] в [declent_ru(ACCUSATIVE)]."),
+		span_notice("Вы начинаете запихивать [target_movable.declent_ru(ACCUSATIVE)] в [declent_ru(ACCUSATIVE)]."),
+	)
 
 	if(!do_after(user, 5 SECONDS, src))
 		return
 
-	. = ..()
+	target_movable.forceMove(get_turf(src))
 
-	if(!.)
-		return
-
-	O.forceMove(get_turf(src))
-
-/obj/structure/closet/supplypod/setOpened() //Proc exists here, as well as in any atom that can assume the role of a "holder" of a supplypod. Check the open_pod() proc for more details
+/obj/structure/closet/supplypod/set_opened() //Proc exists here, as well as in any atom that can assume the role of a "holder" of a supplypod. Check the open_pod() proc for more details
 	opened = TRUE
 	set_density(FALSE)
 	update_appearance()
 	after_open(null, FALSE)
 
-/obj/structure/closet/supplypod/extractionpod/setOpened()
+/obj/structure/closet/supplypod/extractionpod/set_opened()
 	opened = TRUE
 	set_density(TRUE)
 	update_appearance()
 	after_open(null, FALSE)
 
-/obj/structure/closet/supplypod/open()
+/obj/structure/closet/supplypod/open(mob/living/user, force = FALSE)
 	return
 
-/obj/structure/closet/supplypod/setClosed() //Ditto
+/obj/structure/closet/supplypod/set_closed() //Ditto
 	opened = FALSE
 	set_density(TRUE)
 	update_appearance()
@@ -740,7 +738,7 @@
 	var/verticle_offset = 0
 
 /obj/effect/supplypod_rubble/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "обломки",
 		GENITIVE = "обломков",
 		DATIVE = "обломкам",
@@ -801,7 +799,7 @@
 	var/list/smoke_effects = new /list(13)
 
 /obj/effect/pod_landingzone/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "индикатор зоны приземления",
 		GENITIVE = "индикатора зоны приземления",
 		DATIVE = "индикатору зоны приземления",
@@ -907,4 +905,5 @@
 	QDEL_NULL(helper)
 	pod.preOpen() //Begin supplypod open procedures. Here effects like explosions, damage, and other dangerous (and potentially admin-caused, if the centcom_podlauncher datum was used) memes will take place
 	drawSmoke()
+	pod = null
 	qdel(src) //The pod_landingzone's purpose is complete. It can rest easy now

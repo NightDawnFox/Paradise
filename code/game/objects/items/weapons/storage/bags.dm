@@ -42,12 +42,17 @@
 	icon_state = "trashbag"
 	item_state = "trashbag"
 
-	w_class = WEIGHT_CLASS_BULKY
 	slot_flags = NONE
 	storage_slots = 30
 	max_combined_w_class = 30
 	can_hold = list() // any
 	cant_hold = list(/obj/item/disk/nuclear)
+	dynamic_storage_size = TRUE
+
+/obj/item/storage/bag/trash/Initialize(mapload)
+	. = ..()
+	if(dynamic_storage_size)
+		AddComponent(/datum/component/differentiate_storage_size, WEIGHT_CLASS_BULKY)
 
 /obj/item/storage/bag/trash/suicide_act(mob/user)
 	user.visible_message(span_suicide("[user] puts the [name] over [user.p_their()] head and starts chomping at the insides! Disgusting!"))
@@ -76,6 +81,40 @@
 	max_combined_w_class = 60
 	storage_slots = 60
 	item_flags = NO_MAT_REDEMPTION
+
+/obj/item/storage/bag/trash/bluespace/cyborg
+
+/obj/item/storage/bag/trash/interact_with_atom(atom/interacting_with, mob/living/user, list/modifiers)
+	. = ..()
+	if(. & ITEM_INTERACT_ANY_BLOCKER)
+		return .
+	trashbag_interact(interacting_with, user)
+
+/obj/item/storage/bag/trash/proc/trashbag_interact(atom/target, mob/user)
+	var/turf/target_turf = get_turf(target)
+	var/success = FALSE
+	var/failure = FALSE
+	for(var/obj/item/item in target_turf)
+		if(item == src || item.anchored)
+			continue
+
+		if(!can_be_inserted(item, stop_messages = TRUE))
+			failure = TRUE
+			continue
+
+		success = TRUE
+		item.do_pickup_animation(user)
+		handle_item_insertion(item, prevent_warning = TRUE)
+
+	if(!success)
+		user.balloon_alert(user, "не удалось собрать!")
+		return
+
+	playsound(src, SFX_PICK_UP, 50, TRUE)
+	if(failure)
+		user.balloon_alert(user, "почти всё собрано!")
+		return
+	user.balloon_alert(user, "успешно собрано!")
 
 ////////////////////////////////////////
 // MARK:	Plastic bag
@@ -138,7 +177,7 @@
 	var/mob/listening_to
 
 /obj/item/storage/bag/ore/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "шахтёрская сумка",
 		GENITIVE = "шахтёрской сумки",
 		DATIVE = "шахтёрской сумке",
@@ -154,7 +193,7 @@
 	storage_slots = 16 //little better
 
 /obj/item/storage/bag/ore/bigger/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "промышленная шахтёрская сумка",
 		GENITIVE = "промышленной шахтёрской сумки",
 		DATIVE = "промышленной шахтёрской сумке",
@@ -179,7 +218,7 @@
 	icon_state = "satchel_bspace"
 
 /obj/item/storage/bag/ore/holding/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "шахтёрская сумка хранения",
 		GENITIVE = "шахтёрской сумки хранения",
 		DATIVE = "шахтёрской сумке хранения",
@@ -207,7 +246,7 @@
 	can_hold = list(/obj/item/gem)
 
 /obj/item/storage/bag/gem/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "сумка для самоцветов",
 		GENITIVE = "сумки для самоцветов",
 		DATIVE = "сумке для самоцветов",
@@ -307,7 +346,7 @@
 	var/bombs_left = 0
 
 /obj/item/storage/bag/kaboom/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "Система Размещения Зарядов",
 		GENITIVE = "Системы Размещения Зарядов",
 		DATIVE = "Системе Размещения Зарядов",
@@ -350,8 +389,8 @@
 		return FALSE
 	return TRUE
 
-/obj/item/storage/bag/kaboom/afterattack(atom/movable/AM, mob/living/user, flag, params)
-	if(istype(AM, /obj/item/grenade/plastic))
+/obj/item/storage/bag/kaboom/afterattack(atom/target, mob/user, proximity_flag, list/modifiers, status)
+	if(istype(target, /obj/item/grenade/plastic))
 		if(!..())
 			return
 
@@ -362,22 +401,22 @@
 	if(isnull(nextbomb))
 		nextbomb = pick(contents)
 
-	if(!flag)
+	if(!proximity_flag)
 		return
 
-	if(iscarbon(AM))
+	if(iscarbon(target))
 		balloon_alert(user, "нельзя прикрепить!")
 		return
 
-	if(isobserver(AM))
-		to_chat(user, span_warning("Ваша рука проходит сквозь [AM]!"))
+	if(isobserver(target))
+		to_chat(user, span_warning("Ваша рука проходит сквозь [target]!"))
 		return
 	balloon_alert(user, "устанавливаем...")
-	if(do_after(user, 5 SECONDS, AM))
+	if(do_after(user, 5 SECONDS, target))
 		if(istype(nextbomb, /obj/item/grenade/plastic/miningcharge))
 			nextbombbutmining = nextbomb
 			nextbombbutmining.override_safety()
-		nextbomb.attach(AM, user, TRUE)
+		nextbomb.attach(target, user, TRUE)
 		if(!LAZYLEN(contents))
 			to_chat(user, span_notice("Заряд установлен с таймером [nextbomb.det_time / 10], сумка пуста."))
 		else
@@ -623,7 +662,7 @@
 	resistance_flags = FLAMMABLE
 
 /obj/item/storage/bag/books/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "книжная сумка",
 		GENITIVE = "книжной сумки",
 		DATIVE = "книжной сумке",
@@ -662,7 +701,7 @@
 	resistance_flags = FLAMMABLE
 
 /obj/item/storage/bag/construction/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "строительная сумка",
 		GENITIVE = "строительной сумки",
 		DATIVE = "строительной сумке",
@@ -675,118 +714,23 @@
 // MARK:	Tray
 ////////////////////////////////////////
 /obj/item/storage/bag/tray
-	name = "tray"
+	name = "serving tray"
+	desc = "Металлический поднос, на который можно выкладывать еду и напитки."
 	icon = 'icons/obj/food/containers.dmi'
 	icon_state = "tray"
-	desc = "A metal tray to lay food on."
 	force = 5
-	throwforce = 10.0
+	throwforce = 10
 	throw_speed = 3
 	throw_range = 5
 	w_class = WEIGHT_CLASS_BULKY
 	flags = CONDUCT
 	materials = list(MAT_METAL=3000)
 	cant_hold = list(/obj/item/disk/nuclear) // Prevents some cheesing
+	pickup_sound = SFX_TRAY_PICKUP
+	drop_sound = SFX_TRAY_DROP
 
-/obj/item/storage/bag/tray/attack(mob/living/target, mob/living/user, params, def_zone, skip_attack_anim = FALSE)
-	. = ..()
-	if(!ATTACK_CHAIN_SUCCESS_CHECK(.))
-		return .
-
-	playsound(target, pick('sound/items/trayhit1.ogg', 'sound/items/trayhit2.ogg'), 50, TRUE)
-	if(ishuman(target) && prob(10))
-		target.Knockdown(4 SECONDS)
-
-	// Drop all the things. All of them.
-	var/list/obj/item/oldContents = contents.Copy()
-	drop_inventory(user)
-
-	// Make each item scatter a bit
-	for(var/obj/item/I in oldContents)
-		spawn()
-			for(var/i = 1, i <= rand(1,2), i++)
-				if(I)
-					step(I, pick(NORTH,SOUTH,EAST,WEST))
-					sleep(rand(2,4))
-
-/obj/item/storage/bag/tray/update_overlays()
-	. = ..()
-	for(var/obj/item/item in contents)
-		. += image(icon = item.icon, icon_state = item.icon_state, layer = -1, pixel_w = rand(-4,4), pixel_z = rand(-4,4))
-
-/obj/item/storage/bag/tray/cyborg
-	var/placement_radius = 12
-
-/obj/item/storage/bag/tray/cyborg/verb/select_placement_radius()
-	set name = "Радиус размещения"
-	set category = VERB_CATEGORY_OBJECT
-	set src in usr
-
-	var/new_radius = tgui_input_number(usr, "Select placement radius between 0 and 16 (in pixels)", "Placement radius", 12)
-	new_radius = clamp(new_radius, 0, 16)
-	placement_radius = new_radius
-
-/obj/item/storage/bag/tray/cyborg/afterattack(atom/target, mob/user, proximity, params)
-	if(!target || !proximity)
-		return
-
-	var/obj/structure/table/table = locate() in get_turf(target)
-
-	if(isturf(target) || table)
-		var/droppedSomething = FALSE
-		var/list/fancy_items
-		for(var/obj/item/I in contents)
-			remove_from_storage(I, get_turf(target))
-			LAZYADD(fancy_items, I)
-			droppedSomething = TRUE
-
-		if(fancy_items)
-			var/fancy_items_count = length(fancy_items)
-			var/iteration = 0
-			var/delta_phi = 2 * PI / fancy_items_count
-			for(var/obj/item/I as anything in fancy_items)
-				I.pixel_x = placement_radius * sin(180 * delta_phi * iteration / PI)
-				I.pixel_y = placement_radius * cos(180 * delta_phi * iteration / PI)
-				iteration += 1
-
-		if(droppedSomething)
-			if(table)
-				user.visible_message(span_notice("[user] unloads [user.p_their()] service tray."))
-			else
-				user.visible_message(span_notice("[user] drops all the items on [user.p_their()] tray."))
-		update_icon(UPDATE_OVERLAYS)
-
-	return ..()
-
-/obj/item/storage/bag/tray/cookies_tray
-	var/cookie = /obj/item/reagent_containers/food/snacks/cookie
-
-/obj/item/storage/bag/tray/cookies_tray/populate_contents() /// By Azule Utama, thank you a lot!
-	for(var/i in 1 to 6)
-		var/obj/item/C = new cookie(src)
-		handle_item_insertion(C)	// Done this way so the tray actually has the cookies visible when spawned
-
-/obj/item/storage/bag/tray/cookies_tray/sugarcookie
-	cookie = /obj/item/reagent_containers/food/snacks/sugarcookie
-
-////////////////////////////////////////
-// MARK:	Antag tray
-////////////////////////////////////////
-/obj/item/storage/bag/dangertray
-	name = "tray"
-	desc = "Металлический поднос для еды с острыми как бритва краями."
-	icon = 'icons/obj/food/containers.dmi'
-	icon_state = "dangertray"
-	force = 5
-	throwforce = 25
-	throw_speed = 3
-	armour_penetration = 15
-	sharp = TRUE
-	flags = CONDUCT
-	materials = list(MAT_METAL=3000)
-
-/obj/item/storage/bag/dangertray/get_ru_names()
-	return list(
+/obj/item/storage/bag/tray/get_ru_names()
+	return alist(
 		NOMINATIVE = "поднос",
 		GENITIVE = "подноса",
 		DATIVE = "подносу",
@@ -795,31 +739,138 @@
 		PREPOSITIONAL = "подносе",
 	)
 
-/obj/item/storage/bag/dangertray/attack(mob/living/target, mob/living/user, params, def_zone, skip_attack_anim = FALSE)
+/obj/item/storage/bag/tray/attack(mob/living/target, mob/living/user, list/modifiers, def_zone, skip_attack_anim)
 	. = ..()
+
 	if(!ATTACK_CHAIN_SUCCESS_CHECK(.))
 		return .
 
-	playsound(target, pick('sound/items/trayhit1.ogg', 'sound/items/trayhit2.ogg'), 50, TRUE)
+	// Drop all the things. All of them.
+	var/list/obj/item/old_contents = contents.Copy()
+	drop_inventory(user)
+	// Make each item scatter a bit
+	for(var/obj/item/tray_item in old_contents)
+		do_scatter(tray_item)
+
+	if(prob(50))
+		playsound(target, 'sound/items/trayhit1.ogg', 50, TRUE)
+	else
+		playsound(target, 'sound/items/trayhit2.ogg', 50, TRUE)
+
 	if(ishuman(target) && prob(10))
 		target.Knockdown(4 SECONDS)
+	update_appearance()
+	. |= ATTACK_CHAIN_BLOCKED_ALL
 
-	// Drop all the things. All of them.
-	var/list/obj/item/oldContents = contents.Copy()
-	drop_inventory(user)
+/obj/item/storage/bag/tray/proc/do_scatter(obj/item/tray_item)
+	var/delay = rand(2, 4)
+	var/datum/move_loop/loop = GLOB.move_manager.move_rand(tray_item, list(NORTH, SOUTH, EAST, WEST), delay, timeout = rand(1, 2) * delay, flags = MOVEMENT_LOOP_START_FAST)
+	//This does mean scattering is tied to the tray. Not sure how better to handle it
+	RegisterSignal(loop, COMSIG_MOVELOOP_POSTPROCESS, PROC_REF(change_speed))
 
-	// Make each item scatter a bit
-	for(var/obj/item/I in oldContents)
-		spawn()
-			for(var/i = 1, i <= rand(1,2), i++)
-				if(I)
-					step(I, pick(NORTH,SOUTH,EAST,WEST))
-					sleep(rand(2,4))
+/obj/item/storage/bag/tray/proc/change_speed(datum/move_loop/source)
+	SIGNAL_HANDLER
+	var/new_delay = rand(2, 4)
+	var/count = source.lifetime / source.delay
+	source.lifetime = count * new_delay
+	source.delay = new_delay
 
-/obj/item/storage/bag/dangertray/update_overlays()
+/obj/item/storage/bag/tray/update_overlays()
 	. = ..()
 	for(var/obj/item/item in contents)
-		. += image(icon = item.icon, icon_state = item.icon_state, layer = -1, pixel_w = rand(-4,4), pixel_z = rand(-4,4))
+		var/mutable_appearance/item_copy = new(item)
+		item_copy.plane = FLOAT_PLANE
+		item_copy.layer = FLOAT_LAYER + 0.1
+		item_copy.pixel_x = 0
+		item_copy.pixel_y = 0
+		item_copy.pixel_w = rand(-3, 3)
+		item_copy.pixel_z = rand(-3, 3)
+		. += item_copy
+
+/obj/item/storage/bag/tray/Entered(atom/movable/arrived, atom/old_loc, list/atom/old_locs)
+	. = ..()
+	update_appearance()
+
+/obj/item/storage/bag/tray/Exited(atom/movable/gone, direction)
+	. = ..()
+	update_appearance()
+
+/obj/item/storage/bag/tray/cookies_tray
+	var/cookie_type = /obj/item/reagent_containers/food/snacks/cookie
+
+/obj/item/storage/bag/tray/cookies_tray/populate_contents()
+	for(var/i in 1 to 6)
+		var/obj/item/cookie = new cookie_type(src)
+		handle_item_insertion(cookie) // Done this way so the tray actually has the cookies visible when spawned
+
+/obj/item/storage/bag/tray/cookies_tray/sugarcookie
+	cookie_type = /obj/item/reagent_containers/food/snacks/sugarcookie
+
+////////////////////////////////////////
+// MARK:	Antag tray
+////////////////////////////////////////
+/obj/item/storage/bag/tray/danger
+	name = "tray"
+	desc = "Металлический поднос для еды с острыми как бритва краями."
+	icon_state = "dangertray"
+	throwforce = 25
+	armour_penetration = 15
+	sharp = TRUE
+	materials = list(MAT_METAL=3000)
+
+/obj/item/storage/bag/tray/danger/get_ru_names()
+	return alist(
+		NOMINATIVE = "поднос",
+		GENITIVE = "подноса",
+		DATIVE = "подносу",
+		ACCUSATIVE = "поднос",
+		INSTRUMENTAL = "подносом",
+		PREPOSITIONAL = "подносе",
+	)
+
+// Sprites from CM13
+/obj/item/storage/bag/tray/surgical_tray
+	name = "surgical tray"
+	desc = "A small metallic tray covered in sterile tarp. Intended to store surgical tools in a neat and clean fashion."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "surgical_tray"
+	storage_slots = 22 // 11 Items, x2 to be sure
+	max_w_class = WEIGHT_CLASS_GIGANTIC
+	max_combined_w_class = 38 // Items listed add up to 19, x2 to be sure
+	can_hold = list(
+		/obj/item/scalpel,
+		/obj/item/cautery,
+		/obj/item/hemostat,
+		/obj/item/retractor,
+		/obj/item/FixOVein,
+		/obj/item/surgicaldrill,
+		/obj/item/circular_saw,
+		/obj/item/bonegel,
+		/obj/item/bonesetter,
+		/obj/item/stack/medical/bruise_pack,
+		/obj/item/stack/medical/ointment,
+		/obj/item/surgical_drapes,
+	)
+
+/obj/item/storage/surgical_tray/populate_contents()
+	new /obj/item/scalpel(src)
+	new /obj/item/cautery(src)
+	new /obj/item/hemostat(src)
+	new /obj/item/retractor(src)
+	new /obj/item/FixOVein(src)
+	new /obj/item/surgicaldrill(src)
+	new /obj/item/circular_saw(src)
+	new /obj/item/bonegel(src)
+	new /obj/item/bonesetter(src)
+	new /obj/item/stack/medical/bruise_pack/advanced(src)
+	new /obj/item/stack/medical/ointment/advanced(src)
+	new /obj/item/surgical_drapes(src)
+
+/obj/item/storage/surgical_tray/update_icon_state()
+	if(!length(contents))
+		icon_state = "surgical_tray_e"
+	else
+		icon_state = "surgical_tray"
 
 ////////////////////////////////////////
 // MARK:	Chemistry bag
@@ -872,7 +923,7 @@
 	)
 
 /obj/item/storage/bag/medpouch/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "лекарственный мешочек",
 		GENITIVE = "лекарственного мешочка",
 		DATIVE = "лекарственному мешочку",
@@ -893,7 +944,7 @@
 	)
 
 /obj/item/storage/bag/medpouch/fishing/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "рыболовный мешочек",
 		GENITIVE = "рыболовного мешочка",
 		DATIVE = "рыболовному мешочку",

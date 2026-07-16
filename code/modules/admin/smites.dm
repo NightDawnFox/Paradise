@@ -264,7 +264,8 @@
 		type = /mob/living/simple_animal/pig
 
 	var/mob/living/mob = new type(turf)
-	target.mind.transfer_to(mob)
+	if(target.mind)
+		target.mind.transfer_to(mob)
 	qdel(target)
 	to_chat(mob, span_userdanger("Вы чувствуете как ваша сущность координально меняется. Боги наказали вас за [reason]!"))
 	logmsg = "transformed into [mob]."
@@ -329,7 +330,7 @@
 		type = /mob/living/simple_animal/hostile/shitcur_goblin
 
 	var/mob/living/simple_animal/hostile/mob = new type(turf)
-	mob.GiveTarget(mob)
+	mob.GiveTarget(target)
 	mob.toggle_ai(AI_ON)
 	to_chat(target, span_userdanger("[DECLENT_RU_CAP(mob, NOMINATIVE)] появляется из воздуха! Боги наказали вас за [reason]!"))
 	logmsg = "summon angry [mob]."
@@ -376,7 +377,7 @@
 	GLOB.major_announcement.announce(
 		message = "[target.real_name] настоящим приказом был понижен до Гражданского. Немедленно обработайте этот запрос. Невыполнение этих распоряжений является основанием для расторжения контракта.",
 		new_title = ANNOUNCE_CCDEMOTE_RU,
-		new_sound = 'sound/AI/commandreport.ogg'
+		new_sound = SSstation.announcer.get_rand_report_sound(),
 	)
 
 	for(var/datum/data/record/record in sortRecord(GLOB.data_core.security))
@@ -435,7 +436,7 @@
 	GLOB.major_announcement.announce(
 		message = "[target.real_name] настоящим приказом был лишён защиты Космического Закона и приговорён к смертной казни. Всему экипажу разрешено и рекомендуется исполнить приговор. Между членами экипажа принявшими участие в процессе казни будет автоматически распределено денежное вознаграждение в размере [bounty] кредит[DECL_CREDIT(bounty)].",
 		new_title = ANNOUNCE_CCKILL_RU,
-		new_sound = 'sound/AI/commandreport.ogg'
+		new_sound = SSstation.announcer.get_rand_report_sound(),
 	)
 	ADD_TRAIT(target, TRAIT_NO_CLONE, ADMIN_TRAIT)
 	target.AddComponent(/datum/component/killing_reward, bounty)
@@ -583,6 +584,18 @@
 
 	ADD_TRAIT(target, TRAIT_AIRLOCK_HIT, ADMIN_TRAIT)
 	to_chat(target, span_userdanger("Вы чувствуете что стали на пару сантиметров выше. К чему бы это? Может это наказание за [reason]?"))
+
+// MARK: Self Control
+/datum/smite/self_control
+	name = SMITE_SELF_CONTROL
+	desc = "Покажите свои возможности к самоконтролю!"
+	logmsg = "self control watermelon"
+	category = SMITE_CATEGORY_CONTROL
+
+/datum/smite/self_control/apply_effect(mob/living/target, reason)
+	var/obj/item/reagent_containers/food/snacks/watermelonslice/self_control_slice/self_control_watermelon = new()
+	target.put_in_any_hand_if_possible(self_control_watermelon)
+	to_chat(target, span_userdanger("Вы чувствуете, что в вашей руке появилась долька арбуза. Но что она значит?"))
 
 // MARK: Admin smite proc
 ADMIN_VERB_ONLY_CONTEXT_MENU(admin_smite, R_ADMIN|R_EVENT, "Smite", mob/living/target in GLOB.mob_list)

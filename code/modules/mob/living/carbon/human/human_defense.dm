@@ -72,9 +72,11 @@ emp_act
 
 	var/obj/item/organ/external/organ = get_organ(check_zone(def_zone))
 	if(isnull(organ))
+		if(def_zone == BODY_ZONE_CHEST)
+			return -1
 		return bullet_act(P, BODY_ZONE_CHEST) //act on chest instead
 
-	organ.add_autopsy_data(P.name, P.damage) // Add the bullet's name to the autopsy data
+	organ.add_autopsy_data(P.declent_ru(NOMINATIVE), P.damage) // Add the bullet's name to the autopsy data
 	SEND_SIGNAL(src, COMSIG_ATOM_BULLET_ACT, P, def_zone)
 	return (..(P , def_zone))
 
@@ -100,14 +102,14 @@ emp_act
 	if(HAS_TRAIT(H, TRAIT_REPAIRING_LIMB))
 		balloon_alert(user, "уже ремонтируется!")
 		return
-	ADD_TRAIT(H, TRAIT_REPAIRING_LIMB, UNIQUE_TRAIT_SOURCE(src))
+	ADD_TRAIT(H, TRAIT_REPAIRING_LIMB, UNIQUE_TRAIT_SOURCE(user))
 
 	var/surgery_time = 0
 	if(user == src)
 		surgery_time = H.robotic_limb_repair_time
 
 	if(!item.use_tool(src, user, surgery_time, amount = 1, volume = item.tool_volume))
-		REMOVE_TRAIT(H, TRAIT_REPAIRING_LIMB, UNIQUE_TRAIT_SOURCE(src))
+		REMOVE_TRAIT(H, TRAIT_REPAIRING_LIMB, UNIQUE_TRAIT_SOURCE(user))
 		return
 	var/rembrute = HEALPERWELD
 	var/nrembrute = 0
@@ -149,7 +151,7 @@ emp_act
 	if(IgniteMob())
 		add_attack_logs(user, src, "set on fire with [item]")
 
-	REMOVE_TRAIT(H, TRAIT_REPAIRING_LIMB, UNIQUE_TRAIT_SOURCE(src))
+	REMOVE_TRAIT(H, TRAIT_REPAIRING_LIMB, UNIQUE_TRAIT_SOURCE(user))
 
 /mob/living/carbon/human/check_projectile_dismemberment(obj/projectile/P, def_zone)
 	var/obj/item/organ/external/affecting = get_organ(check_zone(def_zone))
@@ -732,6 +734,11 @@ emp_act
 					visible_message(span_danger("[M] попытал[GEND_SYA_AS_OS_IS(M)] сбить с ног [src]!"))
 					add_attack_logs(M, src, "Alien tried to tackle")
 
+/mob/living/carbon/human/attackby(obj/item/item, mob/living/user, list/modifiers)
+	if(SEND_SIGNAL(src, COMSIG_HUMAN_ATTACKED, user) & COMPONENT_CANCEL_ATTACK_CHAIN)
+		return ATTACK_CHAIN_BLOCKED_ALL
+	return ..()
+
 /mob/living/carbon/human/attack_animal(mob/living/simple_animal/M)
 	. = ..()
 	if(.)
@@ -803,22 +810,22 @@ emp_act
 						armor_block = 0
 					objective.take_damage(damage * armor_block, BRUTE)
 
-/mob/living/carbon/human/mech_melee_attack(obj/mecha/M)
-	if(M.occupant.a_intent == INTENT_HARM)
-		if(HAS_TRAIT(M.occupant, TRAIT_PACIFISM) || GLOB.pacifism_after_gt)
-			to_chat(M.occupant, span_warning("Вы не хотите причинять кому-либо вред!"))
+/mob/living/carbon/human/mech_melee_attack(obj/mecha/mech, obj/item/mecha_parts/mecha_equipment/selected_module = null)
+	if(mech.occupant.a_intent == INTENT_HARM)
+		if(HAS_TRAIT(mech.occupant, TRAIT_PACIFISM) || GLOB.pacifism_after_gt)
+			to_chat(mech.occupant, span_warning("Вы не хотите причинять кому-либо вред!"))
 			return
-		M.do_attack_animation(src)
-		if(M.damtype == "brute")
-			step_away(src,M,15)
+		mech.do_attack_animation(src, used_item = selected_module)
+		if(mech.damtype == BRUTE)
+			step_away(src, mech, 15)
 		var/obj/item/organ/external/affecting = get_organ(pick(BODY_ZONE_CHEST, BODY_ZONE_CHEST, BODY_ZONE_CHEST, BODY_ZONE_HEAD))
 		if(affecting)
-			var/dmg = rand(M.force/2, M.force)
-			switch(M.damtype)
+			var/dmg = rand(mech.force / 2, mech.force)
+			switch(mech.damtype)
 				if(BRUTE)
-					if(M.force > 35) // durand and other heavy mechas
+					if(mech.force > 35) // durand and other heavy mechas
 						Weaken(2 SECONDS)
-					else if(M.force > 20 && !IsWeakened()) // lightweight mechas like gygax
+					else if(mech.force > 20 && !IsWeakened()) // lightweight mechas like gygax
 						Knockdown(4 SECONDS)
 					apply_damage(dmg, BRUTE, def_zone = affecting)
 					playsound(src, 'sound/weapons/punch4.ogg', 50, TRUE)
@@ -826,14 +833,14 @@ emp_act
 					apply_damage(dmg, BURN, def_zone = affecting)
 					playsound(src, 'sound/items/welder.ogg', 50, TRUE)
 				if(TOX)
-					M.mech_toxin_damage(src)
+					mech.mech_toxin_damage(src)
 				else
 					return
 
-		M.occupant_message(span_danger("Вы ударили [declent_ru(ACCUSATIVE)]."))
-		visible_message(span_danger("[M.name] ударил [declent_ru(ACCUSATIVE)]!"), span_userdanger("[M.name] ударил вас!"))
+		mech.occupant_message(span_danger("Вы ударили [declent_ru(ACCUSATIVE)]."))
+		visible_message(span_danger("[mech.name] ударил [declent_ru(ACCUSATIVE)]!"), span_userdanger("[mech.name] ударил вас!"))
 
-		add_attack_logs(M.occupant, src, "Mecha-meleed with [M]")
+		add_attack_logs(mech.occupant, src, "Mecha-meleed with [mech]")
 	else
 		..()
 

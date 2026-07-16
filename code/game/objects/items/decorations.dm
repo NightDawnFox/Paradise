@@ -236,7 +236,7 @@
 	anchored = TRUE
 
 /obj/structure/decorative_structures/garland/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "новогодняя гирлянда",
 		GENITIVE = "новогодней гирлянды",
 		DATIVE = "новогодней гирлянде",
@@ -338,9 +338,6 @@
 	user.visible_message(span_danger("You punched something viscous! You hear a slimy sound."))
 
 /obj/structure/decorative_structures/corpse/play_attack_sound()
-	return
-
-/obj/structure/decorative_structures/corpse/climb_on()
 	return
 
 /obj/structure/decorative_structures/corpse/Move(atom/newloc, direct = NONE, glide_size_override = 0, update_dir = TRUE)

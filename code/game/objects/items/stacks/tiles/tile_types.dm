@@ -42,9 +42,8 @@
 		if(!R && replace)
 			user.put_in_hands(new_item)
 
-/obj/item/stack/tile/handle_openspace_click(turf/target, mob/user, proximity_flag, click_parameters)
-	if(proximity_flag)
-		melee_attack_chain(user, target, click_parameters)
+/obj/item/stack/tile/handle_openspace_click(turf/target, mob/user, list/modifiers)
+	target.attackby(src, user, list2params(modifiers))
 
 // GRASS
 /obj/item/stack/tile/grass
@@ -68,6 +67,11 @@
 	turf_type = /turf/simulated/floor/wood
 	resistance_flags = FLAMMABLE
 	energy_type = /datum/robot_energy_storage/wood
+
+/obj/item/stack/tile/wood/decompile_act(obj/item/matter_decompiler/C, mob/user)
+	C.stored_comms["wood"] += 1
+	qdel(src)
+	return TRUE
 
 /obj/item/stack/tile/wood/dark
 	name = "dark wood floor tiles"
@@ -230,6 +234,7 @@
 	throw_range = 7
 	turf_type = /turf/simulated/floor/plasteel
 	mineralType = "metal"
+	matter_amount = 0.25
 	armor = list(MELEE = 0, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 0, FIRE = 100, ACID = 70)
 	resistance_flags = FIRE_PROOF
 	energy_type = /datum/robot_energy_storage/metal

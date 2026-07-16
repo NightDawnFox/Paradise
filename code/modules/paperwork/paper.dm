@@ -19,7 +19,6 @@
 	body_parts_covered = HEAD
 	resistance_flags = FLAMMABLE
 	max_integrity = 50
-	blocks_emissive = FALSE
 	attack_verb = list("стукнул")
 	permeability_coefficient = 0.01
 	dog_fashion = /datum/dog_fashion/head
@@ -54,7 +53,7 @@
 	var/time = "00:00"
 
 /obj/item/paper/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "бумага",
 		GENITIVE = "бумаги",
 		DATIVE = "бумаге",
@@ -63,18 +62,16 @@
 		PREPOSITIONAL = "бумаге",
 	)
 
-//lipstick wiping is in code/game/objects/items/weapons/cosmetics.dm!
-
 /obj/item/paper/Initialize(mapload)
 	. = ..()
-	pixel_y = rand(-8, 8)
-	pixel_x = rand(-9, 9)
-	base_pixel_x = pixel_x
-	base_pixel_y = pixel_y
+	pixel_x = base_pixel_x + rand(-9, 9)
+	pixel_y = base_pixel_y + rand(-8, 8)
 
-	spawn(2)
-		update_icon()
-		updateinfolinks()
+	addtimer(CALLBACK(src, PROC_REF(update_paper)), 1 DECISECONDS)
+
+/obj/item/paper/proc/update_paper()
+	update_appearance()
+	updateinfolinks()
 
 /obj/item/paper/update_icon_state()
 	icon_state = "paper[info ? "_words" : ""]"
@@ -871,7 +868,7 @@
 		GLOB.major_announcement.announce(
 			message = "[target.real_name] настоящим приказом был понижен до Гражданского. Немедленно обработайте этот запрос. Невыполнение этих распоряжений является основанием для расторжения контракта.",
 			new_title = ANNOUNCE_CCDEMOTE_RU,
-			new_sound = 'sound/AI/commandreport.ogg'
+			new_sound = SSstation.announcer.get_rand_report_sound(),
 		)
 		for(var/datum/data/record/R in sortRecord(GLOB.data_core.security))
 			if(R.fields["name"] == target.real_name)
@@ -883,7 +880,7 @@
 		GLOB.major_announcement.announce(
 			message = "[target.real_name] настоящим приказом был понижен до Гражданского. Немедленно обработайте этот запрос. Невыполнение этих распоряжений является основанием для расторжения контракта.",
 			new_title = ANNOUNCE_CCDEMOTE_RU,
-			new_sound = 'sound/AI/commandreport.ogg'
+			new_sound = SSstation.announcer.get_rand_report_sound(),
 		)
 		for(var/datum/data/record/R in sortRecord(GLOB.data_core.security))
 			if(R.fields["name"] == target.real_name)

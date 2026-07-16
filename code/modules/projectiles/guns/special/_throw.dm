@@ -1,4 +1,5 @@
 /obj/item/gun/throw
+	abstract_type = /obj/item/gun/throw
 	name = "abstract item thrower"
 	desc = "This shouldn't be here, yell at a coder."
 	fire_sound = 'sound/weapons/punchmiss.ogg'
@@ -29,6 +30,12 @@
 
 /obj/item/gun/throw/proc/modify_projectile(obj/item/I, on_chamber = 0)
 	return
+
+/obj/item/gun/throw/update_icon_state()
+	return
+
+/obj/item/gun/throw/update_overlays()
+	return list()
 
 /obj/item/gun/throw/proc/get_ammocount(include_loaded = 1)
 	var/count = loaded_projectiles.len
@@ -72,9 +79,10 @@
 /obj/item/gun/throw/can_shoot(mob/user)
 	return to_launch
 
-/obj/item/gun/throw/process_fire(atom/target, mob/living/user, message = TRUE, params, zone_override, bonus_spread = 0)
+/obj/item/gun/throw/process_fire(zone_override, secondary_fire = FALSE)
+	var/mob/living/user = gun_user
 	add_fingerprint(user)
-	if(semicd)
+	if(fire_cd)
 		return
 
 	var/obj/item/I = to_launch
@@ -86,6 +94,6 @@
 	add_attack_logs(user, target, "fired [I] from a [src]")
 	process_chamber()
 
-	semicd = 1
+	fire_cd = TRUE
 	spawn(fire_delay)
-		semicd = 0
+		fire_cd = FALSE

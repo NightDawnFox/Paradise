@@ -57,6 +57,7 @@ GLOBAL_LIST_EMPTY(antagonists_datums)
 /datum/antagonist/Destroy(force)
 	for(var/datum/objective/objective as anything in objectives)
 		objectives -= objective
+		objective.on_remove_objective(owner)
 
 		if(!objective.team)
 			qdel(objective)
@@ -122,7 +123,7 @@ GLOBAL_LIST_EMPTY(antagonists_datums)
 	var/list/mob/dead/observer/candidates = SSghost_spawns.poll_candidates("Do you want to play as a [name]?", job_rank, TRUE, 10 SECONDS)
 	if(!length(candidates))
 		return FALSE
-		
+
 	if(QDELETED(owner.current))
 		return
 
@@ -153,7 +154,7 @@ GLOBAL_LIST_EMPTY(antagonists_datums)
 	messages.Add(finalize_antag())
 	if(wiki_page_name)
 		messages.Add(span_motd("С полной информацией вы можете ознакомиться на вики: <a href=\"[CONFIG_GET(string/wikiurl)]/index.php/[wiki_page_name]\">[russian_wiki_name]"))
-	to_chat(owner.current, chat_box_red(messages.Join("<br>")))
+	to_chat(owner.current, custom_boxed_message("red_box center", messages.Join("<br>")))
 
 	if(is_banned(owner.current) && replace_banned)
 		INVOKE_ASYNC(src, PROC_REF(replace_banned_player))
@@ -349,6 +350,7 @@ GLOBAL_LIST_EMPTY(antagonists_datums)
 
 	if(!new_objective.needs_target)
 		objectives += new_objective
+		new_objective.on_add_objective(owner)
 		return new_objective
 
 	var/found_valid_target = FALSE
@@ -385,6 +387,7 @@ GLOBAL_LIST_EMPTY(antagonists_datums)
 		new_objective.antag_menu_name = "Свободная цель"
 		new_objective.target = null
 
+	new_objective.on_add_objective(owner)
 	objectives += new_objective
 	return new_objective
 
@@ -485,4 +488,7 @@ GLOBAL_LIST_EMPTY(antagonists_datums)
 			add_objective(/datum/objective/maroon)
 
 	else
-		add_objective(/datum/objective/steal)
+		add_objective(get_steal_objective_type())
+
+/datum/antagonist/proc/get_steal_objective_type()
+	return /datum/objective/steal

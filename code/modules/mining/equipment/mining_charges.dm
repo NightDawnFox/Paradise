@@ -17,7 +17,7 @@
 	var/smoke_amount = 3
 
 /obj/item/grenade/plastic/miningcharge/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "промышленный шахтёрский заряд",
 		GENITIVE = "промышленного шахтёрского заряда",
 		DATIVE = "промышленному шахтёрскому заряду",
@@ -41,18 +41,18 @@
 	if(nadeassembly)
 		nadeassembly.attack_self(user)
 
-/obj/item/grenade/plastic/miningcharge/afterattack(atom/movable/AM, mob/user, flag, params)
-	if(ismineralturf(AM) || hacked)
+/obj/item/grenade/plastic/miningcharge/afterattack(atom/target, mob/user, proximity_flag, list/modifiers, status)
+	if(ismineralturf(target) || hacked)
 		if(timer_off) //override original proc for plastic explosions
-			if(!flag)
+			if(!proximity_flag)
 				return
-			if(iscarbon(AM))
+			if(iscarbon(target))
 				return
 			balloon_alert(user, "установка взрывчатки...")
-			if(do_after(user, 2.5 SECONDS * toolspeed, AM, category = DA_CAT_TOOL))
+			if(do_after(user, 2.5 SECONDS * toolspeed, target, category = DA_CAT_TOOL))
 				if(!user.drop_item_ground(src))
 					return
-				src.target = AM
+				src.target = target
 				loc = null
 				if(hacked)
 					message_admins("[ADMIN_LOOKUPFLW(user)] planted [src] on [target.name] at [ADMIN_COORDJMP(target)]")
@@ -153,7 +153,7 @@
 	boom_sizes = list(1,2,3)
 
 /obj/item/grenade/plastic/miningcharge/lesser/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "шахтёрский заряд",
 		GENITIVE = "шахтёрского заряда",
 		DATIVE = "шахтёрскому заряду",
@@ -171,7 +171,7 @@
 	boom_sizes = list(4,6,8) //did you see the price? It has to be better..
 
 /obj/item/grenade/plastic/miningcharge/mega/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "экспериментальный шахтёрский заряд",
 		GENITIVE = "экспериментального шахтёрского заряда",
 		DATIVE = "экспериментальному шахтёрскому заряду",
@@ -195,9 +195,12 @@
 //MINING CHARGE HACKER
 /obj/item/t_scanner/adv_mining_scanner/syndicate
 	var/charges = 6
-	description_antag = "Это устройство имеет дополнительный порт, который позволяет обойти меры безопасности шахтёрских зарядов."
 
-/obj/item/t_scanner/adv_mining_scanner/syndicate/afterattack(atom/target, mob/user, proximity_flag, click_parameters)
+/obj/item/t_scanner/adv_mining_scanner/syndicate/examine_more(mob/user)
+	. = ..()
+	. += span_warning("Имеет дополнительный порт, который позволяет обойти меры безопасности шахтёрских зарядов.")
+
+/obj/item/t_scanner/adv_mining_scanner/syndicate/afterattack(atom/target, mob/user, proximity_flag, list/modifiers, status)
 	if(istype(target,/obj/item/grenade/plastic/miningcharge))
 		var/obj/item/grenade/plastic/miningcharge/charge = target
 		if(charge.hacked)
@@ -225,7 +228,7 @@
 	var/list/bombs = list()
 
 /obj/item/detonator/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "детонатор шахтёрских зарядов",
 		GENITIVE = "детонатора шахтёрских зарядов",
 		DATIVE = "детонатору шахтёрских зарядов",

@@ -11,7 +11,7 @@
 
 	var/mapping = 0 // For the overview file (overview.dm), not used on this page
 
-	var/list/network = list("SS13","Mining Outpost")
+	var/list/network = list("SS13","Research Outpost","Mining Outpost", "Labor Camp")
 	var/obj/machinery/camera/active_camera
 	var/list/concurrent_users = list()
 
@@ -274,6 +274,7 @@
 	network = list("news")
 	layer = 4 //becouse of plasma glass with layer = 3
 	circuit = /obj/item/circuitboard/camera/telescreen/entertainment
+	interaction_flags_atom = INTERACT_ATOM_UI_INTERACT | INTERACT_ATOM_NO_FINGERPRINT_INTERACT | INTERACT_ATOM_NO_FINGERPRINT_ATTACK_HAND | INTERACT_MACHINE_REQUIRES_SIGHT
 	/// Icon utilised when `GLOB.active_entertainment_cameras` list have anything inside.
 	var/icon_screen_on = "entertainment"
 
@@ -281,7 +282,7 @@
 	. = ..()
 	RegisterSignal(src, COMSIG_MOB_ATTACKED_RANGED, PROC_REF(on_ranged_attack))
 	RegisterSignal(src, COMSIG_MONITOR_CAMERA_SWITCHED, PROC_REF(on_camera_switch))
-	RegisterSignal(GLOB.cameranet, list(COMSIG_CAMERANET_CAMERA_ADDED, COMSIG_CAMERANET_CAMERA_REMOVED), PROC_REF(on_cameranet_camera_update))
+	RegisterSignals(GLOB.cameranet, list(COMSIG_CAMERANET_CAMERA_ADDED, COMSIG_CAMERANET_CAMERA_REMOVED), PROC_REF(on_cameranet_camera_update))
 
 /obj/machinery/computer/security/telescreen/entertainment/Destroy()
 	. = ..()
@@ -429,5 +430,13 @@
 
 /obj/machinery/computer/security/mortar/set_broken()
 	return
+
+/obj/machinery/computer/security/labor_camp
+	name = "labor camp camera console"
+	desc = "Используется для слежки за каторжными заключенными."
+	network = list("Labor Camp")
+
+/obj/machinery/camera/labor_camp
+	network = list("Labor Camp")
 
 #undef DEFAULT_MAP_SIZE

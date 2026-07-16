@@ -7,7 +7,6 @@
 	anchored = TRUE
 	flags = CONDUCT
 	pressure_resistance = 5*ONE_ATMOSPHERE
-	layer = BELOW_OBJ_LAYER
 	level = 3
 	armor = list(MELEE = 50, BULLET = 70, LASER = 70, ENERGY = 100, BOMB = 10, BIO = 100, FIRE = 0, ACID = 0)
 	max_integrity = 50
@@ -49,16 +48,16 @@
 
 /obj/structure/grille/rcd_deconstruct_act(mob/user, obj/item/rcd/our_rcd)
 	. = ..()
-	if(!our_rcd.checkResource(2, user))
-		to_chat(user, span_warning("ERROR! Not enough matter in unit to deconstruct this window!"))
+	if(!our_rcd.checkResource(RCD_COST_WINDOW * 2, user))
+		to_chat(user, span_warning("ОШИБКА! Недостаточно материи для деконструкции окна!"))
 		playsound(get_turf(our_rcd), 'sound/machines/click.ogg', 50, TRUE)
 		return RCD_ACT_FAILED
-	to_chat(user, "Deconstructing window...")
+	to_chat(user, "Деконструкция окна...")
 	playsound(get_turf(our_rcd), 'sound/machines/click.ogg', 50, TRUE)
 	if(!do_after(user, 2 SECONDS * our_rcd.toolspeed, src, category = DA_CAT_TOOL))
-		to_chat(user, span_warning("ERROR! Deconstruction interrupted!"))
+		to_chat(user, span_warning("ОШИБКА! Деконструкция прервана!"))
 		return RCD_ACT_FAILED
-	if(!our_rcd.useResource(2, user))
+	if(!our_rcd.useResource(RCD_COST_WINDOW * 2, user))
 		return RCD_ACT_FAILED
 	playsound(get_turf(our_rcd), our_rcd.usesound, 50, TRUE)
 	var/turf/T1 = get_turf(src)
@@ -311,7 +310,7 @@
 			var/obj/obj = atom_movable
 			if(obj.throwforce != 0)//don't want to let people spam tesla bolts, this way it will break after time
 				var/turf/turf = get_turf(src)
-				if(turf.intact)
+				if(turf.underfloor_accessibility != UNDERFLOOR_INTERACTABLE)
 					return FALSE
 				var/obj/structure/cable/cable = turf.get_cable_node()
 				if(cable)

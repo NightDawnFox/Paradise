@@ -89,8 +89,8 @@
 			new_trophies = clamp(new_amount, 0, MAX_TROPHIES_PER_TYPE_CRITICAL)
 			bestia.trophies[INTERNAL_ORGAN_HEART] = new_trophies
 
-			damage_modifiers[BRUTE] = (100 - CEILING((new_trophies * (TROPHIES_CAP_PROT_BRUTE / MAX_TROPHIES_PER_TYPE_CRITICAL)), 1)) / 100
-			damage_modifiers[BURN] = (100 - CEILING((new_trophies * (TROPHIES_CAP_PROT_BURN / MAX_TROPHIES_PER_TYPE_CRITICAL)), 1)) / 100
+			damage_modifiers[BRUTE] = (100 - ceil((new_trophies * (TROPHIES_CAP_PROT_BRUTE / MAX_TROPHIES_PER_TYPE_CRITICAL)))) / 100
+			damage_modifiers[BURN] = (100 - ceil((new_trophies * (TROPHIES_CAP_PROT_BURN / MAX_TROPHIES_PER_TYPE_CRITICAL)))) / 100
 
 			if((prev_trophies == 0 && new_amount < 0) || (prev_trophies == MAX_TROPHIES_PER_TYPE_CRITICAL && new_amount > MAX_TROPHIES_PER_TYPE_CRITICAL))
 				update_spells = FALSE
@@ -101,8 +101,8 @@
 			new_trophies = clamp(new_amount, 0, MAX_TROPHIES_PER_TYPE_CRITICAL)
 			bestia.trophies[INTERNAL_ORGAN_LUNGS] = new_trophies
 
-			damage_modifiers[OXY] = (100 - CEILING((new_trophies * (TROPHIES_CAP_PROT_OXY / MAX_TROPHIES_PER_TYPE_CRITICAL)), 1)) / 100
-			damage_modifiers[STAMINA] = (100 - CEILING((new_trophies * (TROPHIES_CAP_PROT_STAMINA / MAX_TROPHIES_PER_TYPE_CRITICAL)), 1)) / 100
+			damage_modifiers[OXY] = (100 - ceil((new_trophies * (TROPHIES_CAP_PROT_OXY / MAX_TROPHIES_PER_TYPE_CRITICAL)))) / 100
+			damage_modifiers[STAMINA] = (100 - ceil((new_trophies * (TROPHIES_CAP_PROT_STAMINA / MAX_TROPHIES_PER_TYPE_CRITICAL)))) / 100
 
 			if((prev_trophies == 0 && new_amount < 0) || (prev_trophies == MAX_TROPHIES_PER_TYPE_CRITICAL && new_amount > MAX_TROPHIES_PER_TYPE_CRITICAL))
 				update_spells = FALSE
@@ -529,7 +529,7 @@
 	deduct_blood_on_cast = FALSE
 
 /obj/effect/proc_holder/spell/vampire/self/infected_trophy/can_cast(mob/living/carbon/user = usr, charge_check = TRUE, show_message = FALSE)
-	if(user.incapacitated(INC_IGNORE_GRABBED))
+	if(user.incapacitated(IGNORE_GRAB))
 		if(show_message)
 			balloon_alert(user, "нельзя использовать сейчас!")
 		return FALSE
@@ -570,7 +570,7 @@
 	var/obj/effect/proc_holder/spell/vampire/self/infected_trophy/parent_spell
 
 /obj/item/gun/magic/skull_gun/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "заражённый череп",
 		GENITIVE = "заражённого черепа",
 		DATIVE = "заражённому черепу",
@@ -620,7 +620,7 @@
 	return T
 
 /obj/effect/proc_holder/spell/vampire/lunge/can_cast(mob/living/carbon/user = usr, charge_check = TRUE, show_message = FALSE)
-	if(user.incapacitated(INC_IGNORE_RESTRAINED|INC_IGNORE_GRABBED) || user.buckled || (iscarbon(user) && user.legcuffed))
+	if(user.incapacitated(IGNORE_RESTRAINTS|IGNORE_GRAB) || user.buckled || (iscarbon(user) && user.legcuffed))
 		if(show_message)
 			balloon_alert(user, "нельзя использовать сейчас!")
 		return FALSE
@@ -838,7 +838,7 @@
 				balloon_alert(user, "метаморфоза уже используется!")
 			return FALSE
 
-	if(user.incapacitated(INC_IGNORE_RESTRAINED|INC_IGNORE_GRABBED))
+	if(user.incapacitated(IGNORE_RESTRAINTS|IGNORE_GRAB))
 		if(show_message)
 			balloon_alert(user, "нельзя использовать сейчас!")
 		return FALSE
@@ -1320,7 +1320,7 @@
 	var/fullpower_heal_done = FALSE
 
 /obj/structure/closet/coffin/vampire/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "таинственный гроб",
 		GENITIVE = "таинственного гроба",
 		DATIVE = "таинственному гробу",
@@ -1344,7 +1344,7 @@
 /obj/structure/closet/coffin/vampire/Destroy()
 	visible_message(span_warning("[DECLENT_RU_CAP(src, NOMINATIVE)] исчезает, оставляя после себя лишь кучку пепла..."))
 	new /obj/effect/decal/cleanable/ash(loc)
-	if(isprocessing)
+	if(datum_flags & DF_ISPROCESSING)
 		STOP_PROCESSING(SSobj, src)
 	if(human_vampire)
 		playsound(loc, 'sound/objects/coffin_break.ogg', 50, TRUE)
@@ -1404,7 +1404,7 @@
 		if(victim.stat)
 			continue
 
-		victim.Weaken(4 SECONDS)
+		victim.Knockdown(4 SECONDS)
 		to_chat(victim, span_userdanger("Громкий визг ослабляет вас и заставляет упасть на землю!"))
 
 /obj/structure/closet/coffin/vampire/process()
@@ -1839,6 +1839,8 @@
 
 	SEND_SIGNAL(src, COMSIG_MOB_UPDATE_SIGHT)
 	sync_lighting_plane_alpha()
+
+	return ..()
 
 /mob/living/simple_animal/hostile/vampire/do_attack_animation(atom/A, visual_effect_icon, obj/item/used_item, no_effect)
 	if(!no_effect && !visual_effect_icon)

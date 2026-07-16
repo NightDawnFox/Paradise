@@ -50,6 +50,10 @@
 		SPECIES_STOK = 'icons/mob/clothing/species/monkey/head.dmi',
 	)
 
+/obj/item/clothing/head/welding/ComponentInitialize()
+	. = ..()
+	AddElement(/datum/element/right_click_mapper/attack_self, "Переключить [declent_ru(ACCUSATIVE)]")
+
 /obj/item/clothing/head/welding/flamedecal
 	name = "flame decal welding helmet"
 	desc = "A welding helmet adorned with flame decals, and several cryptic slogans of varying degrees of legibility."
@@ -126,7 +130,7 @@
 	flags_cover = HEADCOVERSEYES
 	armor = list(MELEE = 0, BULLET = 0, LASER = 0,ENERGY = 0, BOMB = 0, BIO = 0, FIRE = 0, ACID = 0)
 	var/on_fire = FALSE
-	light_system = MOVABLE_LIGHT
+	light_system = OVERLAY_LIGHT
 	light_on = FALSE
 	light_range = 1.5
 	light_color = LIGHT_COLOR_DIM_YELLOW
@@ -187,7 +191,6 @@
 	cold_protection = HEAD
 	min_cold_protection_temperature = FIRE_HELM_MIN_TEMP_PROTECT
 	dog_fashion = /datum/dog_fashion/head/ushanka
-	actions_types = list(/datum/action/item_action/toggle_helmet_mode)
 	can_toggle = TRUE
 	toggle_on_message = "You raise the ear flaps on"
 	toggle_off_message = "You lower the ear flaps on"
@@ -199,6 +202,10 @@
 		SPECIES_NEARA = 'icons/mob/clothing/species/monkey/head.dmi',
 		SPECIES_STOK = 'icons/mob/clothing/species/monkey/head.dmi',
 	)
+
+/obj/item/clothing/head/ushanka/ComponentInitialize()
+	. = ..()
+	AddElement(/datum/element/right_click_mapper/attack_self, "Опустить/поднять уши")
 
 /obj/item/clothing/head/sovietsidecap
 	name = "Soviet side cap"
@@ -368,7 +375,7 @@
 	flags_inv = HIDEHEADSETS|HIDEHAIR
 
 /obj/item/clothing/head/shapka_pepega/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "лягушачья шапка",
 		GENITIVE = "лягушачьей шапки",
 		DATIVE = "лягушачьей шапке",
@@ -395,7 +402,7 @@
 	flags_inv = HIDEHEADSETS|HIDEHEADHAIR
 
 /obj/item/clothing/head/carp_hat/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "карповая шапка",
 		GENITIVE = "карповой шапки",
 		DATIVE = "карповой шапке",

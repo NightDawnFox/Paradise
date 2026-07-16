@@ -63,7 +63,7 @@
 	var/obj/effect/proc_holder/spell/vampire/self/vamp_claws/parent_spell
 
 /obj/item/twohanded/required/vamp_claws/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "вампирические когти",
 		GENITIVE = "вампирических когтей",
 		DATIVE = "вампирическим когтям",
@@ -84,8 +84,8 @@
 		parent_spell = null
 	return ..()
 
-/obj/item/twohanded/required/vamp_claws/afterattack(atom/target, mob/user, proximity, params)
-	if(!proximity)
+/obj/item/twohanded/required/vamp_claws/afterattack(atom/target, mob/user, proximity_flag, list/modifiers, status)
+	if(!proximity_flag)
 		return
 
 	var/datum/antagonist/vampire/V = user.mind?.has_antag_datum(/datum/antagonist/vampire)
@@ -260,7 +260,7 @@
 	anchored = TRUE
 
 /obj/structure/blood_barrier/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "кровавый барьер",
 		GENITIVE = "кровавого барьера",
 		DATIVE = "кровавому барьеру",

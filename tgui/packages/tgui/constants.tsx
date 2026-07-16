@@ -6,6 +6,7 @@ export const UI_CLOSE = -1;
 
 type Gas = {
   id: string;
+  path: string;
   name: string;
   label: string;
   color: string;
@@ -37,24 +38,25 @@ export const COLORS = {
 
 // Colors defined in CSS
 export const CSS_COLORS = [
-  'black',
-  'white',
-  'red',
-  'orange',
-  'yellow',
-  'olive',
-  'green',
-  'teal',
-  'blue',
-  'violet',
-  'purple',
-  'pink',
-  'brown',
-  'grey',
-  'good',
   'average',
   'bad',
+  'black',
+  'blue',
+  'brown',
+  'good',
+  'green',
+  'grey',
   'label',
+  'olive',
+  'orange',
+  'pink',
+  'purple',
+  'red',
+  'teal',
+  'transparent',
+  'violet',
+  'white',
+  'yellow',
 ];
 
 export type Channel = {
@@ -194,11 +196,17 @@ export const RADIO_CHANNELS: Channel[] = [
     freq: 1251,
     color: '#776f96',
   },
+  {
+    name: 'Воксы',
+    freq: 1220,
+    color: '#952aa5',
+  },
 ] as const;
 
 export const GASES = [
   {
     id: 'o2',
+    path: '/datum/gas/oxygen',
     name: 'Oxygen',
     label: 'O₂',
     color: 'blue',
@@ -207,6 +215,7 @@ export const GASES = [
   },
   {
     id: 'n2',
+    path: '/datum/gas/nitrogen',
     name: 'Nitrogen',
     label: 'N₂',
     color: 'yellow',
@@ -215,6 +224,7 @@ export const GASES = [
   },
   {
     id: 'co2',
+    path: '/datum/gas/carbon_dioxide',
     name: 'Carbon Dioxide',
     label: 'CO₂',
     color: 'grey',
@@ -223,6 +233,7 @@ export const GASES = [
   },
   {
     id: 'plasma',
+    path: '/datum/gas/plasma',
     name: 'Plasma',
     label: 'Plasma',
     color: 'pink',
@@ -231,6 +242,7 @@ export const GASES = [
   },
   {
     id: 'water_vapor',
+    path: '/datum/gas/water_vapor',
     name: 'Water Vapor',
     label: 'H₂O',
     color: 'lightsteelblue',
@@ -239,6 +251,7 @@ export const GASES = [
   },
   {
     id: 'hypernoblium',
+    path: '/datum/gas/hypernoblium',
     name: 'Hyper-noblium',
     label: 'Hyper-nob',
     color: 'teal',
@@ -247,6 +260,7 @@ export const GASES = [
   },
   {
     id: 'n2o',
+    path: '/datum/gas/nitrous_oxide',
     name: 'Nitrous Oxide',
     label: 'N₂O',
     color: 'bisque',
@@ -255,6 +269,7 @@ export const GASES = [
   },
   {
     id: 'tritium',
+    path: '/datum/gas/tritium',
     name: 'Tritium',
     label: 'Tritium',
     color: 'limegreen',
@@ -263,6 +278,7 @@ export const GASES = [
   },
   {
     id: 'bz',
+    path: '/datum/gas/bz',
     name: 'BZ',
     label: 'BZ',
     color: 'mediumpurple',
@@ -271,6 +287,7 @@ export const GASES = [
   },
   {
     id: 'pluoxium',
+    path: '/datum/gas/pluoxium',
     name: 'Pluoxium',
     label: 'Pluoxium',
     color: 'mediumslateblue',
@@ -279,6 +296,7 @@ export const GASES = [
   },
   {
     id: 'miasma',
+    path: '/datum/gas/miasma',
     name: 'Miasma',
     label: 'Miasma',
     color: 'olive',
@@ -287,6 +305,7 @@ export const GASES = [
   },
   {
     id: 'freon',
+    path: '/datum/gas/freon',
     name: 'Freon',
     label: 'Freon',
     color: 'paleturquoise',
@@ -295,6 +314,7 @@ export const GASES = [
   },
   {
     id: 'hydrogen',
+    path: '/datum/gas/hydrogen',
     name: 'Hydrogen',
     label: 'H₂',
     color: 'white',
@@ -303,6 +323,7 @@ export const GASES = [
   },
   {
     id: 'healium',
+    path: '/datum/gas/healium',
     name: 'Healium',
     label: 'Healium',
     color: 'salmon',
@@ -311,6 +332,7 @@ export const GASES = [
   },
   {
     id: 'proto_nitrate',
+    path: '/datum/gas/proto_nitrate',
     name: 'Proto Nitrate',
     label: 'Proto-Nitrate',
     color: 'greenyellow',
@@ -319,6 +341,7 @@ export const GASES = [
   },
   {
     id: 'zauker',
+    path: '/datum/gas/zauker',
     name: 'Zauker',
     label: 'Zauker',
     color: 'darkgreen',
@@ -327,6 +350,7 @@ export const GASES = [
   },
   {
     id: 'halon',
+    path: '/datum/gas/halon',
     name: 'Halon',
     label: 'Halon',
     color: 'purple',
@@ -335,6 +359,7 @@ export const GASES = [
   },
   {
     id: 'helium',
+    path: '/datum/gas/helium',
     name: 'Helium',
     label: 'He',
     color: 'aliceblue',
@@ -343,6 +368,7 @@ export const GASES = [
   },
   {
     id: 'antinoblium',
+    path: '/datum/gas/antinoblium',
     name: 'Antinoblium',
     label: 'Anti-Noblium',
     color: 'maroon',
@@ -351,6 +377,7 @@ export const GASES = [
   },
   {
     id: 'nitrium',
+    path: '/datum/gas/nitrium',
     name: 'Nitrium',
     label: 'Nitrium',
     color: 'brown',
@@ -359,6 +386,7 @@ export const GASES = [
   },
   {
     id: 'ab',
+    path: '',
     name: 'Agent B',
     label: 'Agent B',
     color: 'purple',
@@ -389,12 +417,26 @@ export const getGasColor = (gasId: string) => {
 
 // Returns gas object based on gasId
 export const getGasFromId = (gasId: string): Gas | undefined => {
+  if (!gasId) return;
+
   const gasSearchString = gasId.toLowerCase();
-  const gas = GASES.find(
-    (gas) =>
-      gas.id === gasSearchString || gas.name.toLowerCase() === gasSearchString
-  );
-  return gas;
+
+  for (let idx = 0; idx < GASES.length; idx++) {
+    if (GASES[idx].id === gasSearchString) {
+      return GASES[idx];
+    }
+  }
+};
+
+// Returns gas object based on gasPath
+export const getGasFromPath = (gasPath: string): Gas | undefined => {
+  if (!gasPath) return;
+
+  for (let idx = 0; idx < GASES.length; idx++) {
+    if (GASES[idx].path === gasPath) {
+      return GASES[idx];
+    }
+  }
 };
 
 export const timeAgo = (ref_time: number, now_time: number) => {
@@ -473,6 +515,7 @@ export const JOBS_RU = {
   'Lawyer': 'Адвокат',
   'Chaplain': 'Священник',
   'Psychologist': 'Психолог',
+  'Investor': 'Инвестор',
 };
 
 export const DEPARTMENTS_RU = {

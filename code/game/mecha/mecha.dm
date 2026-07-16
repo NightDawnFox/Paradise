@@ -15,9 +15,14 @@
 	max_integrity = 300 //max_integrity is base health
 	armor = list(melee = 20, bullet = 10, laser = 0, energy = 0, bomb = 0, bio = 0, fire = 100, acid = 100)
 	bubble_icon = "machine"
-	hud_possible = list (DIAG_STAT_HUD, DIAG_BATT_HUD, DIAG_MECH_HUD, DIAG_TRACK_HUD)
+	hud_possible = list(
+		DIAG_STAT_HUD,
+		DIAG_BATT_HUD,
+		DIAG_MECH_HUD,
+		DIAG_TRACK_HUD,
+	)
 	cares_about_temperature = TRUE
-	var/list/facing_modifiers = list(MECHA_FRONT_ARMOUR = 1.5, MECHA_SIDE_ARMOUR = 1, MECHA_BACK_ARMOUR = 0.5)
+	var/alist/facing_modifiers = alist(MECHA_FRONT_ARMOUR = 1.5, MECHA_SIDE_ARMOUR = 1, MECHA_BACK_ARMOUR = 0.5)
 	var/ruin_mecha = FALSE //if the mecha starts on a ruin, don't automatically give it a tracking beacon to prevent metagaming.
 	var/initial_icon = null //Mech type for resetting icon. Only used for reskinning kits (see custom items)
 	var/can_move = 0 // time of next allowed movement
@@ -44,7 +49,7 @@
 	var/datum/effect_system/spark_spread/spark_system = new
 	var/lights = 0
 	var/lights_power = 6
-	var/lights_color = -99999 // "NONSENSICAL_VALUE"
+	var/lights_color = NONSENSICAL_VALUE
 	var/frozen = FALSE
 	var/repairing = FALSE
 	/// The internal storage of the exosuit. For the cargo module
@@ -53,6 +58,14 @@
 	var/cargo_capacity = 1
 	/// for wide cargo module
 	var/cargo_expanded = FALSE
+	/// emp protection
+	var/emp_protection = FALSE
+	/// mech equipment types
+	var/allowed_equipment = MECH_EQUIPMENT_WORKING
+
+	/// emag
+	var/emaggable = FALSE
+	var/emag_desc = span_danger_alt("</br>Слоты оборудования меха опасно искрят!")
 
 	//inner atmos
 	var/use_internal_tank = FALSE
@@ -73,10 +86,12 @@
 	/// Required access level to open cell compartment.
 	var/list/internals_req_access = list(ACCESS_ENGINE,ACCESS_ROBOTICS)
 
-	var/wreckage
+	/// Type that the mecha becomes when destroyed
+	var/obj/structure/mecha_wreckage/wreckage = null
 
 	var/list/equipment = new
-	var/obj/item/mecha_parts/mecha_equipment/selected
+	var/list/list/equipment_in_hands
+	var/list/obj/item/mecha_parts/mecha_equipment/selected_equipment_in_hands = list()
 	var/max_equip = 3
 	var/turf/crashing = null
 	var/occupant_sight_flags = 0
@@ -182,8 +197,8 @@
 	GLOB.poi_list |= src
 	GLOB.mechas_list += src //global mech list
 	prepare_huds()
-	for(var/datum/atom_hud/data/diagnostic/diag_hud in GLOB.huds)
-		diag_hud.add_atom_to_hud(src)
+	var/datum/atom_hud/data/diagnostic/diag_hud = GLOB.huds[DATA_HUD_DIAGNOSTIC]
+	diag_hud.add_atom_to_hud(src)
 	diag_hud_set_mechhealth()
 	diag_hud_set_mechcell()
 	diag_hud_set_mechstat()
@@ -197,7 +212,7 @@
 	AddElement(/datum/element/falling_hazard, damage = 100, hardhat_safety = FALSE, crushes = TRUE)
 
 /obj/mecha/Destroy()
-
+	STOP_PROCESSING(SSobj, src)
 	for(var/atom/movable/cargo_thing as anything in cargo)
 		cargo -= cargo_thing
 		cargo_thing.forceMove(drop_location())
@@ -206,22 +221,20 @@
 	if(occupant)
 		occupant.SetSleeping(destruction_sleep_duration)
 	go_out()
-	var/mob/living/silicon/ai/AI
 	for(var/mob/M in src) //Let's just be ultra sure
 		if(isAI(M))
-			occupant = null
-			AI = M //AIs are loaded into the mech computer itself. When the mech dies, so does the AI. They can be recovered with an AI card from the wreck.
+			var/mob/living/silicon/ai/AI = M //AIs are loaded into the mech computer itself. When the mech dies, so does the AI. They can be recovered with an AI card from the wreck.
+			AI.gib() //No wreck, no AI to recover
 		else
 			M.forceMove(loc)
+	occupant = null
 	for(var/obj/item/mecha_parts/mecha_equipment/E in equipment)
 		E.detach(loc)
 		qdel(E)
 	equipment.Cut()
 	QDEL_NULL(cell)
 	QDEL_NULL(internal_tank)
-	if(AI)
-		AI.gib() //No wreck, no AI to recover
-	STOP_PROCESSING(SSobj, src)
+	QDEL_NULL(radio)
 	GLOB.poi_list.Remove(src)
 	var/turf/location = get_turf(src)
 	if(location)
@@ -229,12 +242,16 @@
 	else
 		qdel(cabin_air)
 	cabin_air = null
+	connected_port = null
 	QDEL_NULL(spark_system)
 	QDEL_NULL(smoke_system)
 	QDEL_LIST(trackers)
+	LAZYCLEARLIST(selected_equipment_in_hands)
+	for(var/list/equipment in equipment_in_hands)
+		equipment.Cut()
 	QDEL_NULL(ui_view)
-	QDEL_NULL(radio)
 	lose_hearing_sensitivity(trait_source = ROUNDSTART_TRAIT)
+	remove_from_all_data_huds()
 	GLOB.mechas_list -= src //global mech list
 	return ..()
 
@@ -274,10 +291,12 @@
 	. = ..()
 	var/integrity = obj_integrity * 100 / max_integrity
 	switch(integrity)
-		if(85 to 100)
+		if(100)
 			. += span_notice("Он полностью невредим.")
-		if(65 to 85)
+		if(85 to 99)
 			. += span_notice("Он незначительно повреждён.")
+		if(65 to 85)
+			. += span_notice("Он немного повреждён.")
 		if(45 to 65)
 			. += span_notice("Он сильно повреждён.")
 		if(25 to 45)
@@ -294,7 +313,7 @@
 	if(M == occupant && radio.get_broadcasting())
 		radio.talk_into(M, message_pieces)
 
-/obj/mecha/proc/click_action(atom/target, mob/user, params)
+/obj/mecha/proc/click_action(atom/target, mob/user, list/modifiers)
 	if(!occupant || occupant != user)
 		return
 	if(completely_disabled)
@@ -311,7 +330,11 @@
 		return
 	if(src == target)
 		return
-
+	var/obj/item/mecha_parts/mecha_equipment/selected
+	if(LAZYACCESS(modifiers, RIGHT_CLICK))
+		selected = selected_equipment_in_hands[MECH_HAND_RIGHT]
+	else
+		selected = selected_equipment_in_hands[MECH_HAND_LEFT]
 	if(GLOB.pacifism_after_gt)
 		var/mob/living/L = user
 		if(!Adjacent(target))
@@ -319,7 +342,7 @@
 				if(selected.harmful)
 					to_chat(L, span_warning("Вы не хотите навредить другим живым существам!"))
 					return
-				selected.action(target, params)
+				selected.action(target, modifiers)
 		else if(selected && selected.is_melee())
 			if(ishuman(target) && selected.harmful)
 				to_chat(user, span_warning("Вы не хотите навредить другим живым существам!"))
@@ -342,24 +365,24 @@
 			to_chat(L, span_warning("[L.mind.martial_art.no_guns_message]"))
 			return
 		if(!Adjacent(target))
-			selected.action(target, params)
+			selected.action(target, modifiers)
 			return
 		else
 			if(L.a_intent == INTENT_HELP) // point blank shooting
-				selected.action(target, params)
+				selected.action(target, modifiers)
 				return
 	else if(selected && selected.is_melee())
 		if(isliving(target) && selected.harmful && HAS_TRAIT(L, TRAIT_PACIFISM))
 			to_chat(L, span_warning("Вы не хотите навредить другим живым существам!!"))
 			return
-		selected.action(target, params)
+		selected.action(target, modifiers)
 		return
 
 	if(internal_damage & MECHA_INT_CONTROL_LOST)
 		target = safepick(oview(1, src))
 	if(!melee_can_hit || !isatom(target) || !Adjacent(target))
 		return
-	target.mech_melee_attack(src)
+	target.mech_melee_attack(src, selected)
 	melee_can_hit = FALSE
 	addtimer(CALLBACK(src, PROC_REF(melee_hit_ready)), melee_cooldown)
 
@@ -692,7 +715,7 @@
 	if(!islist(possible_int_damage) || isemptylist(possible_int_damage))
 		return
 	if(prob(20))
-		if(ignore_threshold || obj_integrity*100/max_integrity < internal_damage_threshold)
+		if(ignore_threshold || obj_integrity * 100 / max_integrity < internal_damage_threshold)
 			for(var/T in possible_int_damage)
 				if(internal_damage & T)
 					possible_int_damage -= T
@@ -700,7 +723,7 @@
 			if(int_dam_flag)
 				setInternalDamage(int_dam_flag)
 	if(prob(5))
-		if(ignore_threshold || obj_integrity*100/max_integrity < internal_damage_threshold)
+		if(ignore_threshold || obj_integrity * 100 / max_integrity < internal_damage_threshold)
 			var/obj/item/mecha_parts/mecha_equipment/ME = safepick(equipment)
 			if(ME)
 				qdel(ME)
@@ -859,6 +882,8 @@
 
 //TODO
 /obj/mecha/emp_act(severity)
+	if(emp_protection)
+		return FALSE
 	if(get_charge())
 		use_power((cell.charge/3)/(severity*2))
 		take_damage(30 / severity, BURN, ENERGY, 1)
@@ -897,9 +922,14 @@
 		if(!equipment.can_attach(src))
 			to_chat(user, span_warning("You were unable to attach [I] to [src]!"))
 			return ATTACK_CHAIN_PROCEED
+		var/hand_slot = null
+		if(equipment.selectable == MODULE_SELECTABLE_FULL)
+			hand_slot = tgui_alert(user, "Выберите руку, в которую установить модуль.", "Выбор руки", list(MECH_HAND_LEFT, MECH_HAND_RIGHT))
+			if(!hand_slot)
+				return ATTACK_CHAIN_PROCEED
 		if(!user.drop_transfer_item_to_loc(I, src))
 			return ..()
-		equipment.attach(src)
+		equipment.attach(src, hand_slot)
 		user.visible_message(
 			span_notice("[user] attaches [I] to [src]."),
 			span_notice("You attach [I] to [src]."),
@@ -1094,51 +1124,63 @@
 		maintenance_progress = MECHA_SECURE_BOLTS
 		to_chat(user, span_notice("You tighten the securing bolts."))
 
-/obj/mecha/welder_act(mob/user, obj/item/I)
+/obj/mecha/welder_act(mob/user, obj/item/welder)
 	if(user.a_intent == INTENT_HARM)
 		return
 	. = TRUE
-	if(!I.tool_use_check(user, 0))
+	if(!welder.tool_use_check(user, 0))
 		return
 	if((obj_integrity >= max_integrity) && !internal_damage)
-		to_chat(user, span_notice("[src] is at full integrity!"))
+		balloon_alert(user, "мех целый!")
 		return
 	if(repairing)
-		to_chat(user, span_notice("[src] is currently being repaired!"))
-		return
-	if(maintenance_progress == MECHA_LOCKED) // If maint protocols are not active, the state is zero
-		to_chat(user, span_warning("[src] can not be repaired without maintenance protocols active!"))
+		balloon_alert(user, "мех уже ремонтируется!")
 		return
 	WELDER_ATTEMPT_REPAIR_MESSAGE
 	repairing = TRUE
-	if(I.use_tool(src, user, 15, volume = I.tool_volume))
+	while(obj_integrity < max_integrity || (internal_damage & MECHA_INT_TANK_BREACH))
+		if(!welder.use_tool(src, user, 15, volume = welder.tool_volume))
+			break
+
 		if(internal_damage & MECHA_INT_TANK_BREACH)
 			clearInternalDamage(MECHA_INT_TANK_BREACH)
 			user.visible_message(
-				span_notice("[user] repairs the damaged gas tank."),
-				span_notice("You repair the damaged gas tank.")
+				span_notice("[user] отремонтировал[GEND_A_O_I(user)] повреждённый кислородный балон."),
+				span_notice("Вы отремонтировали повреждённый кислородный балон.")
 			)
 		else if(obj_integrity < max_integrity)
 			user.visible_message(
-				span_notice("[user] repairs some damage to [name]."),
-				span_notice("You repair some damage to [name].")
+				span_notice("[user] частично отремонтировал[GEND_A_O_I(user)] [name]."),
+				span_notice("Вы частично отремонтировали [name].")
 			)
 			repair_damage(min(10, max_integrity - obj_integrity))
-		else
-			to_chat(user, span_notice("[src] is at full integrity!"))
+
+	if((obj_integrity >= max_integrity) && !internal_damage)
+		balloon_alert(user, "мех полностью отремонтирован!")
 	repairing = FALSE
 
-/obj/mecha/mech_melee_attack(obj/mecha/M)
+/obj/mecha/mech_melee_attack(obj/mecha/mech, obj/item/mecha_parts/mecha_equipment/selected_module = null)
 	if(!has_charge(melee_energy_drain))
 		return FALSE
 	use_power(melee_energy_drain)
-	if(M.damtype == BRUTE || M.damtype == BURN)
-		add_attack_logs(M.occupant, src, "Mecha-attacked with [M] ([uppertext(M.occupant.a_intent)]) ([uppertext(M.damtype)])")
+	if(mech.damtype == BRUTE || mech.damtype == BURN)
+		add_attack_logs(mech.occupant, src, "Mecha-attacked with [mech] ([uppertext(mech.occupant.a_intent)]) ([uppertext(mech.damtype)])")
 		. = ..()
 
 /obj/mecha/emag_act(mob/user)
+	if(emagged)
+		return FALSE
+	if(!emaggable)
+		if(user)
+			to_chat(user, span_warning("ID слот меха [src] отклоняет карту."))
+		return
+	add_attack_logs(user, src, "emagged")
+	emagged = TRUE
+	allowed_equipment |= MECH_EQUIPMENT_COMBAT
 	if(user)
-		to_chat(user, span_warning("[src]'s ID slot rejects the card."))
+		to_chat(user, span_notice("Вы проводите картой по ID слоту меха [src]."))
+	playsound(loc, SFX_SPARKS, 100, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
+	desc += emag_desc
 
 /////////////////////////////////////
 //////////// AI piloting ////////////
@@ -1164,7 +1206,7 @@
 		var/can_control_mech = FALSE
 		for(var/obj/item/mecha_parts/mecha_tracking/ai_control/A in trackers)
 			can_control_mech = TRUE
-			to_chat(user, "[span_notice("[icon2html(src, user)] Status of [name]:")]\n\
+			to_chat(user, "[span_notice("[get_examine_icon(user)] Status of [name]:")]\n\
 				[A.get_mecha_info_text()]")
 			break
 		if(!can_control_mech)
@@ -1246,15 +1288,11 @@
 	AI.can_shunt = FALSE //ONE AI ENTERS. NO AI LEAVES.
 	to_chat(AI, "[AI.can_dominate_mechs ? span_boldnotice("Takeover of [name] complete! You are now permanently loaded onto the onboard computer. Do not attempt to leave the station sector!") \
 	: span_notice("You have been uploaded to a mech's onboard computer.")]")
-	to_chat(AI, span_boldnotice("Use Middle-Mouse to activate mech functions and equipment. Click normally for AI interactions."))
+	to_chat(AI, span_boldnotice("Use Left-Mouse to activate the left-hand module and Right-Mouse to activate the right-hand module."))
 	if(interaction == AI_TRANS_FROM_CARD)
 		GrantActions(AI, FALSE)
 	else
 		GrantActions(AI, !AI.can_dominate_mechs)
-	if(selected)
-		var/atom/movable/screen/alert/empty_alert/default_alert = AI.throw_alert(selected.alert_category, /atom/movable/screen/alert/empty_alert, new_master = selected)
-		default_alert.name = selected.name
-		default_alert.desc = "Выбран модуль [selected.name]"
 
 /////////////////////////////////////
 ////////  Atmospheric stuff  ////////
@@ -1315,18 +1353,17 @@
 /obj/mecha/proc/toggle_internal_tank()
 	internals_action.Trigger()
 
-/obj/mecha/MouseDrop_T(mob/M, mob/user, params)
+/obj/mecha/mouse_drop_receive(mob/M, mob/user, params)
 	if(frozen)
 		to_chat(user, span_warning("Do not enter Admin-Frozen mechs."))
-		return TRUE
+		return
 	if(user.incapacitated() || HAS_TRAIT(user, TRAIT_HANDS_BLOCKED))
 		return
 	if(user != M)
 		return
 	if(occupant)
 		to_chat(user, span_warning("The [src] is already occupied!"))
-
-		return TRUE
+		return
 	var/passed
 	if(dna_lock)
 		if(ishuman(user))
@@ -1336,19 +1373,18 @@
 		passed = TRUE
 	if(!passed)
 		to_chat(user, span_warning("Access denied."))
-		return TRUE
+		return
 	if(user.buckled)
 		to_chat(user, span_warning("You are currently buckled and cannot move."))
-		return TRUE
+		return
 	if(user.has_buckled_mobs()) //mob attached to us
 		to_chat(user, span_warning("You can't enter the exosuit with other creatures attached to you!"))
-		return TRUE
+		return
 	if(ratvarized && !isclocker(user))
 		balloon_alert(user, "запечатано!")
-		return TRUE
+		return
 	visible_message(span_notice("[user] starts to climb into [src]"))
 	INVOKE_ASYNC(src, TYPE_PROC_REF(/obj/mecha, put_in), user)
-	return TRUE
 
 /obj/mecha/proc/put_in(mob/user)
 	if(do_after(user, mech_enter_time, src, category = DA_CAT_TOOL))
@@ -1382,10 +1418,6 @@
 			SEND_SOUND(occupant, sound(nominalsound, volume = 50))
 		if(maintenance_progress)
 			H.throw_alert("locked", /atom/movable/screen/alert/mech_maintenance)
-		if(selected)
-			var/atom/movable/screen/alert/empty_alert/default_alert = H.throw_alert(selected.alert_category, /atom/movable/screen/alert/empty_alert, new_master = selected)
-			default_alert.name = selected.name
-			default_alert.desc = "Выбран модуль [selected.name]"
 		return TRUE
 	else
 		return FALSE
@@ -1456,12 +1488,12 @@
 		return TRUE
 	return FALSE
 
-/obj/mecha/Exited(atom/movable/departed, atom/newLoc)
+/obj/mecha/Exited(atom/movable/gone, direction)
 	. = ..()
-	if(occupant && occupant == departed) // The occupant exited the mech without calling go_out()
-		go_out(TRUE, newLoc)
+	if(occupant && occupant == gone) // The occupant exited the mech without calling go_out()
+		go_out(TRUE)
 
-/obj/mecha/Exit(atom/movable/leaving, atom/newLoc)
+/obj/mecha/Exit(atom/movable/leaving, direction)
 	if(leaving in cargo)
 		return FALSE
 	return ..()
@@ -1475,8 +1507,6 @@
 
 	var/atom/movable/mob_container
 
-	if(selected)
-		occupant.clear_alert(selected.alert_category)
 	occupant.clear_alert("charge")
 	occupant.clear_alert("locked")
 	occupant.clear_alert("mech damage")
@@ -1489,6 +1519,7 @@
 			H.stop_supressing(H.holding)
 
 	if(occupant?.client)
+		occupant.client.mouse_override_icon = null
 		occupant.client.mouse_pointer_icon = initial(occupant.client.mouse_pointer_icon)
 
 	if(ishuman(occupant))
@@ -1779,9 +1810,7 @@
 
 /obj/mecha/do_attack_animation(atom/A, visual_effect_icon, obj/item/used_item, no_effect)
 	if(!no_effect)
-		if(selected)
-			used_item = selected
-		else if(!visual_effect_icon)
+		if(!visual_effect_icon)
 			visual_effect_icon = ATTACK_EFFECT_SMASH
 			if(damtype == BURN)
 				visual_effect_icon = ATTACK_EFFECT_MECHFIRE
@@ -1823,7 +1852,7 @@
 	var/list/choices_to_refs = list()
 
 	for(var/obj/item/mecha_parts/mecha_equipment/MT in equipment)
-		if(!MT.selectable || selected == MT)
+		if(!MT.selectable || (MT.stored_in && (selected_equipment_in_hands[MT.stored_in] == MT)))
 			continue
 		var/mutable_appearance/clean/MA = new(MT)
 		choices[MT.name] = MA

@@ -10,14 +10,15 @@
 
 SUBSYSTEM_DEF(air)
 	name = "Atmospherics"
-	init_order = INIT_ORDER_AIR
+	dependencies = list(
+		/datum/controller/subsystem/mapping,
+		/datum/controller/subsystem/atoms,
+	)
 	priority = FIRE_PRIORITY_AIR
 	// The MC really doesn't like it if we sleep (even though it's supposed to), and ends up running us continuously. Instead, we ask it to run us every tick, and "sleep" by skipping the current tick.
 	wait = 1
-	flags = SS_BACKGROUND | SS_TICKER
+	ss_flags = SS_BACKGROUND | SS_TICKER
 	runlevels = RUNLEVEL_GAME | RUNLEVEL_POSTGAME
-	offline_implications = "Turfs will no longer process atmos, and all atmospheric machines (including cryotubes) will no longer function. Shuttle call recommended."
-	cpu_display = SS_CPUDISPLAY_HIGH
 
 	/// How long we actually wait between ticks. Will round up to the next server tick.
 	var/self_wait = 0.15 SECONDS
@@ -197,9 +198,15 @@ SUBSYSTEM_DEF(air)
 	currentrun = SSair.currentrun
 	currentpart = SSair.currentpart
 	milla_idle = SSair.milla_idle
+	hotspots = SSair.hotspots
 
 /datum/controller/subsystem/air/pause()
 	was_paused = TRUE
+	return ..()
+
+/datum/controller/subsystem/air/Shutdown()
+	while(!milla_idle)
+		sleep(1)
 	return ..()
 
 /datum/controller/subsystem/air/fire(resumed = 0)
@@ -404,7 +411,7 @@ SUBSYSTEM_DEF(air)
 		var/obj/machinery/atmospherics/atmos_machine = currentrun[length(currentrun)]
 		currentrun.len--
 
-		if(istype(atmos_machine, /obj/machinery/atmospherics/supermatter_crystal))
+		if(istype(atmos_machine, /obj/machinery/power/supermatter_crystal))
 			supermatters += atmos_machine
 
 		else if(isnull(atmos_machine) || (atmos_machine.process_atmos(seconds) == PROCESS_KILL))
@@ -416,7 +423,7 @@ SUBSYSTEM_DEF(air)
 			return
 
 	while(length(supermatters))
-		var/obj/machinery/atmospherics/supermatter_crystal/supermatter = supermatters[length(supermatters)]
+		var/obj/machinery/power/supermatter_crystal/supermatter = supermatters[length(supermatters)]
 		supermatters.len--
 
 		if(isnull(supermatter) || (supermatter.process_atmos(seconds) == PROCESS_KILL))
@@ -467,6 +474,7 @@ SUBSYSTEM_DEF(air)
 			var/temperature = currentrun[offset + MILLA_INDEX_TEMPERATURE]
 			if(temperature < T100C && istype(simulated_turf))
 				simulated_turf.MakeSlippery(temperature > T0C ? TURF_WET_WATER : TURF_WET_ICE, 7.9 SECONDS, randfloat(7.9 SECONDS, 8.2 SECONDS))
+				simulated_turf.wash_tg(CLEAN_WASH | CLEAN_RAD, TRUE)
 
 		if(reasons & MILLA_INTERESTING_REASON_CREATE_HOT_ICE)
 			new /obj/item/stack/sheet/hot_ice(turf)
@@ -501,15 +509,17 @@ SUBSYSTEM_DEF(air)
 					// Wasn't an active hotspot before, add it.
 					hotspots += simulated_turf
 				else
-					simulated_turf.active_hotspot.temperature = temperature
-					simulated_turf.active_hotspot.fuel_burnt = fuel_burnt
-					simulated_turf.active_hotspot.data_tick = milla_tick
+					var/obj/effect/hotspot/active_hotspot = simulated_turf.active_hotspot
+					active_hotspot.temperature = temperature
+					active_hotspot.fuel_burnt = fuel_burnt
+					active_hotspot.data_tick = milla_tick
 					if(hotspot_volume > 0)
-						simulated_turf.active_hotspot.temperature = hotspot_temperature
-						simulated_turf.active_hotspot.volume = hotspot_volume * CELL_VOLUME
+						active_hotspot.temperature = hotspot_temperature
+						active_hotspot.volume = hotspot_volume * CELL_VOLUME
 					else
-						simulated_turf.active_hotspot.temperature = temperature
-						simulated_turf.active_hotspot.volume = CELL_VOLUME
+						active_hotspot.temperature = temperature
+						active_hotspot.volume = CELL_VOLUME
+					active_hotspot.coldfire_possible = !!currentrun[offset + MILLA_INDEX_FREON]
 
 				turf.temperature_expose(temperature)
 				var/radiated_temperature = temperature * FIRE_SPREAD_RADIOSITY_SCALE
@@ -901,6 +911,7 @@ SUBSYSTEM_DEF(air)
 
 /datum/controller/subsystem/air/proc/is_in_milla_safe_code()
 	return in_milla_safe_code || length(sleepers) > 0
+
 /datum/controller/subsystem/air/proc/on_milla_tick_finished()
 	milla_idle = TRUE
 	run_sleepless_callbacks()
@@ -945,7 +956,7 @@ SUBSYSTEM_DEF(air)
 	log_world(msg)
 
 	// Disable firing.
-	SSair.flags |= SS_NO_FIRE
+	SSair.ss_flags |= SS_NO_FIRE
 	// Disable fire, too.
 	for(var/turf/simulated/simuleated_turf in SSair.hotspots)
 		QDEL_NULL(simuleated_turf.active_hotspot)

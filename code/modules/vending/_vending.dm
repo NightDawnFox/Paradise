@@ -198,8 +198,8 @@
 	/// do I look unpowered, even when powered?
 	var/force_no_power_icon_state = FALSE
 
-	var/light_range_on = 1
-	var/light_power_on = 0.5
+	var/light_range_on = MINIMUM_USEFUL_LIGHT_RANGE
+	var/light_power_on = 0.7
 
 	/// If this vending machine can be tipped or not
 	var/tiltable = TRUE
@@ -252,9 +252,14 @@
 	 * Defaults to null, set it to TRUE or FALSE explicitly on a per-machine basis if you want to force it to be a certain value.
 	 */
 	var/all_products_free
+	/**
+	 * If this is set to TRUE, the free item distribution process will not drop products, but the machine can still tilt.
+	 * Otherwise, free buy works normally.
+	 */
+	var/vandal_secure = FALSE
 
 /obj/machinery/vending/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "торговый автомат",
 		GENITIVE = "торгового автомата",
 		DATIVE = "торговому автомату",
@@ -278,6 +283,7 @@
 	var/build_inv = FALSE
 	if(!refill_canister)
 		build_inv = TRUE
+		build_products_from_categories()
 	else
 		component_parts = list()
 		var/obj/item/circuitboard/vendor/V = new
@@ -362,8 +368,6 @@
 /obj/machinery/vending/update_overlays()
 	. = ..()
 
-	underlays.Cut()
-
 	if((stat & NOPOWER) || force_no_power_icon_state)
 		if(broken_overlay && (stat & BROKEN))
 			. += broken_overlay
@@ -376,7 +380,7 @@
 		if(broken_overlay)
 			. += broken_overlay
 		if(broken_lightmask_overlay)
-			underlays += emissive_appearance(icon, broken_lightmask_overlay, src)
+			. += emissive_appearance(icon, broken_lightmask_overlay, src, alpha = src.alpha)
 		if(panel_overlay && panel_open)
 			. += panel_overlay
 		return
@@ -398,7 +402,7 @@
 			. += deny_lightmask
 
 	if(!lightmask_used && lightmask_overlay)
-		underlays += emissive_appearance(icon, lightmask_overlay, src)
+		. += emissive_appearance(icon, lightmask_overlay, src, alpha = src.alpha)
 
 	if(panel_overlay && panel_open)
 		. += panel_overlay
@@ -432,7 +436,6 @@
 /obj/machinery/vending/extinguish_light(force = FALSE)
 	if(light_on)
 		set_light_on(FALSE)
-		underlays.Cut()
 
 /obj/machinery/vending/proc/flick_vendor_overlay(flick_flag = FLICK_NONE)
 	if(flick_sequence & (FLICK_VEND|FLICK_DENY))
@@ -786,6 +789,10 @@
  * freebies - number of free items to vend
  */
 /obj/machinery/vending/proc/freebie(mob/user, num_freebies)
+	if(vandal_secure)
+		visible_message(span_warning("[DECLENT_RU_CAP(src, NOMINATIVE)] дребезжит, но ничего не выдаёт!"))
+		return
+
 	visible_message(span_notice("[DECLENT_RU_CAP(src, NOMINATIVE)] товар[declension_ru(num_freebies, "", "ы", "ы")] из своего ассортимента[credits_contained > 0 ? " и купюры" : ""]!"))
 
 	for(var/i in 1 to num_freebies)
@@ -986,8 +993,8 @@
 
 /obj/machinery/vending/ui_static_data(mob/user)
 	var/list/data = list()
-	if(ads_list.len)
-		data["ad"] = ads_list[rand(1, ads_list.len)]
+	if(length(ads_list))
+		data["ad"] = ads_list[rand(1, length(ads_list))]
 
 	data["all_products_free"] = all_products_free
 	data["product_records"] = list()
@@ -1066,8 +1073,8 @@
 	data["item_slot"] = item_slot // boolean
 	data["inserted_item_name"] = inserted_item ? DECLENT_RU_CAP(inserted_item, NOMINATIVE) : FALSE
 
-	if(prob(10) && ads_list.len)
-		data["ad"] = ads_list[rand(1, ads_list.len)]
+	if(prob(10) && length(ads_list))
+		data["ad"] = ads_list[rand(1, length(ads_list))]
 
 	return data
 
@@ -1279,15 +1286,14 @@
 /obj/machinery/vending/proc/do_vend(datum/data/vending_product/product_record, mob/user, list/greyscale_colors)
 	if(!item_slot || !inserted_item)
 		var/put_on_turf = TRUE
-		var/obj/item/vended = new product_record.product_path(drop_location())
+		var/obj/item/vended_item = new product_record.product_path(drop_location())
 		if(greyscale_colors)
-			vended.set_greyscale_colors(greyscale_colors)
-		if(istype(vended) && user && iscarbon(user) && user.Adjacent(src))
-			if(user.put_in_hands(vended, ignore_anim = FALSE))
-				put_on_turf = FALSE
+			vended_item.set_greyscale_colors(greyscale_colors)
+		if(IsReachableBy(user) && user.put_in_hands(vended_item, ignore_anim = FALSE))
+			put_on_turf = FALSE
 		if(put_on_turf)
-			var/turf/T = get_turf(src)
-			vended.forceMove(T)
+			var/turf/target_turf = get_turf(src)
+			vended_item.forceMove(target_turf)
 		return TRUE
 	return FALSE
 
@@ -1327,7 +1333,7 @@
 	if(!message)
 		return
 
-	atom_say(message)
+	atom_say(message, use_tts = FALSE)
 
 /obj/machinery/vending/obj_break(damage_flag)
 	if(stat & BROKEN)
@@ -1335,6 +1341,9 @@
 
 	stat |= BROKEN
 	update_icon(UPDATE_OVERLAYS)
+
+	if(vandal_secure)
+		return
 
 	var/dump_amount = 0
 	var/found_anything = TRUE

@@ -21,6 +21,10 @@
 	/// A list of traits we apply when we get activated
 	var/list/active_traits = list(TRAIT_NEGATES_GRAVITY, TRAIT_NO_SLIP_WATER, TRAIT_NO_SLIP_SLIDE)
 
+/obj/item/clothing/shoes/magboots/ComponentInitialize()
+	. = ..()
+	AddElement(/datum/element/right_click_mapper/attack_self, "Переключить [declent_ru(ACCUSATIVE)]")
+
 /obj/item/clothing/shoes/magboots/atmos
 	desc = "Magnetic boots, made to withstand gusts of space wind over 500kmph."
 	name = "atmospheric magboots"
@@ -126,7 +130,7 @@
 	var/enabled_waddle = TRUE
 
 /obj/item/clothing/shoes/magboots/clown/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "клоунские башмаки",
 		GENITIVE = "клоунских башмаков",
 		DATIVE = "клоунским башмакам",
@@ -170,7 +174,7 @@
 	slowdown_active = SHOES_SLOWDOWN //wiz hardsuit already slows you down, no need to double it
 	magpulse_name = "gripping ability"
 	magical = TRUE
-	light_system = MOVABLE_LIGHT
+	light_system = OVERLAY_LIGHT
 	light_on = FALSE
 	light_range = 2
 

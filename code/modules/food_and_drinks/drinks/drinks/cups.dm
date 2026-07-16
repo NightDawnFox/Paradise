@@ -28,7 +28,7 @@
 	has_cup = TRUE
 
 /obj/item/reagent_containers/food/drinks/cups/coffee_cup/normal/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "стакан кофе",
 		GENITIVE = "стакана кофе",
 		DATIVE = "стакану кофе",
@@ -71,7 +71,7 @@
 			if(85 to INFINITY)
 				filling.icon_state = "[base_icon_state]100"
 
-		filling.color = mix_color_from_reagents(reagents.reagent_list)
+		filling.color = get_color_matrix_from_reagents(reagents.reagent_list)
 		. += filling
 
 /obj/item/reagent_containers/food/drinks/cups/coffee_cup/normal/attack_self(mob/user)
@@ -92,7 +92,7 @@
 	volume = 30
 
 /obj/item/reagent_containers/food/drinks/cups/coffee_cup/small/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "стаканчик кофе",
 		GENITIVE = "стаканчика кофе",
 		DATIVE = "стаканчику кофе",
@@ -119,7 +119,7 @@
 		if(80 to INFINITY)
 			filling.icon_state = "[base_icon_state]100"
 
-	filling.color = mix_color_from_reagents(reagents.reagent_list)
+	filling.color = get_color_matrix_from_reagents(reagents.reagent_list)
 	. += filling
 
 /obj/item/reagent_containers/food/drinks/cups/coffee_cup/small/coffee
@@ -131,7 +131,7 @@
 	var/selected_reagent
 
 /obj/item/reagent_containers/food/drinks/cups/coffee_cup/small/coffee/experimentor/small/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "стаканчик подозрительной жидкости",
 		GENITIVE = "стаканчика подозрительной жидкости",
 		DATIVE = "стаканчику подозрительной жидкости",

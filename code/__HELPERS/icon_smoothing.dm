@@ -88,6 +88,18 @@ GLOBAL_LIST_INIT(adjacent_direction_lookup, generate_adjacent_directions())
 		direction_map[dir] = acceptable_adjacents
 	return direction_map
 
+/// Takes a direction, turns it into all the junctions that it lines up with
+/proc/all_junctions_of_dir(dir)
+	if(dir == NORTH)
+		return NORTH_JUNCTION | NORTHEAST_JUNCTION | NORTHWEST_JUNCTION
+	if(dir == SOUTH)
+		return SOUTH_JUNCTION | SOUTHEAST_JUNCTION | SOUTHWEST_JUNCTION
+	if(dir == EAST)
+		return EAST_JUNCTION | SOUTHEAST_JUNCTION | NORTHEAST_JUNCTION
+	if(dir == WEST)
+		return WEST_JUNCTION | NORTHWEST_JUNCTION | SOUTHWEST_JUNCTION
+	return NONE
+
 /proc/dir_to_junction(dir)
 	switch(dir)
 		if(NORTH)
@@ -191,8 +203,8 @@ GLOBAL_LIST_INIT(adjacent_direction_lookup, generate_adjacent_directions())
 	else if(A.smooth & SMOOTH_BITMASK)
 		A.bitmask_smooth()
 
-	if(isturf(A))
-		SSdemo.mark_turf(A)
+	//if(isturf(A))
+	//	SSdemo.mark_turf(A)
 
 /atom/proc/bitmask_smooth()
 	var/new_junction = NONE

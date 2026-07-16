@@ -796,7 +796,7 @@
 /datum/surgery_step/internal/manipulate_organs/clean/end_step(mob/living/user, mob/living/carbon/target, target_zone, obj/item/tool, datum/surgery/surgery)
 	if(!iscarbon(target))
 		return SURGERY_STEP_INCOMPLETE
-	if(!istype(tool, /obj/item/reagent_containers))
+	if(!is_reagent_container(tool))
 		return SURGERY_STEP_INCOMPLETE
 
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
@@ -874,7 +874,7 @@
 	return SURGERY_STEP_CONTINUE
 
 /datum/surgery_step/internal/manipulate_organs/clean/fail_step(mob/living/user, mob/living/carbon/target, target_zone, obj/item/tool, datum/surgery/surgery)
-	if(!istype(tool, /obj/item/reagent_containers))
+	if(!is_reagent_container(tool))
 		return SURGERY_STEP_INCOMPLETE
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 	var/obj/item/reagent_containers/C = tool
@@ -941,10 +941,12 @@
 		msg = "[user] вставля[PLUR_ET_YUT(user)] кости грудной клетки [target] обратно, используя [tool.declent_ru(ACCUSATIVE)]."
 		self_msg = "Вы вставляете кости грудной клетки [target] обратно, используя [tool.declent_ru(ACCUSATIVE)]."
 		affected.open = ORGAN_ORGANIC_ENCASED_OPEN
+		affected.owner.add_bleeding_bodypart(affected)
 	if(target_zone == BODY_ZONE_HEAD)
 		msg = "[user] вставля[PLUR_ET_YUT(user)] кости черепа [target] обратно, используя [tool.declent_ru(ACCUSATIVE)]."
 		self_msg = "Вы вставляете кости черепа [target] обратно, используя [tool.declent_ru(ACCUSATIVE)]."
 		affected.open = ORGAN_ORGANIC_ENCASED_OPEN
+		affected.owner.add_bleeding_bodypart(affected)
 	else
 		msg = "[user] закрыва[PLUR_ET_YUT(user)] края раны на [affected.declent_ru(PREPOSITIONAL)] [target], используя [tool.declent_ru(ACCUSATIVE)]."
 		self_msg = "Вы закрываете края раны на [affected.declent_ru(PREPOSITIONAL)] [target], используя [tool.declent_ru(ACCUSATIVE)]."

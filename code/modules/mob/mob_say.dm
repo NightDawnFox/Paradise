@@ -48,7 +48,7 @@
 		QUEUE_OR_CALL_VERB_FOR(VERB_CALLBACK(src, TYPE_PROC_REF(/mob, emote), "me", 1, message, TRUE), SSspeech_controller)
 
 /mob/proc/say_dead(message)
-	message = handleDiscordEmojis(say_emphasis(message))
+	message = handleDiscordEmojis(apply_message_emphasis(message))
 	if(client)
 		if(!check_rights(R_ADMIN, FALSE) && !CONFIG_GET(flag/dsay_allowed))
 			to_chat(src, span_danger("Deadchat is globally muted."))
@@ -135,20 +135,6 @@
 		return verbs
 	return pick(verbs)
 
-/// Transforms the speech emphasis mods from [/atom/movable/proc/say_emphasis] into the appropriate HTML tags
-#define ENCODE_HTML_EMPHASIS(input, char, html, varname) \
-	var/static/regex/##varname = regex("[char](.+?)[char]", "g");\
-	input = varname.Replace_char(input, "<[html]>$1</[html]>&#8203;") //zero-width space to force maptext to respect closing tags.
-
-/// Scans the input sentence for speech emphasis modifiers, notably |italics|, +bold+, and _underline_ -mothblocks
-/mob/proc/say_emphasis(input)
-	ENCODE_HTML_EMPHASIS(input, "\\|", "i", italics)
-	ENCODE_HTML_EMPHASIS(input, "\\%", "b", bold)
-	ENCODE_HTML_EMPHASIS(input, "_", "u", underline)
-	return input
-
-#undef ENCODE_HTML_EMPHASIS
-
 /mob/proc/get_ear()
 	// returns an atom representing a location on the map from which this
 	// mob can hear things
@@ -170,11 +156,13 @@
 //standard mode is the mode returned for the special ';' radio code.
 /mob/proc/parse_message_mode(message, standard_mode = HEADSET_MODE)
 	if(length(message) >= 1 && copytext(message, 1, 2) == ";")
-		return standard_mode
+		return list(standard_mode, copytext(message, 2))
 
 	if(length(message) >= 2)
-		var/channel_prefix = copytext_char(message, 1 ,3)
-		return GLOB.department_radio_keys[channel_prefix]
+		var/list/parts = splittext(message, " ")
+		var/channel_prefix = parts[1]
+		if(length(parts) > 1 && GLOB.department_radio_keys[channel_prefix])
+			return list(GLOB.department_radio_keys[channel_prefix], replacetext(message, channel_prefix, ""))
 
 	return null
 

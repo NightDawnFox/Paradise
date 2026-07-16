@@ -39,7 +39,7 @@
 
 	for(var/i in 1 to length(eligible_areas))
 		var/area/place = eligible_areas[i]
-		if(istype(place, /area/shuttle)) // Don't play storm audio to shuttles that are not at lavaland
+		if(is_area_shuttle(place)) // Don't play storm audio to shuttles that are not at lavaland
 			continue
 		if(place.outdoors)
 			weak_sounds[place] = /datum/looping_sound/weak_outside_ashstorm
@@ -49,7 +49,7 @@
 			strong_sounds[place] = /datum/looping_sound/active_inside_ashstorm
 
 /datum/weather/ash_storm/proc/update_audio(next_stage)
-	switch(stage)
+	switch(next_stage)
 		if(STARTUP_STAGE)
 			GLOB.ash_storm_sounds += weak_sounds
 

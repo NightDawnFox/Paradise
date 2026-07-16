@@ -49,10 +49,11 @@ GLOBAL_LIST_INIT(metal_recipes, list(
 		new /datum/stack_recipe("torch holder", /obj/item/mounted/frame/torch_holder, 2, time = 3 SECONDS),
 	)),
 	new /datum/stack_recipe_list("construction", list(
+		new /datum/stack_recipe("crate shelf parts", /obj/item/rack_parts/cargo_shelf),
 		new /datum/stack_recipe("floor tile", /obj/item/stack/tile/plasteel, TRUE, 4, 20),
 		new /datum/stack_recipe/rods("metal rod", /obj/item/stack/rods, TRUE, 2, 50),
 		new /datum/stack_recipe("rack parts", /obj/item/rack_parts),
-		new /datum/stack_recipe("gun rack parts", /obj/item/gunrack_parts),
+		new /datum/stack_recipe("gun rack parts", /obj/item/rack_parts/gunrack_parts),
 		new /datum/stack_recipe("computer frame", /obj/structure/computerframe, 5, time = 2.5 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("machine frame", /obj/machinery/constructable_frame/machine_frame, 5, time = 2.5 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("closet", /obj/structure/closet, 2, time = 1.5 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
@@ -102,6 +103,7 @@ GLOBAL_LIST_INIT(metal_recipes, list(
 	icon_state = "sheet-metal"
 	protolathe_name = "metal"
 	materials = list(MAT_METAL=MINERAL_MATERIAL_AMOUNT)
+	matter_amount = 1
 	throwforce = 10.0
 	flags = CONDUCT
 	resistance_flags = FIRE_PROOF
@@ -150,7 +152,8 @@ GLOBAL_LIST_INIT(plasteel_recipes, list(
 	protolathe_name = "metal"
 	icon_state = "sheet-plasteel"
 	item_state = "sheet-plasteel"
-	materials = list(MAT_METAL=2000, MAT_PLASMA=2000)
+	materials = list(MAT_METAL=MINERAL_MATERIAL_AMOUNT, MAT_PLASMA=MINERAL_MATERIAL_AMOUNT)
+	matter_amount = 8
 	armor = list(MELEE = 0, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 0, FIRE = 100, ACID = 80)
 	resistance_flags = FIRE_PROOF
 	throwforce = 10
@@ -195,6 +198,8 @@ GLOBAL_LIST_INIT(wood_recipes, list(
 		new /datum/stack_recipe("wooden bucket", /obj/item/reagent_containers/glass/bucket/wooden, 3, time = 1 SECONDS),
 		new /datum/stack_recipe("wooden buckler", /obj/item/shield/riot/buckler, 20, time = 4 SECONDS),
 		new /datum/stack_recipe("wooden sandals", /obj/item/clothing/shoes/sandal),
+		new /datum/stack_recipe("painting frame", /obj/item/wallframe/painting, 1, time = 1 SECONDS),
+		new /datum/stack_recipe("easel", /obj/structure/easel, 5, time = 1 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 	)),
 	new /datum/stack_recipe_list("wood structures", list(
 		new /datum/stack_recipe("bookcase", /obj/structure/bookcase, 5, time = 5 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
@@ -306,7 +311,10 @@ GLOBAL_LIST_INIT(cloth_recipes, list(
 	)),
 	new /datum/stack_recipe_list("misc", list(
 		new /datum/stack_recipe("improvised gauze", /obj/item/stack/medical/bruise_pack/improvised, res_amount = 2, max_res_amount = 6),
-		new /datum/stack_recipe("rag", /obj/item/reagent_containers/glass/rag),
+		new /datum/stack_recipe("rag", /obj/item/rag),
+		new/datum/stack_recipe("19x19 canvas", /obj/item/canvas/nineteen_nineteen, 3),
+		new/datum/stack_recipe("23x19 canvas", /obj/item/canvas/twentythree_nineteen, 4),
+		new/datum/stack_recipe("23x23 canvas", /obj/item/canvas/twentythree_twentythree, 5),
 	)),
 	null,
 ))
@@ -476,6 +484,7 @@ GLOBAL_LIST_INIT(cult_fake_recipes, list(
 	item_state = "sheet-runed"
 	sheettype = "runed"
 	merge_type = /obj/item/stack/sheet/runed_metal
+	matter_amount = 8
 
 /obj/item/stack/sheet/runed_metal_fake
 	name = "runed metal"
@@ -485,6 +494,7 @@ GLOBAL_LIST_INIT(cult_fake_recipes, list(
 	item_state = "sheet-runed"
 	sheettype = "runed"
 	merge_type = /obj/item/stack/sheet/runed_metal_fake
+	matter_amount = 8
 
 /obj/item/stack/sheet/runed_metal/Initialize(mapload, new_amount, merge = TRUE)
 	. = ..()
@@ -591,6 +601,7 @@ GLOBAL_LIST_INIT(fake_brass_recipes, list(
 	resistance_flags = FIRE_PROOF | ACID_PROOF
 	throwforce = 10
 	merge_type = /obj/item/stack/sheet/brass
+	matter_amount = 8
 
 /obj/item/stack/sheet/brass/narsie_act()
 	new /obj/item/stack/sheet/runed_metal(loc, amount)
@@ -639,6 +650,7 @@ GLOBAL_LIST_INIT(fake_brass_recipes, list(
 	resistance_flags = FIRE_PROOF | ACID_PROOF
 	throwforce = 10
 	merge_type = /obj/item/stack/sheet/brass_fake
+	matter_amount = 8
 
 /obj/item/stack/sheet/brass_fake/narsie_act()
 	qdel(src)
@@ -674,7 +686,7 @@ GLOBAL_LIST_INIT(fake_brass_recipes, list(
 	origin_tech = "materials=2;biotech=2"
 
 /obj/item/stack/sheet/bone/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "кости",
 		GENITIVE = "костей",
 		DATIVE = "костям",
@@ -698,7 +710,7 @@ GLOBAL_LIST_INIT(fake_brass_recipes, list(
 	origin_tech = "materials=4;biotech=5"
 
 /obj/item/stack/sheet/razor_sharp_teeth/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "бритвенно-острые зубы",
 		GENITIVE = "бритвенно-острых зубов",
 		DATIVE = "бритвенно-острым зубам",
@@ -723,6 +735,7 @@ GLOBAL_LIST_INIT(plastic_recipes, list(
 		new /datum/stack_recipe("plastic flaps", /obj/structure/plasticflaps, 5, time = 4 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("warning cone", /obj/item/clothing/head/cone, 5, on_floor = TRUE),
 		new /datum/stack_recipe("wet floor sign", /obj/item/caution, 2),
+		new /datum/stack_recipe("пластиковый стул", /obj/structure/chair/plastic, 2, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 	)),
 	new /datum/stack_recipe_list("plastic utensils", list(
 		new /datum/stack_recipe("plastic fork", /obj/item/kitchen/utensil/pfork, on_floor = TRUE),
@@ -751,6 +764,7 @@ GLOBAL_LIST_INIT(plastic_recipes, list(
 		new /datum/stack_recipe("custodian", /obj/structure/sign/custodian, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("dangerous alien life", /obj/structure/sign/xeno_warning_mining, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("deathsposal", /obj/structure/sign/deathsposal, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
+		new /datum/stack_recipe("doors", /obj/structure/sign/doors, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("drop pods", /obj/structure/sign/drop, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("engineering department", /obj/structure/sign/directions/engineering, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("engineering", /obj/structure/sign/engineering, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
@@ -761,16 +775,17 @@ GLOBAL_LIST_INIT(plastic_recipes, list(
 		new /datum/stack_recipe("explosives alt", /obj/structure/sign/explosives/alt, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("external airlock", /obj/structure/sign/vacuum/external, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("fire", /obj/structure/sign/fire, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
-		new /datum/stack_recipe("green cross", /obj/structure/sign/greencross, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
+		new /datum/stack_recipe("green cross", /obj/structure/sign/medbay/greencross, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("hazardous radiation", /obj/structure/sign/radiation, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("high voltage", /obj/structure/sign/electricshock, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("holy", /obj/structure/sign/holy, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("medical bay", /obj/structure/sign/directions/medical, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
+		new /datum/stack_recipe("medical lifestar", /obj/structure/sign/medbay, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("no smoking", /obj/structure/sign/nosmoking_1, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("no smoking alt", /obj/structure/sign/nosmoking_2, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("pods", /obj/structure/sign/pods, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("radioactive area", /obj/structure/sign/radiation/rad_area, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
-		new /datum/stack_recipe("red cross", /obj/structure/sign/redcross, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
+		new /datum/stack_recipe("red cross", /obj/structure/sign/medbay/redcross, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("research division", /obj/structure/sign/directions/science, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("restroom", /obj/structure/sign/restroom, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("science", /obj/structure/sign/science, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
@@ -779,6 +794,7 @@ GLOBAL_LIST_INIT(plastic_recipes, list(
 		new /datum/stack_recipe("security department", /obj/structure/sign/directions/security, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("vacuum", /obj/structure/sign/vacuum, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 		new /datum/stack_recipe("xenobio", /obj/structure/sign/xenobio, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
+		new /datum/stack_recipe("xenobio slime", /obj/structure/sign/xenobio/slime, 10, time = 2 SECONDS, one_per_turf = TRUE, on_floor = TRUE),
 	)),
 ))
 

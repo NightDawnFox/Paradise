@@ -13,7 +13,7 @@
 	item_flags = NOBLUDGEON|NO_MAT_REDEMPTION
 
 /obj/item/card/emag/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "криптографический считыватель",
 		GENITIVE = "криптографического считывателя",
 		DATIVE = "криптографическому считывателю",
@@ -25,11 +25,10 @@
 /obj/item/card/emag/attack(mob/living/target, mob/living/user, params, def_zone, skip_attack_anim = FALSE)
 	return ATTACK_CHAIN_PROCEED
 
-/obj/item/card/emag/afterattack(atom/target, mob/user, proximity, params)
-	var/atom/A = target
-	if(!proximity)
+/obj/item/card/emag/afterattack(atom/target, mob/user, proximity_flag, list/modifiers, status)
+	if(!proximity_flag)
 		return
-	A.emag_act(user)
+	target.emag_act(user)
 
 /obj/item/card/emag_broken
 	name = "broken cryptographic sequencer"
@@ -41,7 +40,7 @@
 	origin_tech = "magnets=2;syndicate=1"
 
 /obj/item/card/emag_broken/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "сломанный криптографический считыватель",
 		GENITIVE = "сломанного криптографического считывателя",
 		DATIVE = "сломанному криптографическому считывателю",
@@ -60,7 +59,7 @@
 	item_flags = NOBLUDGEON|NO_MAT_REDEMPTION
 
 /obj/item/card/cmag/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "шутографический считыватель",
 		GENITIVE = "шутографического считывателя",
 		DATIVE = "шутографическому считывателю",
@@ -75,7 +74,7 @@
 /obj/item/card/cmag/attack(mob/living/target, mob/living/user, params, def_zone, skip_attack_anim = FALSE)
 	return ATTACK_CHAIN_PROCEED
 
-/obj/item/card/cmag/afterattack(atom/target, mob/user, proximity, params)
-	if(!proximity)
+/obj/item/card/cmag/afterattack(atom/target, mob/user, proximity_flag, list/modifiers, status)
+	if(!proximity_flag)
 		return
 	INVOKE_ASYNC(target, TYPE_PROC_REF(/atom, cmag_act), user)

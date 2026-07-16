@@ -47,6 +47,11 @@
 	index_name = "Fur Gloves"
 	path = /obj/item/clothing/gloves/furgloves
 
+/datum/gear/donor/ecig
+	index_name = "ecig"
+	donator_tier = 1
+	path = /obj/item/ecig
+
 /datum/gear/donor/noble_boot
 	index_name = "Noble Boots"
 	path = /obj/item/clothing/shoes/fluff/noble_boot
@@ -150,12 +155,19 @@
 /datum/gear/donor/zippogold
 	index_name = "gold engraved zippo lighter"
 	display_name = "Золотая зажигалка Зиппо"
-	path =  /obj/item/lighter/zippo/fluff/michael_guess_1
+	path =  /obj/item/lighter/zippo/gold
+	donator_tier = 3
 
 /datum/gear/donor/zippopurple
 	index_name = "purple engraved zippo lighter"
 	display_name = "Фиолетовая зажигалка Зиппо"
-	path = /obj/item/lighter/zippo/fluff/purple
+	path = /obj/item/lighter/zippo/purple
+	donator_tier = 3
+
+/datum/gear/donor/zippogonzo
+	index_name = "gonzo zippo lighter"
+	display_name = "зажигалка Зиппо с кулаком Гонзо"
+	path = /obj/item/lighter/zippo/gonzofist
 	donator_tier = 3
 
 /datum/gear/donor/strip
@@ -164,7 +176,7 @@
 
 /datum/gear/donor/strip/cap
 	index_name = "strip, Captain"
-	path = /obj/item/clothing/accessory/head_strip
+	path = /obj/item/clothing/accessory/head_strip/captain
 	allowed_roles = list(JOB_TITLE_CAPTAIN)
 
 /datum/gear/donor/strip/rd
@@ -340,7 +352,7 @@
 	allowed_roles = list(JOB_TITLE_CAPTAIN, JOB_TITLE_DETECTIVE, JOB_TITLE_PILOT, JOB_TITLE_HOS, JOB_TITLE_WARDEN, JOB_TITLE_BLUESHIELD, JOB_TITLE_MAGISTRATE, JOB_TITLE_OFFICER)
 
 /datum/gear/donor/heartsec_read
-	index_name = "Heart Security Glasses"
+	index_name = "Heart Security Glasses (read-only)"
 	path = /obj/item/clothing/glasses/hud/security/sunglasses/heart/read_only
 	donator_tier = 4
 	cost = 2
@@ -468,6 +480,29 @@
 	donator_tier = 3
 	index_name = "Space cloak"
 	path = /obj/item/clothing/neck/cloak/spacecloak
+
+/datum/gear/donor/civil_cape
+	donator_tier = 3
+	index_name = "Civil cape"
+	path = /obj/item/clothing/neck/cloak/civil_cape
+
+/datum/gear/donor/commander_cape
+	donator_tier = 4
+	index_name = "Commander cape"
+	path = /obj/item/clothing/neck/cloak/commander_cape
+	allowed_roles = list(JOB_TITLE_CAPTAIN, JOB_TITLE_QUARTERMASTER, JOB_TITLE_RD, JOB_TITLE_HOS, JOB_TITLE_HOP, JOB_TITLE_CMO, JOB_TITLE_CHIEF_ENGINEER, JOB_TITLE_REPRESENTATIVE, JOB_TITLE_MAGISTRATE)
+
+/datum/gear/donor/sec_cape
+	donator_tier = 3
+	index_name = "Security cape"
+	path = /obj/item/clothing/neck/cloak/sec_cape
+	allowed_roles = list(JOB_TITLE_HOS, JOB_TITLE_WARDEN, JOB_TITLE_DETECTIVE, JOB_TITLE_OFFICER, JOB_TITLE_PILOT)
+
+/datum/gear/donor/hos_cape
+	donator_tier = 4
+	index_name = "Marine cape"
+	path = /obj/item/clothing/neck/cloak/hos_cape
+	allowed_roles = list(JOB_TITLE_HOS)
 
 /datum/gear/donor/golden_wheelchair
 	donator_tier = 4

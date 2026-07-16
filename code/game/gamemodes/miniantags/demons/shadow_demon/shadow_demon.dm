@@ -16,7 +16,7 @@
 	var/list/wrapped_victims
 
 /mob/living/simple_animal/demon/shadow/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "теневой демон",
 		GENITIVE = "теневого демона",
 		DATIVE = "теневому демону",
@@ -68,7 +68,7 @@
 		set_varspeed(-0.3)
 	return lum_count
 
-/mob/living/simple_animal/demon/shadow/OnUnarmedAttack(atom/target)
+/mob/living/simple_animal/demon/shadow/OnUnarmedAttack(atom/target, proximity_flag, list/modifiers)
 	// Pick a random attack sound for each attack
 	attack_sound = pick('sound/shadowdemon/shadowattack2.ogg', 'sound/shadowdemon/shadowattack3.ogg', 'sound/shadowdemon/shadowattack4.ogg')
 	if(!ishuman(target))
@@ -116,7 +116,7 @@
 	light_power = -4
 	light_range = 6
 	max_integrity = 100
-	light_color = "#ddd6cf"
+	light_color = COLOR_DARK_DELAM
 	anchored = TRUE
 	/// Amount of SSobj ticks (Roughly 2 seconds) since the last hallucination proc'd
 	var/time_since_last_hallucination = 0
@@ -124,7 +124,7 @@
 	var/silent = TRUE
 
 /obj/structure/shadowcocoon/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "теневой кокон",
 		GENITIVE = "теневого кокона",
 		DATIVE = "теневому кокону",
@@ -211,7 +211,7 @@
 	color = COLOR_BLACK
 
 /obj/item/organ/internal/heart/demon/shadow/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "сердце тьмы",
 		GENITIVE = "сердца тьмы",
 		DATIVE = "сердцу тьмы",
@@ -257,7 +257,7 @@
 	mind.objectives += wrap_objective
 	mind.objectives += survive_objective
 	messages.Add(mind.prepare_announce_objectives())
-	to_chat(src, chat_box_red(messages.Join("<br>")))
+	to_chat(src, custom_boxed_message("red_box center", messages.Join("<br>")))
 
 /datum/objective/wrap
 	name = "Обёртывание"

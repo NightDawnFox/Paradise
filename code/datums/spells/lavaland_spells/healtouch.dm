@@ -24,7 +24,7 @@
 	var/heal_self = FALSE
 
 /obj/item/melee/touch_attack/healtouch/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "целебное касание",
 		GENITIVE = "целебного касания",
 		DATIVE = "целебному касанию",
@@ -33,8 +33,8 @@
 		PREPOSITIONAL = "целебном касании",
 	)
 
-/obj/item/melee/touch_attack/healtouch/afterattack(atom/target, mob/living/carbon/user, proximity, params)
-	if(!proximity || (target == user && !heal_self) || !ismob(target) || !iscarbon(user) || user.incapacitated() || HAS_TRAIT(user, TRAIT_HANDS_BLOCKED))
+/obj/item/melee/touch_attack/healtouch/afterattack(atom/target, mob/user, proximity_flag, list/modifiers, status)
+	if(!proximity_flag || (target == user && !heal_self) || !ismob(target) || !iscarbon(user) || user.incapacitated() || HAS_TRAIT(user, TRAIT_HANDS_BLOCKED))
 		return
 	var/mob/living/M = target
 	new /obj/effect/temp_visual/heal(get_turf(M), "#899d39")

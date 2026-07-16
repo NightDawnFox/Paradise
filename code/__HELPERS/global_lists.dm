@@ -22,8 +22,6 @@
 
 	init_datum_subtypes(/datum/robot_skin, GLOB.robot_skins, null, "type")
 
-	init_datum_subtypes(/datum/fake_administrator, GLOB.cached_fake_admins, null, "type")
-
 	init_subtypes(/datum/surgery_step, GLOB.surgery_steps)
 	init_subtypes(/obj/item/slimepotion, GLOB.slime_potions)
 	init_subtypes(/datum/preference_info, GLOB.preferences_info)
@@ -322,7 +320,7 @@
 		EQUIPMENT("Jump Boots Implants", /obj/item/storage/box/jumpbootimplant, 7000),
 		EQUIPMENT("Lazarus Capsule", /obj/item/mobcapsule, 300),
 		EQUIPMENT("Lazarus Capsule belt", /obj/item/storage/belt/lazarus, 400),
-		EQUIPMENT("Mining MODsuit",	/obj/item/mod/control/pre_equipped/mining/vendor, 2500),
+		EQUIPMENT("Mining MODsuit", /obj/item/mod/control/pre_equipped/mining/vendor, 2500),
 		EQUIPMENT("Advanced Jetpack Module", /obj/item/mod/module/jetpack/advanced, 2000),
 		EQUIPMENT("Tracking Implant Kit", /obj/item/storage/box/minertracker, 800),
 		EQUIPMENT("Industrial Mining Satchel", /obj/item/storage/bag/ore/bigger, 500),
@@ -354,6 +352,8 @@
 	)
 	prize_list["Kinetic Accelerator"] = list(
 		EQUIPMENT("Kinetic Accelerator", /obj/item/gun/energy/kinetic_accelerator, 1000),
+		EQUIPMENT("Bayonet knife", /obj/item/gun_module/under/bayonet, 250),
+		EQUIPMENT("Long bayonet knife", /obj/item/gun_module/under/bayonet/long, 2000),
 		EQUIPMENT("KA Adjustable Tracer Rounds", /obj/item/borg/upgrade/modkit/tracer/adjustable, 200),
 		EQUIPMENT("KA AoE Damage", /obj/item/borg/upgrade/modkit/aoe/mobs, 2500),
 		EQUIPMENT("KA Cooldown Decrease", /obj/item/borg/upgrade/modkit/cooldown/haste, 1500),
@@ -507,10 +507,8 @@
 		skin_list[skin_data.item_path] = list()
 	skin_list[skin_data.item_path] += skin_data
 
-/**
- * Checks if that loc and dir has an item on the wall
-**/
-// Wall mounted machinery which are visually on the wall.
+// Checks if that loc and dir has an item on the wall
+/// Wall mounted machinery which are visually on the wall.
 GLOBAL_LIST_INIT(wallitems_interior, typecacheof(list(
 	/obj/item/radio/intercom,
 	/obj/item/storage/secure/safe,
@@ -520,6 +518,7 @@ GLOBAL_LIST_INIT(wallitems_interior, typecacheof(list(
 	/obj/machinery/defibrillator_mount,
 	/obj/machinery/door_control,
 	/obj/machinery/door_timer,
+	/obj/machinery/driver_button,
 	/obj/machinery/embedded_controller/radio/airlock,
 	/obj/machinery/firealarm,
 	/obj/machinery/flasher,
@@ -528,6 +527,7 @@ GLOBAL_LIST_INIT(wallitems_interior, typecacheof(list(
 	/obj/machinery/newscaster,
 	/obj/machinery/power/apc,
 	/obj/machinery/requests_console,
+	/obj/machinery/shower,
 	/obj/machinery/status_display,
 	/obj/structure/closet/fireaxecabinet,
 	/obj/structure/extinguisher_cabinet,
@@ -535,36 +535,40 @@ GLOBAL_LIST_INIT(wallitems_interior, typecacheof(list(
 	/obj/structure/noticeboard,
 	/obj/structure/reagent_dispensers/peppertank,
 	/obj/structure/sign,
+	/obj/structure/torch_holder,
 )))
 
-// Wall mounted machinery which are visually coming out of the wall.
-// These do not conflict with machinery which are visually placed on the wall.
+/// Wall mounted machinery which are visually coming out of the wall.
+/// These do not conflict with machinery which are visually placed on the wall.
 GLOBAL_LIST_INIT(wallitems_exterior, typecacheof(list(
+	/obj/machinery/camera,
 	/obj/machinery/light,
+	/obj/machinery/light_construct,
+	/obj/structure/sink,
 )))
 
 /**
- * Global list of body zone constants to Russian names in all grammatical cases
+ * Global alist of body zone constants to Russian names in all grammatical cases
  *
  * Used for getting declined body part names in messages.
  * Example: [GLOB.body_zone[limb_zone][ACCUSATIVE]] returns "голову" for BODY_ZONE_HEAD
  */
-GLOBAL_LIST_INIT(body_zone, list(
-	BODY_ZONE_HEAD = list(NOMINATIVE = "голова", GENITIVE = "головы", DATIVE = "голове", ACCUSATIVE = "голову", INSTRUMENTAL = "головой", PREPOSITIONAL = "голове"),
-	BODY_ZONE_CHEST = list(NOMINATIVE = "грудь", GENITIVE = "груди", DATIVE = "груди", ACCUSATIVE = "грудь", INSTRUMENTAL = "грудью", PREPOSITIONAL = "груди"),
-	BODY_ZONE_L_ARM = list(NOMINATIVE = "левая рука", GENITIVE = "левой руки", DATIVE = "левой руке", ACCUSATIVE = "левую руку", INSTRUMENTAL = "левой рукой", PREPOSITIONAL = "левой руке"),
-	BODY_ZONE_R_ARM = list(NOMINATIVE = "правая рука", GENITIVE = "правой руки", DATIVE = "правой руке", ACCUSATIVE = "правую руку", INSTRUMENTAL = "правой рукой", PREPOSITIONAL = "правой руке"),
-	BODY_ZONE_L_LEG = list(NOMINATIVE = "левая нога", GENITIVE = "левой ноги", DATIVE = "левой ноге", ACCUSATIVE = "левую ногу", INSTRUMENTAL = "левой ногой", PREPOSITIONAL = "левой ноге"),
-	BODY_ZONE_R_LEG = list(NOMINATIVE = "правая нога", GENITIVE = "правой ноги", DATIVE = "правой ноге", ACCUSATIVE = "правую ногу", INSTRUMENTAL = "правой ногой", PREPOSITIONAL = "правой ноге"),
-	BODY_ZONE_TAIL = list(NOMINATIVE = "хвост", GENITIVE = "хвоста", DATIVE = "хвосту", ACCUSATIVE = "хвост", INSTRUMENTAL = "хвостом", PREPOSITIONAL = "хвосте"),
-	BODY_ZONE_WING = list(NOMINATIVE = "крылья", GENITIVE = "крыльев", DATIVE = "крыльям", ACCUSATIVE = "крылья", INSTRUMENTAL = "крыльями", PREPOSITIONAL = "крыльях"),
-	BODY_ZONE_PRECISE_EYES = list(NOMINATIVE = "глаза", GENITIVE = "глаз", DATIVE = "глазам", ACCUSATIVE = "глаза", INSTRUMENTAL = "глазами", PREPOSITIONAL = "глазах"),
-	BODY_ZONE_PRECISE_MOUTH = list(NOMINATIVE = "рот", GENITIVE = "рта", DATIVE = "рту", ACCUSATIVE = "рот", INSTRUMENTAL = "ртом", PREPOSITIONAL = "рте"),
-	BODY_ZONE_PRECISE_GROIN = list(NOMINATIVE = "живот", GENITIVE = "живота", DATIVE = "животу", ACCUSATIVE = "живот", INSTRUMENTAL = "животом", PREPOSITIONAL = "животе"),
-	BODY_ZONE_PRECISE_L_HAND = list(NOMINATIVE = "левая кисть", GENITIVE = "левой кисти", DATIVE = "левой кисти", ACCUSATIVE = "левую кисть", INSTRUMENTAL = "левой кистью", PREPOSITIONAL = "левой кисти"),
-	BODY_ZONE_PRECISE_R_HAND = list(NOMINATIVE = "правая кисть", GENITIVE = "правой кисти", DATIVE = "правой кисти", ACCUSATIVE = "правую кисть", INSTRUMENTAL = "правой кистью", PREPOSITIONAL = "правой кисти"),
-	BODY_ZONE_PRECISE_L_FOOT = list(NOMINATIVE = "левая ступня", GENITIVE = "левой ступни", DATIVE = "левой ступне", ACCUSATIVE = "левую ступню", INSTRUMENTAL = "левой ступнёй", PREPOSITIONAL = "левой ступне"),
-	BODY_ZONE_PRECISE_R_FOOT = list(NOMINATIVE = "правая ступня", GENITIVE = "правой ступни", DATIVE = "правой ступне", ACCUSATIVE = "правую ступню", INSTRUMENTAL = "правой ступнёй", PREPOSITIONAL = "правой ступне"),
+GLOBAL_ALIST_INIT(body_zone, alist(
+	BODY_ZONE_HEAD = alist(NOMINATIVE = "голова", GENITIVE = "головы", DATIVE = "голове", ACCUSATIVE = "голову", INSTRUMENTAL = "головой", PREPOSITIONAL = "голове"),
+	BODY_ZONE_CHEST = alist(NOMINATIVE = "грудь", GENITIVE = "груди", DATIVE = "груди", ACCUSATIVE = "грудь", INSTRUMENTAL = "грудью", PREPOSITIONAL = "груди"),
+	BODY_ZONE_L_ARM = alist(NOMINATIVE = "левая рука", GENITIVE = "левой руки", DATIVE = "левой руке", ACCUSATIVE = "левую руку", INSTRUMENTAL = "левой рукой", PREPOSITIONAL = "левой руке"),
+	BODY_ZONE_R_ARM = alist(NOMINATIVE = "правая рука", GENITIVE = "правой руки", DATIVE = "правой руке", ACCUSATIVE = "правую руку", INSTRUMENTAL = "правой рукой", PREPOSITIONAL = "правой руке"),
+	BODY_ZONE_L_LEG = alist(NOMINATIVE = "левая нога", GENITIVE = "левой ноги", DATIVE = "левой ноге", ACCUSATIVE = "левую ногу", INSTRUMENTAL = "левой ногой", PREPOSITIONAL = "левой ноге"),
+	BODY_ZONE_R_LEG = alist(NOMINATIVE = "правая нога", GENITIVE = "правой ноги", DATIVE = "правой ноге", ACCUSATIVE = "правую ногу", INSTRUMENTAL = "правой ногой", PREPOSITIONAL = "правой ноге"),
+	BODY_ZONE_TAIL = alist(NOMINATIVE = "хвост", GENITIVE = "хвоста", DATIVE = "хвосту", ACCUSATIVE = "хвост", INSTRUMENTAL = "хвостом", PREPOSITIONAL = "хвосте"),
+	BODY_ZONE_WING = alist(NOMINATIVE = "крылья", GENITIVE = "крыльев", DATIVE = "крыльям", ACCUSATIVE = "крылья", INSTRUMENTAL = "крыльями", PREPOSITIONAL = "крыльях"),
+	BODY_ZONE_PRECISE_EYES = alist(NOMINATIVE = "глаза", GENITIVE = "глаз", DATIVE = "глазам", ACCUSATIVE = "глаза", INSTRUMENTAL = "глазами", PREPOSITIONAL = "глазах"),
+	BODY_ZONE_PRECISE_MOUTH = alist(NOMINATIVE = "рот", GENITIVE = "рта", DATIVE = "рту", ACCUSATIVE = "рот", INSTRUMENTAL = "ртом", PREPOSITIONAL = "рте"),
+	BODY_ZONE_PRECISE_GROIN = alist(NOMINATIVE = "живот", GENITIVE = "живота", DATIVE = "животу", ACCUSATIVE = "живот", INSTRUMENTAL = "животом", PREPOSITIONAL = "животе"),
+	BODY_ZONE_PRECISE_L_HAND = alist(NOMINATIVE = "левая кисть", GENITIVE = "левой кисти", DATIVE = "левой кисти", ACCUSATIVE = "левую кисть", INSTRUMENTAL = "левой кистью", PREPOSITIONAL = "левой кисти"),
+	BODY_ZONE_PRECISE_R_HAND = alist(NOMINATIVE = "правая кисть", GENITIVE = "правой кисти", DATIVE = "правой кисти", ACCUSATIVE = "правую кисть", INSTRUMENTAL = "правой кистью", PREPOSITIONAL = "правой кисти"),
+	BODY_ZONE_PRECISE_L_FOOT = alist(NOMINATIVE = "левая ступня", GENITIVE = "левой ступни", DATIVE = "левой ступне", ACCUSATIVE = "левую ступню", INSTRUMENTAL = "левой ступнёй", PREPOSITIONAL = "левой ступне"),
+	BODY_ZONE_PRECISE_R_FOOT = alist(NOMINATIVE = "правая ступня", GENITIVE = "правой ступни", DATIVE = "правой ступне", ACCUSATIVE = "правую ступню", INSTRUMENTAL = "правой ступнёй", PREPOSITIONAL = "правой ступне"),
 ))
 
 /proc/init_dice_rolls()
@@ -573,3 +577,11 @@ GLOBAL_LIST_INIT(body_zone, list(
 		var/datum/dice_roll/d_roll = new roll_path()
 		rolls[d_roll.number] = d_roll
 	GLOB.dice_rolls = rolls
+
+/// Functions like init_subtypes, but uses the subtype's path as a key for easy access
+/proc/init_subtypes_w_path_keys(prototype, list/our_list)
+	if(!istype(our_list))
+		our_list = list()
+	for(var/path in subtypesof(prototype))
+		our_list[path] = new path()
+	return our_list

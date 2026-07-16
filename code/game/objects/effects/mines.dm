@@ -22,6 +22,9 @@
 	if(!isliving(arrived))
 		return
 
+	if(arrived.anchored || HAS_TRAIT(arrived, TRAIT_WALLMOUNTED))
+		return
+
 	if(arrived.movement_type & MOVETYPES_NOT_TOUCHING_GROUND)
 		return
 
@@ -33,7 +36,7 @@
 /obj/effect/mine/proc/triggermine(mob/living/victim)
 	if(triggered)
 		return
-	visible_message(span_danger("[victim] sets off [icon2html(src, viewers(src))] [src]!"))
+	visible_message(span_danger("[victim] sets off [get_examine_icon(viewers(src))] [src]!"))
 	do_sparks(3, TRUE, src)
 	mineEffect(victim)
 	triggered = 1
@@ -117,8 +120,8 @@
 	icon_state = "electricity2"
 	var/duration = 0
 
-/obj/effect/mine/pickup/New()
-	..()
+/obj/effect/mine/pickup/Initialize(mapload)
+	. = ..()
 	animate(src, pixel_y = 4, time = 20, loop = -1)
 
 /obj/effect/mine/pickup/triggermine(mob/living/victim)

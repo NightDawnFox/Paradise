@@ -6,9 +6,12 @@
 	armour_penetration = 100
 	hitsound = 'sound/effects/splat.ogg'
 	weaken = 2 SECONDS
+	ricochet_chance = 0
+	speed = 2
+	range = 15
 
 /obj/projectile/hook/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "крюк",
 		GENITIVE = "крюка",
 		DATIVE = "крюку",
@@ -16,6 +19,10 @@
 		INSTRUMENTAL = "крюком",
 		PREPOSITIONAL = "крюке",
 	)
+
+/obj/projectile/hook/Initialize(mapload)
+	. = ..()
+	ADD_TRAIT(src, TRAIT_NO_RICOCHET, INNATE_TRAIT)
 
 /obj/projectile/hook/fire(setAngle)
 	if(firer)

@@ -50,6 +50,7 @@
 				/obj/item/reagent_containers/syringe/calomel = 8,
 				/obj/item/reagent_containers/syringe/insulin = 8,
 				/obj/item/reagent_containers/syringe/heparin = 8,
+				/obj/item/reagent_containers/hypospray/autoinjector/neuromatin = 3,
 			),
 		),
 		list(
@@ -111,14 +112,13 @@
 	contraband = list(
 		/obj/item/reagent_containers/glass/bottle/sulfonal = 3,
 		/obj/item/reagent_containers/glass/bottle/pancuronium = 3,
-		/obj/item/reagent_containers/hypospray/autoinjector/neuromatin = 3,
 	)
 	armor = list(MELEE = 50, BULLET = 20, LASER = 20, ENERGY = 20, BOMB = 0, BIO = 0, FIRE = 100, ACID = 70)
 	resistance_flags = FIRE_PROOF
 	refill_canister = /obj/item/vending_refill/medical
 
 /obj/machinery/vending/medical/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "торговый автомат NanoMed Plus",
 		GENITIVE = "торгового автомата NanoMed Plus",
 		DATIVE = "торговому автомату NanoMed Plus",
@@ -137,7 +137,7 @@
 	req_access = list(ACCESS_SYNDICATE)
 
 /obj/machinery/vending/medical/syndicate_access/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "торговый автомат SyndiMed Plus",
 		GENITIVE = "торгового автомата SyndiMed Plus",
 		DATIVE = "торговому автомату SyndiMed Plus",

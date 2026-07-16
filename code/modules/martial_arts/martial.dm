@@ -74,7 +74,7 @@
 	return act(MARTIAL_COMBO_STEP_HELP, A, D)
 
 /datum/martial_art/proc/can_use(mob/living/carbon/human/human)
-	return !HAS_TRAIT(human, TRAIT_PACIFISM)
+	return !HAS_TRAIT(human, TRAIT_PACIFISM) && !HAS_TRAIT(human, TRAIT_MARTIAL_ARTS_SUPPRESSED)
 
 /datum/martial_art/proc/act(step, mob/living/carbon/human/user, mob/living/carbon/human/target, could_start_new_combo = TRUE)
 	if(!can_use(user))
@@ -179,7 +179,7 @@
 	return TRUE
 
 /datum/martial_art/proc/attack_reaction(mob/living/carbon/human/defender, mob/living/carbon/human/attacker, obj/item/I, visible_message, self_message)
-	if(can_use(defender) && defender.in_throw_mode && !defender.incapacitated(INC_IGNORE_GRABBED))
+	if(can_use(defender) && defender.in_throw_mode && !defender.incapacitated(IGNORE_GRAB))
 		if(prob(block_chance))
 			if(visible_message || self_message)
 				defender.visible_message(visible_message, self_message)
@@ -289,6 +289,11 @@
 
 // Put after the header and before the footer in the explaination text
 /datum/martial_art/proc/explaination_combos(user)
+	var/mob/living/carbon/human/human = user
+	if(HAS_TRAIT(human, TRAIT_MARTIAL_ARTS_SUPPRESSED))
+		to_chat(user, span_warning("Что-то подавляет ваши боевые навыки... Вы не можете вспомнить техники."))
+		return
+
 	if(HAS_COMBOS)
 		for(var/combo_type in combos)
 			var/datum/martial_combo/MC = new combo_type()
@@ -303,6 +308,8 @@
 	return
 
 /datum/martial_art/proc/try_deflect(mob/user)
+	if(HAS_TRAIT(user, TRAIT_MARTIAL_ARTS_SUPPRESSED))
+		return FALSE
 	return prob(deflection_chance)
 
 /datum/martial_art/proc/explaination_notice(user)
@@ -466,7 +473,7 @@
 	item_state = "cqcmanual"
 
 /obj/item/CQC_manual/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "старое руководство",
 		GENITIVE = "старого руководства",
 		DATIVE = "старому руководству",
@@ -508,7 +515,7 @@
 	item_state = "syringe_0"
 
 /obj/item/CQC_manual/chef/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "имплант улучшения CQC",
 		GENITIVE = "импланта улучшения CQC",
 		DATIVE = "импланту улучшения CQC",
@@ -564,7 +571,7 @@
 	item_state = "mr_cheng_manual"
 
 /obj/item/mr_chang_technique/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "журнал \"Техника Агрессивного Маркетинга\"",
 		GENITIVE = "журнала \"Техника Агрессивного Маркетинга\"",
 		DATIVE = "журналу \"Техника Агрессивного Маркетинга\"",
@@ -594,7 +601,7 @@
 	item_state = "throwingknives"
 
 /obj/item/throwing_manual/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "мануал \"Курс Техники метания ножей молодого Десантника\"",
 		GENITIVE = "мануала \"Курс Техники метания ножей молодого Десантника\"",
 		DATIVE = "мануалу \"Курс Техники метания ножей молодого Десантника\"",

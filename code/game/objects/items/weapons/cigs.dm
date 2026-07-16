@@ -57,7 +57,7 @@ LIGHTERS ARE IN LIGHTERS.DM
 	)
 
 /obj/item/clothing/mask/cigarette/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "сигарета",
 		GENITIVE = "сигареты",
 		DATIVE = "сигарете",
@@ -208,16 +208,16 @@ LIGHTERS ARE IN LIGHTERS.DM
 
 	return ..()
 
-/obj/item/clothing/mask/cigarette/afterattack(obj/item/reagent_containers/glass/glass, mob/user, proximity, params)
-	..()
-	if(!proximity)
+/obj/item/clothing/mask/cigarette/afterattack(obj/item/reagent_containers/glass/target, mob/user, proximity_flag, list/modifiers, status)
+	. = ..()
+	if(!proximity_flag)
 		return
-	if(istype(glass))	//you can dip cigarettes into beakers
-		var/transfered = glass.reagents.trans_to(src, chem_volume)
+	if(istype(target))	//you can dip cigarettes into beakers
+		var/transfered = target.reagents.trans_to(src, chem_volume)
 		if(transfered)	//if reagents were transfered, show the message
-			to_chat(user, span_notice("Вы окунаете [declent_ru(ACCUSATIVE)] в [glass.declent_ru(ACCUSATIVE)]."))
+			to_chat(user, span_notice("Вы окунаете [declent_ru(ACCUSATIVE)] в [target.declent_ru(ACCUSATIVE)]."))
 		else			//if not, either the beaker was empty, or the cigarette was full
-			if(!glass.reagents.total_volume)
+			if(!target.reagents.total_volume)
 				user.balloon_alert(usr, "пусто!")
 			else
 				user.balloon_alert(usr, "уже заполнено!")
@@ -237,7 +237,7 @@ LIGHTERS ARE IN LIGHTERS.DM
 	if(!ru_names)
 		ru_names = get_ru_names_cached()
 
-	ru_names = list(
+	ru_names = alist(
 		NOMINATIVE = "[lit ? "прикуренная " : ""]" + ru_names[NOMINATIVE],
 		GENITIVE = "[lit ? "прикуренной " : ""]" + ru_names[GENITIVE],
 		DATIVE = "[lit ? "прикуренной " : ""]" + ru_names[DATIVE],
@@ -360,9 +360,9 @@ LIGHTERS ARE IN LIGHTERS.DM
 
 /obj/item/clothing/mask/cigarette/random
 
-/obj/item/clothing/mask/cigarette/random/New()
+/obj/item/clothing/mask/cigarette/random/Initialize(mapload)
 	list_reagents = list("nicotine" = 40, pick("fuel","saltpetre","synaptizine","green_vomit","potass_iodide","msg","lexorin","mannitol","spaceacillin","cryoxadone","holywater","tea","egg","haloperidol","mutagen","omnizine","carpet","aranesp","cryostylane","chocolate","bilk","cheese","rum","blood","charcoal","coffee","ectoplasm","space_drugs","milk","mutadone","antihol","teporone","insulin","salbutamol","toxin") = 20)
-	..()
+	. = ..()
 
 /obj/item/clothing/mask/cigarette/syndicate
 	list_reagents = list("nicotine" = 40, "syndiezine" = 20)
@@ -389,7 +389,7 @@ LIGHTERS ARE IN LIGHTERS.DM
 	item_state = "spliffoff"
 
 /obj/item/clothing/mask/cigarette/rollie/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "самокрутка",
 		GENITIVE = "самокрутки",
 		DATIVE = "самокрутке",
@@ -433,7 +433,7 @@ LIGHTERS ARE IN LIGHTERS.DM
 	custom_price = PAYCHECK_CREW
 
 /obj/item/clothing/mask/cigarette/cigar/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "сигара премиум-класса",
 		GENITIVE = "сигары премиум-класса",
 		DATIVE = "сигаре премиум-класса",
@@ -450,7 +450,7 @@ LIGHTERS ARE IN LIGHTERS.DM
 	icon_off = "cigar2off"
 	custom_premium_price = PAYCHECK_COMMAND
 /obj/item/clothing/mask/cigarette/cigar/cohiba/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "Сигара Коиба Робусто",
 		GENITIVE = "Сигары Коиба Робусто",
 		DATIVE = "Сигаре Коиба Робусто",
@@ -471,7 +471,7 @@ LIGHTERS ARE IN LIGHTERS.DM
 	custom_premium_price = PAYCHECK_MAX * 2 // cause they're expensive as hell
 
 /obj/item/clothing/mask/cigarette/cigar/havana/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "Гаванская Сигара премиум-класса",
 		GENITIVE = "Гаванская Сигары премиум-класса",
 		DATIVE = "Гаванская Сигаре премиум-класса",
@@ -491,7 +491,7 @@ LIGHTERS ARE IN LIGHTERS.DM
 	throwforce = 1
 
 /obj/item/cigbutt/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "окурок",
 		GENITIVE = "окурка",
 		DATIVE = "окурку",
@@ -556,7 +556,7 @@ LIGHTERS ARE IN LIGHTERS.DM
 	list_reagents = list("nicotine" = 200)
 
 /obj/item/clothing/mask/cigarette/pipe/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "курительная трубка",
 		GENITIVE = "курительной трубки",
 		DATIVE = "курительной трубке",
@@ -636,7 +636,7 @@ LIGHTERS ARE IN LIGHTERS.DM
 	chem_volume = 40
 
 /obj/item/clothing/mask/cigarette/pipe/cobpipe/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "кукурузная курительная трубка",
 		GENITIVE = "кукурузной курительной трубки",
 		DATIVE = "кукурузной курительной трубке",
@@ -654,7 +654,7 @@ LIGHTERS ARE IN LIGHTERS.DM
 	icon_off = "oldpipeoff"
 
 /obj/item/clothing/mask/cigarette/pipe/oldpipe/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "крепкая курительная трубка",
 		GENITIVE = "крепкой курительной трубки",
 		DATIVE = "крепкой курительной трубке",
@@ -677,7 +677,7 @@ LIGHTERS ARE IN LIGHTERS.DM
 	w_class = WEIGHT_CLASS_TINY
 
 /obj/item/rollingpaper/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "папиросная бумага",
 		GENITIVE = "папиросной бумаги",
 		DATIVE = "папиросной бумаге",
@@ -686,8 +686,8 @@ LIGHTERS ARE IN LIGHTERS.DM
 		PREPOSITIONAL = "папиросной бумаге",
 	)
 
-/obj/item/rollingpaper/afterattack(atom/target, mob/user, proximity, params)
-	if(!proximity)
+/obj/item/rollingpaper/afterattack(atom/target, mob/user, proximity_flag, list/modifiers, status)
+	if(!proximity_flag)
 		return
 	if(istype(target, /obj/item/reagent_containers/food/snacks/grown))
 		var/obj/item/reagent_containers/food/snacks/grown/O = target
@@ -721,7 +721,7 @@ LIGHTERS ARE IN LIGHTERS.DM
 	var/has_smoked = FALSE
 
 /obj/item/clothing/mask/holo_cigar/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "голографическая сигара",
 		GENITIVE = "голографической сигары",
 		DATIVE = "голографической сигаре",

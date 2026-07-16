@@ -17,7 +17,7 @@
 	var/inject_amount = 1
 
 /obj/machinery/optable/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "операционный стол",
 		GENITIVE = "операционного стола",
 		DATIVE = "операционному столу",
@@ -25,6 +25,10 @@
 		INSTRUMENTAL = "операционным столом",
 		PREPOSITIONAL = "операционном столе",
 	)
+
+/obj/machinery/optable/ComponentInitialize()
+	. = ..()
+	AddElement(/datum/element/elevation, pixel_shift = 6)
 
 /obj/machinery/optable/Initialize(mapload)
 	. = ..()
@@ -41,7 +45,7 @@
 	patient = null
 	return ..()
 
-/obj/machinery/optable/MouseDrop_T(atom/movable/O, mob/user, params)
+/obj/machinery/optable/mouse_drop_receive(atom/movable/O, mob/user, params)
 	if(!ishuman(user) && !isrobot(user)) //Only Humanoids and Cyborgs can put things on this table
 		return
 	if(!check_table()) //If the Operating Table is occupied, you cannot put someone else on it
@@ -52,7 +56,6 @@
 		return
 	add_fingerprint(user)
 	take_patient(O, user)
-	return TRUE
 
 /**
  * Updates the `patient` var to be the mob occupying the table

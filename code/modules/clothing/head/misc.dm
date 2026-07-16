@@ -239,7 +239,6 @@
 	icon_state = "fedora"
 	item_state = "fedora"
 	desc = "A great hat ruined by being within fifty yards of you."
-	actions_types = list(/datum/action/item_action/tip_fedora)
 
 	sprite_sheets = list(
 		SPECIES_VOX = 'icons/mob/clothing/species/vox/head.dmi',
@@ -249,6 +248,10 @@
 		SPECIES_NEARA = 'icons/mob/clothing/species/monkey/head.dmi',
 		SPECIES_STOK = 'icons/mob/clothing/species/monkey/head.dmi',
 	)
+
+/obj/item/clothing/head/fedora/ComponentInitialize()
+	. = ..()
+	AddElement(/datum/element/right_click_mapper/attack_self, "Поправить федору")
 
 /obj/item/clothing/head/fedora/attack_self(mob/user)
 	tip_fedora(user)
@@ -493,6 +496,10 @@
 	)
 	actions_types = list(/datum/action/item_action/caw)
 
+/obj/item/clothing/head/griffin/ComponentInitialize()
+	. = ..()
+	AddElement(/datum/element/right_click_mapper/attack_self, "Каркнуть")
+
 /obj/item/clothing/head/griffin/attack_self()
 	caw()
 
@@ -506,6 +513,20 @@
 	desc = "A hat suitable for any man of high and exalted rank."
 	icon_state = "lordadmiralhat"
 	item_state = "lordadmiralhat"
+
+/obj/item/clothing/head/lordadmiralhat/admiral
+	name = "admiral hat"
+	desc = "Шляпа снятая с головы самого адмирала флота НТ. Или ССП? ТСФ? Не важно. Она снята с головы о-о-очень важной шишки."
+
+/obj/item/clothing/head/lordadmiralhat/admiral/get_ru_names()
+	return alist(
+		NOMINATIVE = "адмиральская шляпа",
+		GENITIVE = "адмиральской шляпы",
+		DATIVE = "адмиральской шляпе",
+		ACCUSATIVE = "адмиральскую шляпу",
+		INSTRUMENTAL = "адмиральской шляпы",
+		PREPOSITIONAL = "адмиральской шляпе",
+	)
 
 /obj/item/clothing/head/human_head
 	name = "bloated human head"
@@ -595,7 +616,7 @@
 	)
 
 /obj/item/clothing/head/scorched_skull/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "обожжённый череп",
 		GENITIVE = "обожжённого черепа",
 		DATIVE = "обожжённому черепу",
@@ -624,7 +645,7 @@
 	)
 
 /obj/item/clothing/head/roach/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "роуч",
 		GENITIVE = "роуча",
 		DATIVE = "роучу",
@@ -717,7 +738,7 @@
 	)
 
 /obj/item/clothing/head/colour/headband/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "повязка на голову",
 		GENITIVE = "повязки на голову",
 		DATIVE = "повязке на голову",

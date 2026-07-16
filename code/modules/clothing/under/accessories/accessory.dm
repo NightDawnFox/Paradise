@@ -154,7 +154,7 @@
 
 /// Additional info when examine accessory on the suit
 /obj/item/clothing/accessory/proc/attached_examine(mob/user, obj/item/clothing/under/uniform)
-	return span_notice("К н[GEND_HIM_HER(uniform)] прикреплен[GEND_A_O_Y(src)] [icon2html(src, user)] [declent_ru(NOMINATIVE)].")
+	return span_notice("К н[GEND_HIM_HER(uniform)] прикреплен[GEND_A_O_Y(src)] [get_examine_icon(user)] [declent_ru(NOMINATIVE)].")
 
 /obj/item/clothing/accessory/blue
 	name = "blue tie"
@@ -269,9 +269,11 @@
 	materials = list(MAT_METAL=1000)
 	resistance_flags = FIRE_PROOF
 	actions_types = list(/datum/action/item_action/sving_medal)
+	/// Cooldown for displaying medal
+	COOLDOWN_DECLARE(sving_cooldown)
 
 /obj/item/clothing/accessory/medal/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "бронзовая медаль",
 		GENITIVE = "бронзовой медали",
 		DATIVE = "бронзовой медали",
@@ -288,8 +290,11 @@
 		return TRUE
 
 /obj/item/clothing/accessory/medal/proc/sving_medal(mob/user)
+	if(!COOLDOWN_FINISHED(src, sving_cooldown))
+		return
 	user.custom_emote(EMOTE_VISIBLE, "щеголя[PLUR_ET_YUT(user)] [declent_ru(INSTRUMENTAL)].")
 	playsound(src, 'sound/items/medal.ogg', 15, TRUE)
+	COOLDOWN_START(src, sving_cooldown, 5 SECONDS)
 
 // GOLD (awarded by centcom)
 /obj/item/clothing/accessory/medal/gold
@@ -299,7 +304,7 @@
 	materials = list(MAT_GOLD=1000)
 
 /obj/item/clothing/accessory/medal/gold/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "золотая медаль",
 		GENITIVE = "золотой медали",
 		DATIVE = "золотой медали",
@@ -316,7 +321,7 @@
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | ACID_PROOF
 
 /obj/item/clothing/accessory/medal/gold/captain/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медаль капитанства",
 		GENITIVE = "медали капитанства",
 		DATIVE = "медали капитанства",
@@ -335,7 +340,7 @@
 	icon_state = "ion"
 
 /obj/item/clothing/accessory/medal/gold/heroism/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медаль за исключительный героизм",
 		GENITIVE = "медали за исключительный героизм",
 		DATIVE = "медали за исключительный героизм",
@@ -351,7 +356,7 @@
 	icon_state = "cargomedal"
 
 /obj/item/clothing/accessory/medal/gold/cargo/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медаль снабжения",
 		GENITIVE = "медали снабжения",
 		DATIVE = "медали снабжения",
@@ -369,7 +374,7 @@
 	materials = list(MAT_SILVER=1000)
 
 /obj/item/clothing/accessory/medal/silver/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "серебряная медаль",
 		GENITIVE = "серебряной медали",
 		DATIVE = "серебряной медали",
@@ -384,7 +389,7 @@
 	icon_state = "valor"
 
 /obj/item/clothing/accessory/medal/silver/valor/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медаль за отвагу",
 		GENITIVE = "медали за отвагу",
 		DATIVE = "медали за отвагу",
@@ -399,7 +404,7 @@
 	icon_state = "leadership"
 
 /obj/item/clothing/accessory/medal/silver/leadership/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медаль командования",
 		GENITIVE = "медали командования",
 		DATIVE = "медали командования",
@@ -417,7 +422,7 @@
 	icon_state = "robust"
 
 /obj/item/clothing/accessory/medal/security/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медаль имени \"Роберта Астера\"",
 		GENITIVE = "медали имени \"Роберта Астера\"",
 		DATIVE = "медали имени \"Роберта Астера\"",
@@ -432,7 +437,7 @@
 	icon_state = "science"
 
 /obj/item/clothing/accessory/medal/science/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медаль научного прорыва",
 		GENITIVE = "медали научного прорыва",
 		DATIVE = "медали научного прорыва",
@@ -447,7 +452,7 @@
 	icon_state = "engineering"
 
 /obj/item/clothing/accessory/medal/engineering/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медаль инженерного мастерства",
 		GENITIVE = "медали инженерного мастерства",
 		DATIVE = "медали инженерного мастерства",
@@ -462,7 +467,7 @@
 	icon_state = "service"
 
 /obj/item/clothing/accessory/medal/service/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медаль безупречного обслуживания",
 		GENITIVE = "медали безупречного обслуживания",
 		DATIVE = "медали безупречного обслуживания",
@@ -477,7 +482,7 @@
 	icon_state = "medical"
 
 /obj/item/clothing/accessory/medal/medical/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медаль медицинской доблести",
 		GENITIVE = "медали медицинской доблести",
 		DATIVE = "медали медицинской доблести",
@@ -490,7 +495,7 @@
 	desc = "Высшая юридическая награда для тех, кто знает устав \"Нанотрейзен\" лучше, чем своё имя. Вручается Магистратом тем, кто способен найти лазейку в любой обвинительной речи и превратить её в оправдательный приговор."
 
 /obj/item/clothing/accessory/medal/legal/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медаль юридических заслуг",
 		GENITIVE = "медали юридических заслуг",
 		DATIVE = "медали юридических заслуг",
@@ -505,7 +510,7 @@
 	icon_state = "bronze_heart"
 
 /obj/item/clothing/accessory/medal/heart/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медаль \"Бронзовое сердце\"",
 		GENITIVE = "медали \"Бронзовое сердце\"",
 		DATIVE = "медали \"Бронзовое сердце\"",
@@ -522,7 +527,7 @@
 	materials = list(MAT_PLASMA = 1000)
 
 /obj/item/clothing/accessory/medal/plasma/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "плазменная медаль",
 		GENITIVE = "плазменной медали",
 		DATIVE = "плазменной медали",
@@ -557,7 +562,7 @@
 	materials = list(MAT_METAL = 500, MAT_PLASMA = 500)
 
 /obj/item/clothing/accessory/medal/alloy/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "крест",
 		GENITIVE = "креста",
 		DATIVE = "кресту",
@@ -573,7 +578,7 @@
 	desc = "Награда за выдающийся вклад в проект HRD-MDE, связанный с исследованием Бубльгума и сопряжённого с ним редспейса."
 
 /obj/item/clothing/accessory/medal/gold/bubblegum/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медаль HRD-MDE \"Бубльгум\"",
 		GENITIVE = "медали HRD-MDE \"Бубльгум\"",
 		DATIVE = "медали HRD-MDE \"Бубльгум\"",
@@ -587,7 +592,7 @@
 	desc = "Легендарная золотая награда, вручаемая только Центральным Командованием тем, кто бросил вызов всем богам Лазиса — и победил. Для Шахтёров, чья смена стала эпосом, а добыча — пантеоном поверженных титанов."
 
 /obj/item/clothing/accessory/medal/gold/heroism/hardmode_full/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медаль убийцы богов",
 		GENITIVE = "медали убийцы богов",
 		DATIVE = "медали убийцы богов",
@@ -602,7 +607,7 @@
 	icon_state = "alloy"
 
 /obj/item/clothing/accessory/medal/silver/colossus/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медаль HRD-MDE \"Колосс\"",
 		GENITIVE = "медали HRD-MDE \"Колосс\"",
 		DATIVE = "медали HRD-MDE \"Колосс\"",
@@ -616,7 +621,7 @@
 	desc = "Награда за анализ одного из самых противоестественных феноменов Лазиса. Вручается за исследование Легиона — коллективного организма, ставящего под сомнение саму концепцию индивидуальности в экосистеме планеты."
 
 /obj/item/clothing/accessory/medal/silver/legion/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медаль HRD-MDE \"Легион\"",
 		GENITIVE = "медали HRD-MDE \"Легион\"",
 		DATIVE = "медали HRD-MDE \"Легион\"",
@@ -629,7 +634,7 @@
 	desc = "Награда за вклад в проект HRD-MDE по изучению и нейтрализации феномена \"Кровавого шахтёра\" — человека, превратившегося в смертоносную угрозу под влиянием Лазиса."
 
 /obj/item/clothing/accessory/medal/blood_drunk/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медаль HRD-MDE \"Кровавый шахтёр\"",
 		GENITIVE = "медали HRD-MDE \"Кровавый шахтёр\"",
 		DATIVE = "медали HRD-MDE \"Кровавый шахтёр\"",
@@ -643,7 +648,7 @@
 	desc = "Награда для тех, кто осмелился изучать не просто существо, а явление. Иерофант не подчиняется привычным законам — он диктует свои, и эта медаль вручается тем, кто начал понимать его язык."
 
 /obj/item/clothing/accessory/medal/plasma/hierophant/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медаль HRD-MDE \"Иерофант\"",
 		GENITIVE = "медали HRD-MDE \"Иерофант\"",
 		DATIVE = "медали HRD-MDE \"Иерофант\"",
@@ -657,7 +662,7 @@
 	desc = "Награда за значительный вклад в проект HRD-MDE, связанный с исследованием Пепельного дракона — древнего существа, чьё дыхание испепеляет скалы, а чешуя прочнее пластитана."
 
 /obj/item/clothing/accessory/medal/plasma/ash_drake/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медаль HRD-MDE \"Пепельный дракон\"",
 		GENITIVE = "медали HRD-MDE \"Пепельный дракон\"",
 		DATIVE = "медали HRD-MDE \"Пепельный дракон\"",
@@ -671,7 +676,7 @@
 	desc = "Награда за выдающийся вклад в проект HRD-MDE, связанный с исследованием Ветус Спекулятора — одного из самых загадочных и технологически сложных существ Лазиса."
 
 /obj/item/clothing/accessory/medal/alloy/vetus/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медаль HRD-MDE \"Ветус Спекулятор\"",
 		GENITIVE = "медали HRD-MDE \"Ветус Спекулятор\"",
 		DATIVE = "медали HRD-MDE \"Ветус Спекулятор\"",
@@ -685,7 +690,7 @@
 	desc = "Всегда ставьте на то, что ничего не случится."
 
 /obj/item/clothing/accessory/medal/gold/nothing_award/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "награда \"Ничего Не Произошло\"",
 		GENITIVE = "медали \"Ничего Не Произошло\"",
 		DATIVE = "медали \"Ничего Не Произошло\"",
@@ -903,11 +908,11 @@
 	desc = "Украшение в виде черепа, которое предназначено для защиты самого важного в жизни."
 	icon_state = "skull"
 	item_state = "skull"
-	armor = list(MELEE = 5, BULLET = 5, LASER = 5, ENERGY = 5, BOMB = 20, BIO = 20, FIRE = 0, ACID = 25)
+	armor = list(MELEE = 5, BULLET = 5, LASER = 5, ENERGY = 5, BOMB = 10, BIO = 10, FIRE = 0, ACID = 15)
 	allow_duplicates = FALSE
 
 /obj/item/clothing/accessory/necklace/skullcodpiece/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "костяной гульфик",
 		GENITIVE = "костяного гульфика",
 		DATIVE = "костяному гульфику",
@@ -921,11 +926,11 @@
 	desc = "Талисман охотника — многие верят, что он дарует защиту от старых богов тем, кто его носит."
 	icon_state = "talisman"
 	item_state = "talisman"
-	armor = list(MELEE = 5, BULLET = 5, LASER = 5, ENERGY = 5, BOMB = 20, BIO = 20, FIRE = 0, ACID = 25)
+	armor = list(MELEE = 5, BULLET = 5, LASER = 5, ENERGY = 5, BOMB = 10, BIO = 10, FIRE = 0, ACID = 15)
 	allow_duplicates = FALSE
 
 /obj/item/clothing/accessory/necklace/talisman/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "костяной талисман",
 		GENITIVE = "костяного талисмана",
 		DATIVE = "костяному талисману",
@@ -1256,11 +1261,11 @@
 		announce_channel = SYND_TAIPAN_FREQ		// Taipan channel for Руж.
 	else if(istype(t, /area/centcom))
 		announce_channel = ERT_FREQ	// For animals who dare to infiltrate CC.
-	else if(istype(t, /area/syndicate_mothership) || istype(t, /area/shuttle/syndicate_elite) || istype(t, /area/shuttle/syndicate_sit))
+	else if(istype(t, /area/centcom/syndicate_base) || istype(t, /area/shuttle/syndicate_elite) || istype(t, /area/shuttle/syndicate_sit))
 		announce_channel = SYNDTEAM_FREQ		// Just to be sure ...
-	else if(istype(t, /area/ninja))
+	else if(istype(t, /area/centcom/ninja))
 		announce_channel = NINJA_FREQ	// Even ninja may have a little pet.
-	else if(istype(t, /area/ussp_centcom))
+	else if(istype(t, /area/centcom/ussp))
 		announce_channel = SOV_FREQ			// MISHA, FU!
 	else if((M.z == level_name_to_num(CENTCOMM) || z == level_name_to_num(ADMIN_ZONE)) && SSticker.current_state != GAME_STATE_FINISHED)
 		radio_announce("[M] подверг[GEND_SYA_AS_OS_IS(M)] вандализму в космосе", "Оповещение о смерти [M]", PUB_FREQ, src)	// For the rest of CC map locations like Abductors UFO, Vox home or TSF home.
@@ -1287,348 +1292,6 @@
 			index++
 
 		return "[output]и [A[index]]"
-
-/obj/item/clothing/accessory/head_strip
-	name = "captain's strip"
-	desc = "Плотно сшитая круглая нашивка из синего бархата с позолотой, по центру красуется логотип корпорации Nanotrasen прошитый золотыми металлическими нитями. Награда выданная Центральным командованием за выдающиеся управление станцией."
-	icon_state = "capstrip"
-	item_state = "capstrip"
-	gender = FEMALE
-	var/strip_bubble_icon = "CAP"
-	var/cached_bubble_icon = null
-
-/obj/item/clothing/accessory/head_strip/attack_self(mob/user)
-	. = ..()
-	if(.)
-		return .
-	fluff_attack_self_action(user)
-
-/obj/item/clothing/accessory/head_strip/proc/fluff_attack_self_action(mob/user)
-	user.visible_message(
-		span_notice("[user] shows [user.p_their()] [name]."),
-		span_notice("You show your [name]."),
-	)
-
-/obj/item/clothing/accessory/head_strip/uniform_check(mob/living/carbon/human/target, mob/living/user, obj/item/clothing/under/uniform)
-	. = ..()
-	if(. && locate(/obj/item/clothing/accessory/head_strip, uniform.contents))
-		return FALSE
-
-/obj/item/clothing/accessory/head_strip/attached_equip(mob/user)
-	update_bubble_icon(user, attached = TRUE)
-
-/obj/item/clothing/accessory/head_strip/attached_unequip(mob/user)
-	update_bubble_icon(user, attached = FALSE)
-
-/obj/item/clothing/accessory/head_strip/on_attached(obj/item/clothing/under/new_suit, mob/attacher)
-	. = ..()
-	var/mob/wearer = has_suit.loc
-	if(!. || !ismob(wearer))
-		return
-
-	update_bubble_icon(wearer, attached = TRUE)
-
-/obj/item/clothing/accessory/head_strip/on_removed(mob/detacher)
-	. = ..()
-	var/obj/item/clothing/under/old_suit = .
-	var/mob/wearer = old_suit.loc
-	if(!. || !ismob(wearer))
-		return
-
-	update_bubble_icon(wearer, attached = FALSE)
-
-/obj/item/clothing/accessory/head_strip/proc/update_bubble_icon(mob/wearer, attached)
-	if(!attached)
-		wearer.bubble_icon = cached_bubble_icon
-		return
-
-	cached_bubble_icon = wearer.bubble_icon
-	wearer.bubble_icon = strip_bubble_icon
-
-/obj/item/clothing/accessory/head_strip/rd
-	name = "Research Director's strip"
-	desc = "Плотно сшитая круглая нашивка из фиолетового бархата, по центру красуется логотип корпорации Nanotrasen прошитый розоватыми металлическими нитями. Награда выданная Центральным командованием за выдающиеся успехи в области исследований."
-	icon_state = "rdstrip"
-	item_state = "rdstrip"
-	strip_bubble_icon = "RD"
-
-/obj/item/clothing/accessory/head_strip/ce
-	name = "Chief Engineer's strip"
-	desc = "Плотно сшитая круглая нашивка из серо-желтого бархата, по центру красуется логотип корпорации Nanotrasen прошитый голубыми металлическими нитями. Награда выданная Центральным командованием за выдающиеся успехи в области инженерии."
-	icon_state = "cestrip"
-	item_state = "cestrip"
-	strip_bubble_icon = "CE"
-
-/obj/item/clothing/accessory/head_strip/t4ce
-	name = "Grand Chief Engineer's strip"
-	desc = "Плотно сшитая круглая нашивка из серого бархата, по центру красуется логотип корпорации Nanotrasen прошитый желтыми металлическими нитями. Если присмотреться, можно заметить проходящее по нитям электричество и небольшие искорки."
-	icon_state = "t4cestrip"
-	item_state = "t4cestrip"
-	strip_bubble_icon = "T4CE"
-
-/obj/item/clothing/accessory/head_strip/cmo
-	name = "Chief Medical Officer's strip"
-	desc = "Плотно сшитая круглая нашивка из голубого бархата, по центру красуется логотип корпорации Nanotrasen прошитый белыми металлическими нитями. Награда выданная Центральным командованием за выдающиеся успехи в области медицины."
-	icon_state = "cmostrip"
-	item_state = "cmostrip"
-	strip_bubble_icon = "CMO"
-
-/obj/item/clothing/accessory/head_strip/hop
-	name = "Head of Personnel's strip"
-	desc = "Плотно сшитая круглая нашивка из синего бархата с красной окантовкой, по центру красуется логотип корпорации Nanotrasen прошитый белыми металлическими нитями. Награда выданная Центральным командованием за выдающиеся управление персоналом."
-	icon_state = "hopstrip"
-	item_state = "hopstrip"
-	strip_bubble_icon = "HOP"
-
-/obj/item/clothing/accessory/head_strip/hos
-	name = "Head of Security's strip"
-	desc = "Плотно сшитая круглая нашивка из черно-красного бархата, по центру красуется логотип корпорации Nanotrasen прошитый бело-красными металлическими нитями. Награда выданная Центральным командованием за выдающиеся успехи при службе на корпорацию. "
-	icon_state = "hosstrip"
-	item_state = "hosstrip"
-	strip_bubble_icon = "HOS"
-
-/obj/item/clothing/accessory/head_strip/qm
-	name = "Quatermaster's strip"
-	desc = "Плотно сшитая круглая нашивка из коричневого бархата, по центру красуется логотип корпорации Nanotrasen прошитый белыми металлическими нитями. Награда выданная Центральным командованием за выдающиеся успехи в области логистики и погрузки."
-	icon_state = "qmstrip"
-	item_state = "qmstrip"
-	strip_bubble_icon = "QM"
-
-/obj/item/clothing/accessory/head_strip/bs
-	name = "Blueshield's strip"
-	desc = "Плотно сшитая круглая нашивка из синего бархата с темно-синей окантовкой, по центру красуется логотип корпорации Nanotrasen прошитый белыми металлическими нитями. Награда выданная Центральным командованием за выдающиеся успехи при службе на корпорацию."
-	icon_state = "bsstrip"
-	item_state = "bsstrip"
-	strip_bubble_icon = "BS"
-
-/obj/item/clothing/accessory/head_strip/ntr
-	name = "Nanotrasen Representative's strip"
-	desc = "Плотно сшитая круглая нашивка из чёрного бархата с золотистой окантовкой, по центру красуется логотип корпорации Nanotrasen прошитый белыми металлическими нитями. Награда выданная Центральным командованием за выдающиеся заслуги при службе на корпорацию."
-	icon_state = "ntrstrip"
-	item_state = "ntrstrip"
-	strip_bubble_icon = "NTR"
-
-/obj/item/clothing/accessory/head_strip/syndicate
-	name = "Syndicate strip"
-	desc = "Круглый металлический значок тёмно-красного цвета с расположенной в центре ярко-зелёной буквой \"S\" с бордовым штырём."
-	icon_state = "syndistrip"
-	item_state = "syndistrip"
-	strip_bubble_icon = "Syndie"
-
-/obj/item/clothing/accessory/head_strip/comrad
-	name = "Comrade patch"
-	desc = "Грубый прямоугольный шеврон цвета хаки с бело-золотыми вставками по бокам и вышитой красными нитями аббревиатурой \"СССП\" в центре: стандартная нашивка, выдаваемая добровольцам."
-	icon_state = "patch_sssp"
-	item_state = "patch_sssp"
-	strip_bubble_icon = "comrad"
-
-/obj/item/clothing/accessory/head_strip/federal
-	name = "Federal strip"
-	desc = "Плотно сшитая круглая нашивка из синего бархата с белой окантовкой и золотыми вставками. По центру красуется логотип ТСФ, прошитый бело-золотыми металлическими нитями: стандартный знак отличия для граждан ТСФ."
-	icon_state = "stripe_federal"
-	item_state = "stripe_federal"
-	strip_bubble_icon = "federal"
-
-/obj/item/clothing/accessory/head_strip/greytide
-	name = "GreyTide strip"
-	desc = "Плотно сшитая круглая нашивка серого цвета с расположенным в центре противогазом."
-	icon_state = "greytstrip"
-	item_state = "greytstrip"
-	strip_bubble_icon = "greyt"
-
-/obj/item/clothing/accessory/head_strip/greytide/get_ru_names()
-	return list(
-		NOMINATIVE = "нашивка \"GreyTide\"",
-		GENITIVE = "нашивки \"GreyTide\"",
-		DATIVE = "нашивке \"GreyTide\"",
-		ACCUSATIVE = "нашивку \"GreyTide\"",
-		INSTRUMENTAL = "нашивкой \"GreyTide\"",
-		PREPOSITIONAL = "нашивке \"GreyTide\"",
-	)
-
-/obj/item/clothing/accessory/head_strip/lawyers_badge
-	name = "attorney's badge"
-	desc = "Fills you with the conviction of JUSTICE. Lawyers tend to want to show it to everyone they meet."
-	icon_state = "lawyerbadge"
-	item_state = "lawyerbadge"
-	strip_bubble_icon = "lawyer"
-	gender = MALE
-
-/obj/item/clothing/accessory/head_strip/lawyers_badge/fluff_attack_self_action(mob/user)
-	if(prob(1))
-		user.say("The testimony contradicts the evidence!")
-
-/obj/item/clothing/accessory/head_strip/cheese_badge
-	name = "great fellow's badge"
-	desc = "Плотно сшитая круглая нашивка из желто-оранжевого бархата, по центру красуется то ли корона, то ли головка сыра. Слегка отдает запахом Монтерей Джека."
-	icon_state = "cheesebadge"
-	item_state = "cheesebadge"
-	strip_bubble_icon = "cheese"
-	gender = MALE
-
-/obj/item/clothing/accessory/head_strip/cheese_badge/fluff_attack_self_action(mob/user)
-	if(prob(1))
-		user.say("CHEE-EE-EE-EE-EE-EESE!")
-
-/obj/item/clothing/accessory/head_strip/clown
-	name = "clown's strip"
-	desc = "Плотно сшитая круглая нашивка с изображением клоуна. Идеально подойдет для совершения военных преступлений, ведь это не военное преступление, если тебе было весело!"
-	icon_state = "clownstrip"
-	item_state = "clownstrip"
-	strip_bubble_icon = "clown"
-
-/obj/item/clothing/accessory/head_strip/deathsquad
-	name = "deathsquad's strip"
-	desc = "Плотно сшитая круглая нашивка из чёрного бархата с красными вставками. По центру красуется шлем бойца Эскадрона Смерти, которые являются \[ОТРЕДАКТИРОВАНО\]."
-	icon_state = "deathsquadstrip"
-	item_state = "deathsquadstrip"
-	strip_bubble_icon = "deathsquad"
-
-/obj/item/clothing/accessory/head_strip/deathsquad/get_ru_names()
-	return list(
-		NOMINATIVE = "нашивка \"Эскадрон Смерти\"",
-		GENITIVE = "нашивки \"Эскадрон Смерти\"",
-		DATIVE = "нашивке \"Эскадрон Смерти\"",
-		ACCUSATIVE = "нашивку \"Эскадрон Смерти\"",
-		INSTRUMENTAL = "нашивкой \"Эскадрон Смерти\"",
-		PREPOSITIONAL = "нашивке \"Эскадрон Смерти\"",
-	)
-
-/obj/item/clothing/accessory/head_strip/triforce
-	name = "triforce strip"
-	desc = "Круглая нашивка из твёрдого пластика жёлтого цвета с чёрной окантовкой, по центру расположены три светящихся треугольника голубого цвета. Треугольники явно расположены неправильно."
-	icon_state = "triforcestrip"
-	item_state = "triforcestrip"
-	strip_bubble_icon = "triforce"
-
-/obj/item/clothing/accessory/head_strip/triforce/get_ru_names()
-	return list(
-		NOMINATIVE = "нашивка \"Трифорс\"",
-		GENITIVE = "нашивки \"Трифорс\"",
-		DATIVE = "нашивке \"Трифорс\"",
-		ACCUSATIVE = "нашивку \"Трифорс\"",
-		INSTRUMENTAL = "нашивкой \"Трифорс\"",
-		PREPOSITIONAL = "нашивке \"Трифорс\"",
-	)
-
-/obj/item/clothing/accessory/head_strip/black_cat
-	name = "black cat strip"
-	desc = "Плотно сшитая нашивка из чёрного бархата в форме головы кота, по центру прошиты глаза и мордочка, выглядит замурчательно."
-	icon_state = "blackcatstrip"
-	item_state = "blackcatstrip"
-	strip_bubble_icon = "blackcat"
-
-/obj/item/clothing/accessory/head_strip/black_cat/get_ru_names()
-	return list(
-		NOMINATIVE = "нашивка \"Чёрный кот\"",
-		GENITIVE = "нашивки \"Чёрный кот\"",
-		DATIVE = "нашивке \"Чёрный кот\"",
-		ACCUSATIVE = "нашивку \"Чёрный кот\"",
-		INSTRUMENTAL = "нашивкой \"Чёрный кот\"",
-		PREPOSITIONAL = "нашивке \"Чёрный кот\"",
-	)
-
-/obj/item/clothing/accessory/head_strip/fox
-	name = "fox strip"
-	desc = "Плотно сшитая нашивка из оранжевых нитей в форме головы лисы, в центре прошиты глаза и носик, выглядит достаточно мило."
-	icon_state = "foxstrip"
-	item_state = "foxstrip"
-	strip_bubble_icon = "fox"
-
-/obj/item/clothing/accessory/head_strip/fox/get_ru_names()
-	return list(
-		NOMINATIVE = "нашивка \"Лиса\"",
-		GENITIVE = "нашивки \"Лиса\"",
-		DATIVE = "нашивке \"Лиса\"",
-		ACCUSATIVE = "нашивку \"Лиса\"",
-		INSTRUMENTAL = "нашивкой \"Лиса\"",
-		PREPOSITIONAL = "нашивке \"Лиса\"",
-	)
-
-/obj/item/clothing/accessory/head_strip/frog
-	name = "frog strip"
-	desc = "Плотно сшитая нашивка из зелёного бархата в форме весёлой лягушки, по центру прошит рот и белый животик. Сделано для истинных почитателей лягушек."
-	icon_state = "frogstrip"
-	item_state = "frogstrip"
-	strip_bubble_icon = "frog"
-
-/obj/item/clothing/accessory/head_strip/frog/get_ru_names()
-	return list(
-		NOMINATIVE = "нашивка \"Лягушка\"",
-		GENITIVE = "нашивки \"Лягушка\"",
-		DATIVE = "нашивке \"Лягушка\"",
-		ACCUSATIVE = "нашивку \"Лягушка\"",
-		INSTRUMENTAL = "нашивкой \"Лягушка\"",
-		PREPOSITIONAL = "нашивке \"Лягушка\"",
-	)
-
-/obj/item/clothing/accessory/head_strip/whitecatstrip
-	name = "white cat strip"
-	desc = "Плотно сшитая нашивка из белого бархата в форме головы кота, по центру прошиты глаза и мордочка. Выглядит мило."
-	icon_state = "whitecatstrip"
-	item_state = "whitecatstrip"
-	strip_bubble_icon = "whitecat"
-
-/obj/item/clothing/accessory/head_strip/whitecatstrip/get_ru_names()
-	return list(
-		NOMINATIVE = "нашивка \"Белый кот\"",
-		GENITIVE = "нашивки \"Белый кот\"",
-		DATIVE = "нашивке \"Белый кот\"",
-		ACCUSATIVE = "нашивку \"Белый кот\"",
-		INSTRUMENTAL = "нашивкой \"Белый кот\"",
-		PREPOSITIONAL = "нашивке \"Белый кот\"",
-	)
-
-/obj/item/clothing/accessory/head_strip/orangecatstrip
-	name = "orange cat strip"
-	desc = "Плотно сшитая нашивка из нитей трех цветов в форме головы кота, по центру прошиты глаза и мордочка. Выглядит очень мило."
-	icon_state = "orangecatstrip"
-	item_state = "orangecatstrip"
-	strip_bubble_icon = "orangecat"
-
-/obj/item/clothing/accessory/head_strip/orangecatstrip/get_ru_names()
-	return list(
-		NOMINATIVE = "нашивка \"Трёхцветный кот\"",
-		GENITIVE = "нашивки \"Трёхцветный кот\"",
-		DATIVE = "нашивке \"Трёхцветный кот\"",
-		ACCUSATIVE = "нашивку \"Трёхцветный кот\"",
-		INSTRUMENTAL = "нашивкой \"Трёхцветный кот\"",
-		PREPOSITIONAL = "нашивке \"Трёхцветный кот\"",
-	)
-
-/obj/item/clothing/accessory/head_strip/ratstrip
-	name = "rat strip"
-	desc = "Плотно сшитая нашивка из серого бархата в форме головы крысы, по центру прошиты глаза и мордочка. Выглядит пи-пи-пи."
-	icon_state = "ratstrip"
-	item_state = "ratstrip"
-	strip_bubble_icon = "rat"
-
-/obj/item/clothing/accessory/head_strip/ratstrip/get_ru_names()
-	return list(
-		NOMINATIVE = "нашивка \"Крыска\"",
-		GENITIVE = "нашивки \"Крыска\"",
-		DATIVE = "нашивке \"Крыска\"",
-		ACCUSATIVE = "нашивку \"Крыска\"",
-		INSTRUMENTAL = "нашивкой \"Крыска\"",
-		PREPOSITIONAL = "нашивке \"Крыска\"",
-	)
-
-/obj/item/clothing/accessory/head_strip/devilstrip
-	name = "devil strip"
-	desc = "Плотно сшитая нашивка из красного бархата в форме головы дьявола, сверху красуются рога, а по центру два зловещих желтых глаза. От нашивки исходит инфернальное тепло."
-	icon_state = "devilstrip"
-	item_state = "devilstrip"
-	strip_bubble_icon = "devil"
-
-/obj/item/clothing/accessory/head_strip/devilstrip/get_ru_names()
-	return list(
-		NOMINATIVE = "нашивка \"Дьявол\"",
-		GENITIVE = "нашивки \"Дьявол\"",
-		DATIVE = "нашивке \"Дьявол\"",
-		ACCUSATIVE = "нашивку \"Дьявол\"",
-		INSTRUMENTAL = "нашивкой \"Дьявол\"",
-		PREPOSITIONAL = "нашивке \"Дьявол\"",
-	)
 
 /obj/item/clothing/accessory/medal/smile
 	name = "smiling pin"

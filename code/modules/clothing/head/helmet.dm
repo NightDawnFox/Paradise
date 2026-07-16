@@ -1,11 +1,11 @@
 /obj/item/clothing/head/helmet
 	name = "helmet"
 	desc = "Standard Security gear. Protects the head from impacts."
-	icon_state = "helmetmaterials"
+	icon_state = "helmet_sec"
 	w_class = WEIGHT_CLASS_NORMAL
 	item_flags = BANGPROTECT_MINOR
 	flags_cover = HEADCOVERSEYES
-	item_state = "helmetmaterials"
+	item_state = "helmet_sec"
 	armor = list(MELEE = 35, BULLET = 30, LASER = 30,ENERGY = 10, BOMB = 25, BIO = 0, FIRE = 50, ACID = 50)
 	clothing_flags = parent_type::clothing_flags|STACKABLE_HELMET_EXEMPT
 	flags_inv = HIDEHEADSETS|HIDEGLASSES
@@ -29,6 +29,10 @@
 		SPECIES_STOK = 'icons/mob/clothing/species/monkey/head.dmi',
 		SPECIES_VULPKANIN = 'icons/mob/clothing/species/vulpkanin/helmet.dmi',
 	)
+
+/obj/item/clothing/head/helmet/ComponentInitialize()
+	. = ..()
+	AddElement(/datum/element/item_skins)
 
 /obj/item/clothing/head/helmet/adjust_headgear(mob/user)
 	. = ..()
@@ -86,6 +90,8 @@
 /obj/item/clothing/head/helmet/material
 	name = "material visor helmet"
 	desc = "A helmet with a built-in material scanning visor."
+	icon_state = "helmetmaterials"
+	item_state = "helmetmaterials"
 	vision_flags = SEE_OBJS
 
 /obj/item/clothing/head/helmet/night
@@ -156,12 +162,15 @@
 	icon_state = "justice"
 	toggle_on_message = "You turn off the lights on"
 	toggle_off_message = "You turn on the lights on"
-	actions_types = list(/datum/action/item_action/toggle_helmet_light)
 	can_toggle = TRUE
 	toggle_cooldown = 20
 	active_sound = 'sound/items/weeoo1.ogg'
 	active_sound_volume = 50
 	dog_fashion = null
+
+/obj/item/clothing/head/helmet/justice/ComponentInitialize()
+	. = ..()
+	AddElement(/datum/element/right_click_mapper/attack_self, "Переключить фонарь шлема")
 
 /obj/item/clothing/head/helmet/justice/escape
 	name = "alarm helmet"
@@ -243,11 +252,14 @@
 	flags_inv = parent_type::flags_inv|HIDEMASK|HIDEHAIR
 	toggle_on_message = "You attach the face shield to the"
 	toggle_off_message = "You remove the face shield from the"
-	actions_types = list(/datum/action/item_action/toggle_helmet_mode)
 	can_toggle = TRUE
 	toggle_cooldown = 20
 	toggle_sound = 'sound/items/zippoclose.ogg'
 	dog_fashion = null
+
+/obj/item/clothing/head/helmet/gladiator/ComponentInitialize()
+	. = ..()
+	AddElement(/datum/element/right_click_mapper/attack_self, "Переключить режим костюма")
 
 /obj/item/clothing/head/helmet/redtaghelm
 	name = "red laser tag helmet"
@@ -315,7 +327,7 @@
 	desc = "Deus Vult."
 	icon_state = "knight_templar"
 	item_state = "knight_templar"
-	armor = list(melee = 20, bullet = 7, laser = 2, energy = 2, bomb = 2, bio = 2, fire = 80, acid = 80)
+	armor = list(MELEE = 10, BULLET = 10, LASER = 5, ENERGY = 5, BOMB = 5, BIO = 5, FIRE = 80, ACID = 80)
 	sprite_sheets = list(
 		SPECIES_VULPKANIN = 'icons/mob/clothing/species/vulpkanin/helmet.dmi',
 		SPECIES_GREY = 'icons/mob/clothing/species/grey/helmet.dmi',
@@ -325,7 +337,7 @@
 	name = "skull helmet"
 	desc = "Этот шлем, который выглядит устрашающе и походит на племенной, кажется не очень удобным."
 	flags_inv = parent_type::flags_inv|HIDEMASK|HIDENAME
-	armor = list(MELEE = 45, BULLET = 30, LASER = 30, ENERGY = 20, BOMB = 40, BIO = 0, FIRE = 50, ACID = 50)
+	armor = list(MELEE = 25, BULLET = 15, LASER = 15, ENERGY = 10, BOMB = 20, BIO = 0, FIRE = 25, ACID = 25)
 	icon_state = "skull"
 	item_state = "skull"
 	strip_delay = 100
@@ -335,7 +347,7 @@
 	)
 
 /obj/item/clothing/head/helmet/skull/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "костяной шлем",
 		GENITIVE = "костяного шлема",
 		DATIVE = "костяному шлему",
@@ -438,7 +450,7 @@
 		SPECIES_VULPKANIN = 'icons/mob/clothing/species/vulpkanin/helmet.dmi',
 		SPECIES_KIDAN = 'icons/mob/clothing/species/kidan/head.dmi',
 		SPECIES_MOTH = 'icons/mob/clothing/species/nian/helmet.dmi',
-		SPECIES_MACNINEPERSON = 'icons/mob/clothing/species/machine/helmet.dmi',
+		SPECIES_MACHINEPERSON = 'icons/mob/clothing/species/machine/helmet.dmi',
 		SPECIES_SKRELL = 'icons/mob/clothing/species/skrell/helmet.dmi',
 		SPECIES_MONKEY = 'icons/mob/clothing/species/monkey/head.dmi',
 		SPECIES_FARWA = 'icons/mob/clothing/species/monkey/head.dmi',
@@ -497,7 +509,7 @@
 	sprite_sheets = list(
 		SPECIES_MONKEY = 'icons/mob/clothing/species/monkey/head.dmi',
 	)
-	species_restricted = list(SPECIES_HUMAN, SPECIES_SLIMEPERSON, SPECIES_SKELETON, SPECIES_NUCLEATION, SPECIES_MACNINEPERSON, SPECIES_DIONA, SPECIES_SHADOW_BASIC, SPECIES_MONKEY)
+	species_restricted = list(SPECIES_HUMAN, SPECIES_SLIMEPERSON, SPECIES_SKELETON, SPECIES_NUCLEATION, SPECIES_MACHINEPERSON, SPECIES_DIONA, SPECIES_SHADOW_BASIC, SPECIES_MONKEY)
 
 /obj/item/clothing/head/helmet/biker/Initialize(mapload)
 	. = ..()
@@ -513,7 +525,7 @@
 	. += biker_overlay
 
 /obj/item/clothing/head/helmet/biker/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "мотоциклетный шлем",
 		GENITIVE = "мотоциклетного шлема",
 		DATIVE = "мотоциклетному шлему",

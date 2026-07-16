@@ -11,6 +11,7 @@
 	density = TRUE //This will prevent hostile mobs from pathing into chasms, while the canpass override will still let it function like an open turf
 	layer = PLATING_LAYER
 	intact = FALSE
+	underfloor_accessibility = UNDERFLOOR_INTERACTABLE
 	explosion_vertical_block = 0
 	footstep = null
 	barefootstep = null
@@ -18,7 +19,7 @@
 	heavyfootstep = null
 
 /turf/simulated/floor/chasm/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "пропасть",
 		GENITIVE = "пропасти",
 		DATIVE = "пропасти",
@@ -49,7 +50,7 @@
 	chasm_component.drop(AM)
 
 /turf/simulated/floor/chasm/get_smooth_underlay_icon(mutable_appearance/underlay_appearance, turf/asking_turf, adjacency_dir)
-	underlay_appearance.icon = 'icons/turf/floors.dmi'
+	underlay_appearance.icon = 'icons/turf/floors/plating.dmi'
 	underlay_appearance.icon_state = "basalt"
 	return TRUE
 
@@ -69,8 +70,8 @@
 	if(ATTACK_CHAIN_CANCEL_CHECK(.))
 		return .
 
-	if(istype(I, /obj/item/stack/fireproof_rods))
-		var/obj/item/stack/fireproof_rods/rods = I
+	if(istype(I, /obj/item/stack/rods/fireproof))
+		var/obj/item/stack/rods/fireproof/rods = I
 		if(locate(/obj/structure/lattice/catwalk/fireproof, src))
 			to_chat(user, span_warning("Здесь уже есть мостик!"))
 			return .
@@ -140,7 +141,7 @@
 /turf/simulated/floor/chasm/singularity_act()
 	return
 
-/turf/simulated/floor/chasm/singularity_pull(S, current_size)
+/turf/simulated/floor/chasm/singularity_pull(atom/singularity, current_size)
 	return
 
 /turf/simulated/floor/chasm/crowbar_act()

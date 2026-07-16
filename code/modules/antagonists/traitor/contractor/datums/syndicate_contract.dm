@@ -109,6 +109,15 @@
 	contract.target_blacklist = target_blacklist
 	generate(target_override)
 
+/datum/syndicate_contract/Destroy(force)
+	owning_hub = null
+	contract = null
+	pod = null
+	extraction_flare = null
+	QDEL_LIST(victim_belongings)
+	QDEL_LIST(temp_objs)
+	return ..()
+
 /**
  * Fills the contract with valid data to be used.
  */
@@ -192,7 +201,7 @@
 		return
 	var/final_tc_reward = reward_tc[chosen_difficulty]
 	if(target_dead)
-		final_tc_reward = CEILING(final_tc_reward * owning_hub.dead_penalty, 1)
+		final_tc_reward = ceil(final_tc_reward * owning_hub.dead_penalty)
 	// Notify the Hub
 	owning_hub.on_completion(final_tc_reward, reward_credits)
 	// Finalize

@@ -11,16 +11,18 @@
 	overlay_locked = "securecrater"
 	overlay_unlocked = "securecrateg"
 	overlay_sparking = "securecratesparks"
-	/// Overlay for crate with broken lock
-	var/overlay_broken = "securecrateemag"
 	max_integrity = 500
 	armor = list(MELEE = 30, BULLET = 50, LASER = 50, ENERGY = 100, BOMB = 0, BIO = 0, FIRE = 80, ACID = 80)
 	damage_deflection = 25
-	var/tamperproof = FALSE
 	locked = TRUE
 	can_be_emaged = TRUE
 	overlay_lightmask = "securecrate_lightmask"
 	can_be_emissive = TRUE
+	secure = TRUE
+
+	var/tamperproof = 0
+	/// Overlay for crate with broken lock
+	var/overlay_broken = "securecrateemag"
 
 /obj/structure/closet/crate/secure/update_overlays()
 	. = ..()
@@ -31,7 +33,7 @@
 	else
 		. += overlay_unlocked
 
-/obj/structure/closet/crate/secure/take_damage(damage_amount, damage_type = BRUTE, damage_flag = 0, sound_effect = 1)
+/obj/structure/closet/crate/secure/take_damage(damage_amount, damage_type = BRUTE, damage_flag = "", sound_effect = TRUE, attack_dir, armour_penetration = 0)
 	if(prob(tamperproof) && damage_amount >= DAMAGE_PRECISION)
 		boom()
 	else
@@ -42,29 +44,10 @@
 		to_chat(user, span_danger("The crate's anti-tamper system activates!"))
 		investigate_log("[key_name_log(user)] has detonated a [src]", INVESTIGATE_BOMB)
 		add_attack_logs(user, src, "has detonated", ATKLOG_MOST)
-	for(var/atom/movable/movable in src)
-		qdel(movable)
-	explosion(get_turf(src), devastation_range = 0, heavy_impact_range = 1, light_impact_range = 5, flash_range = 5, cause = src)
+	dump_contents()
+	explosion(get_turf(src), heavy_impact_range = 1, light_impact_range = 5, flash_range = 5, cause = src)
 	qdel(src)
 
-/obj/structure/closet/crate/secure/can_open()
-	return !locked
-
-/obj/structure/closet/crate/secure/click_alt(mob/living/user)
-	togglelock(user)
-	return CLICK_ACTION_SUCCESS
-
-/obj/structure/closet/crate/secure/attack_hand(mob/user)
-	if(manifest)
-		tear_manifest(user)
-	if(locked)
-		togglelock(user)
-		return
-	add_fingerprint(user)
-	toggle(user, by_hand = TRUE)
-
-/obj/structure/closet/crate/secure/closed_item_click(mob/user)
-	togglelock(user)
 
 /obj/structure/closet/crate/secure/emag_act(mob/user)
 	if(!locked)
@@ -175,6 +158,7 @@
 	overlay_sparking = "heavycrate_sparks"
 	overlay_broken = "heavycrate_hacking"
 	overlay_lightmask = "heavysecurecrate_lightmask"
+	req_access = list(ACCESS_SECURITY)
 
 /obj/structure/closet/crate/secure/weapon/veihit
 	name = "highrisk crate"
@@ -204,6 +188,7 @@
 	desc = "A crate with a lock on it, painted in the scheme of the station's botanists."
 	name = "secure hydroponics crate"
 	icon_state = "hydrosecurecrate"
+	req_access = list(ACCESS_HYDROPONICS)
 
 /obj/structure/closet/crate/secure/bin
 	desc = "A secure bin."
@@ -214,6 +199,9 @@
 	overlay_sparking = "largebinsparks"
 	overlay_broken = "largebinemag"
 
+/obj/structure/closet/crate/secure/bin/anchored
+	anchored = TRUE
+
 /obj/structure/closet/crate/secure/large
 	name = "large crate"
 	desc = "A hefty metal crate with an electronic locking system."
@@ -221,6 +209,7 @@
 	overlay_locked = "largemetalr"
 	overlay_unlocked = "largemetalg"
 	overlay_broken = ""
+	elevation = 22
 
 /obj/structure/closet/crate/secure/large/close()
 	. = ..()
@@ -251,6 +240,7 @@
 	name = "secure science crate"
 	desc = "A crate with a lock on it, painted in the scheme of the station's scientists."
 	icon_state = "scisecurecrate"
+	req_access = list(ACCESS_RESEARCH)
 
 /obj/structure/closet/crate/engineering
 	name = "engineering crate"
@@ -261,6 +251,7 @@
 	name = "secure engineering crate"
 	desc = "A crate with a lock on it, painted in the scheme of the station's engineers."
 	icon_state = "engisecurecrate"
+	req_access = list(ACCESS_ENGINE)
 
 /obj/structure/closet/crate/secure/biohazard
 	name = "secure biohazard crate"
@@ -273,6 +264,7 @@
 	icon_state = "syndiesecurecrate"
 	material_drop = /obj/item/stack/sheet/mineral/plastitanium
 	can_be_emaged = FALSE
+	req_access = list(ACCESS_SYNDICATE)
 
 // MARK: Blood crates
 /obj/structure/closet/crate/secure/blood
@@ -283,7 +275,7 @@
 	req_access = list(ACCESS_MEDICAL)
 
 /obj/structure/closet/crate/secure/blood/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "комплект донорской крови (человеческий)",
 		GENITIVE = "комплекта донорской крови (человеческий)",
 		DATIVE = "комплекту донорской крови (человеческий)",
@@ -298,7 +290,7 @@
 	icon_state = "xenobloodcrate"
 
 /obj/structure/closet/crate/secure/blood/xeno/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "комплект донорской крови (ксено)",
 		GENITIVE = "комплекта донорской крови (ксено)",
 		DATIVE = "комплекту донорской крови (ксено)",
@@ -313,7 +305,7 @@
 	icon_state = "mixbloodcrate"
 
 /obj/structure/closet/crate/secure/blood/mixed/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "комплект донорской крови (смешанная)",
 		GENITIVE = "комплекта донорской крови (смешанная)",
 		DATIVE = "комплекту донорской крови (смешанная)",
@@ -328,7 +320,7 @@
 	icon_state = "syntheticbloodcrate"
 
 /obj/structure/closet/crate/secure/blood/nitrogenis/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "комплект донорской крови (синтетическая кровь — азот)",
 		GENITIVE = "комплекта донорской крови (синтетическая кровь — азот)",
 		DATIVE = "комплекту донорской крови (синтетическая кровь — азот)",
@@ -343,7 +335,7 @@
 	icon_state = "nitrogenbloodcrate"
 
 /obj/structure/closet/crate/secure/blood/oxygenis/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "комплект донорской крови (синтетическая кровь — кислород)",
 		GENITIVE = "комплекта донорской крови (синтетическая кровь — кислород)",
 		DATIVE = "комплекту донорской крови (синтетическая кровь — кислород)",
@@ -351,6 +343,15 @@
 		INSTRUMENTAL = "комплектом донорской крови (синтетическая кровь — кислород)",
 		PREPOSITIONAL = "комплекте донорской крови (синтетическая кровь — кислород)",
 	)
+
+/obj/structure/closet/crate/secure/engineering/teg
+	name = "thermoelectric generator crate"
+	desc = "Ящик, в котором находятся детали для термоэлектрического генератора"
+
+/obj/structure/closet/crate/secure/engineering/teg/populate_contents()
+	new /obj/machinery/power/generator(src)
+	new /obj/item/pipe/circulator(src)
+	new /obj/item/pipe/circulator(src)
 
 #undef SECURE_CRATE_STAGE_NO_BROKEN
 #undef SECURE_CRATE_STAGE_PANEL_OPEN

@@ -56,6 +56,7 @@ GLOBAL_LIST_INIT(default_pirate_channels, list(
 	belt_icon = "radio"
 	dog_fashion = /datum/dog_fashion/back
 	suffix = "\[3\]"
+	interaction_flags_atom = parent_type::interaction_flags_atom | INTERACT_ATOM_ALLOW_USER_LOCATION | INTERACT_ATOM_IGNORE_MOBILITY
 	var/last_transmission
 	/// tune to frequency to unlock traitor supplies
 	var/traitor_frequency = 0
@@ -124,7 +125,7 @@ GLOBAL_LIST_INIT(default_pirate_channels, list(
 	var/instant = FALSE // Should this device instantly communicate if there isnt tcomms
 
 /obj/item/radio/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "коротковолновая рация",
 		GENITIVE = "коротковолновой рации",
 		DATIVE = "коротковолновой рации",
@@ -419,13 +420,30 @@ GLOBAL_LIST_INIT(default_pirate_channels, list(
 	default_frequency = SEC_FREQ
 
 /obj/item/radio/sec/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "коротковолновая рация СБ",
 		GENITIVE = "коротковолновой рации СБ",
 		DATIVE = "коротковолновой рации СБ",
 		ACCUSATIVE = "коротковолновую рацию СБ",
 		INSTRUMENTAL = "коротковолновой рацией СБ",
 		PREPOSITIONAL = "коротковолновой рации СБ",
+	)
+
+/obj/item/radio/portal
+	name = "office radio"
+	desc = "Офисное радио для лабораторий в соляных шахтах."
+	icon_state = "radio_portal"
+	item_state = "radio_portal"
+	default_frequency = AI_FREQ
+
+/obj/item/radio/portal/get_ru_names()
+	return alist(
+		NOMINATIVE = "офисное радио",
+		GENITIVE = "офисного радио",
+		DATIVE = "офисному радио",
+		ACCUSATIVE = "офисное радио",
+		INSTRUMENTAL = "офисным радио",
+		PREPOSITIONAL = "офисном радио",
 	)
 
 // Interprets the message mode when talking into a radio, possibly returning a connection datum
@@ -469,12 +487,8 @@ GLOBAL_LIST_INIT(default_pirate_channels, list(
 		if(muzzle.radio_mute)
 			return FALSE
 
-	var/jammed = FALSE
 	var/turf/position = get_turf(src)
-	for(var/obj/item/jammer/jammer as anything in GLOB.active_jammers)
-		if(get_dist(position, get_turf(jammer)) < jammer.range)
-			jammed = TRUE
-			break
+	var/jammed = is_within_radio_jammer_range(src)
 
 	var/message_mode = handle_message_mode(M, message_pieces, channel)
 	switch(message_mode) //special cases
@@ -794,7 +808,7 @@ GLOBAL_LIST_INIT(default_pirate_channels, list(
 	var/mob/living/silicon/robot/myborg = null // Cyborg which owns this radio. Used for power checks
 
 /obj/item/radio/borg/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "рация робота",
 		GENITIVE = "рации робота",
 		DATIVE = "рации робота",
@@ -903,7 +917,7 @@ GLOBAL_LIST_INIT(default_pirate_channels, list(
 
 /obj/item/radio/borg/make_broken()
 	name = "broken radio"
-	ru_names = list(
+	ru_names = alist(
 		NOMINATIVE = "сломанная рация",
 		GENITIVE = "сломанной рации",
 		DATIVE = "сломанной рации",
@@ -931,7 +945,7 @@ GLOBAL_LIST_INIT(default_pirate_channels, list(
 	dog_fashion = null
 
 /obj/item/radio/phone/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "телефон",
 		GENITIVE = "телефона",
 		DATIVE = "телефону",
@@ -946,7 +960,7 @@ GLOBAL_LIST_INIT(default_pirate_channels, list(
 	default_frequency = MED_I_FREQ
 
 /obj/item/radio/phone/medbay/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медицинский телефон",
 		GENITIVE = "медицинского телефона",
 		DATIVE = "медицинскому телефону",
@@ -968,7 +982,7 @@ GLOBAL_LIST_INIT(default_pirate_channels, list(
 	default_frequency = SOV_FREQ
 
 /obj/item/radio/phone/ussp/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "красный телефон",
 		GENITIVE = "красного телефона",
 		DATIVE = "красному телефону",

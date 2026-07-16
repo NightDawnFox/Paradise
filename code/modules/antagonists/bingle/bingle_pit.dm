@@ -46,7 +46,7 @@
 	var/bingles_evolved
 
 /obj/structure/bingle_hole/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "яма Бинглов",
 		GENITIVE = "ямы Бинглов",
 		DATIVE = "яме Бинглов",
@@ -178,7 +178,7 @@
 	if(victim.incorporeal_move)
 		return FALSE
 	if(victim.body_position == STANDING_UP)
-		if(!victim.get_gravity(get_turf(victim)))
+		if(!victim.has_gravity(get_turf(victim)))
 			return FALSE
 		if(victim.movement_type & (FLYING | FLOATING))
 			return FALSE
@@ -444,13 +444,12 @@
 	smooth = SMOOTH_BITMASK
 	canSmoothWith = SMOOTH_GROUP_BINGLE_PIT
 	smoothing_groups = SMOOTH_GROUP_BINGLE_PIT
-	layer = BELOW_OBJ_LAYER
 	anchored = TRUE
 	mouse_opacity = MOUSE_OPACITY_OPAQUE
 	var/obj/structure/bingle_hole/parent_pit
 
 /obj/structure/bingle_pit_overlay/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "яма Бинглов",
 		GENITIVE = "ямы Бинглов",
 		DATIVE = "яме Бинглов",
@@ -567,13 +566,10 @@
 /obj/structure/bingle_hole/singularity_act()
 	return
 
-/obj/structure/bingle_hole/singularity_pull(obj/singularity/S, current_size)
+/obj/structure/bingle_hole/singularity_pull(atom/singularity, current_size)
 	return
 
 /obj/structure/bingle_pit_overlay/singularity_act()
-	return
-
-/obj/structure/bingle_hole/singularity_pull(obj/singularity/S, current_size)
 	return
 
 /area/misc/bingle_pit

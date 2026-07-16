@@ -24,7 +24,7 @@
 	var/obj/item/assembly/signaler/core/vortex/core = null
 
 /obj/item/gun/syringe/rapidsyringe/experimental/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "экспериментальный шприцемёт", \
 		GENITIVE = "экспериментального шприцемёта", \
 		DATIVE = "экспериментальному шприцемёту", \
@@ -41,7 +41,7 @@
 	STOP_PROCESSING(SSobj, src)
 	core?.forceMove(get_turf(src))
 	core = null
-	QDEL_LAZYLIST(synth_reagents)
+	QDEL_LIST(synth_reagents)
 	qdel(ready_reagents)
 	return ..()
 
@@ -144,7 +144,7 @@
 	for(var/obj/item/reagent_containers/syringe/slime in syringes)
 		ready_reagents.reagents.trans_to(slime, ready_reagents.reagents.total_volume)
 
-/obj/item/gun/syringe/rapidsyringe/experimental/afterattack(atom/target, mob/living/user, flag, params)
+/obj/item/gun/syringe/rapidsyringe/experimental/afterattack(atom/target, mob/user, proximity_flag, list/modifiers, status)
 	if(!isglassreagentcontainer(target))
 		return ..()
 

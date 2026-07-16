@@ -105,12 +105,14 @@
 	user.put_in_hands(tank, ignore_anim = FALSE)
 	tank = null
 
-/obj/item/melee/powerfist/afterattack(atom/target, mob/living/user, proximity, params)
-	if(!proximity)
+/obj/item/melee/powerfist/afterattack(atom/target, mob/user, proximity_flag, list/modifiers, status)
+	if(!proximity_flag)
 		return
 	if(QDELETED(target))
 		return
 	if(!isobj(target) && !isliving(target))
+		return
+	if(iseffect(target))
 		return
 	if(!tank)
 		to_chat(user, span_warning("[src] can't operate without a source of gas!"))

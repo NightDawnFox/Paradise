@@ -71,8 +71,8 @@
 	playsound(target.loc,'sound/items/drink.ogg', rand(10,50), TRUE)
 	return .|ATTACK_CHAIN_SUCCESS
 
-/obj/item/reagent_containers/food/condiment/afterattack(obj/target, mob/user, proximity, params)
-	if(!proximity)
+/obj/item/reagent_containers/food/condiment/afterattack(atom/target, mob/user, proximity_flag, list/modifiers, status)
+	if(!proximity_flag)
 		return
 	if(istype(target, /obj/structure/reagent_dispensers)) //A dispenser. Transfer FROM it TO us.
 
@@ -137,7 +137,7 @@
 	name = "salt shaker"											//	a large one.
 	desc = "Salt. From space oceans, presumably."
 	icon_state = "saltshakersmall"
-	possible_transfer_amounts = list(1,5,20) //for clown turning the lid off
+	possible_transfer_amounts = list(1, 5, 20) //for clown turning the lid off
 	amount_per_transfer_from_this = 1
 	volume = 20
 	list_reagents = list("sodiumchloride" = 20)
@@ -156,7 +156,7 @@
 	name = "pepper mill"
 	desc = "Often used to flavor food or make people sneeze."
 	icon_state = "peppermillsmall"
-	possible_transfer_amounts = list(1,5,20) //for clown turning the lid off
+	possible_transfer_amounts = list(1, 5, 20) //for clown turning the lid off
 	amount_per_transfer_from_this = 1
 	volume = 20
 	list_reagents = list("blackpepper" = 20)
@@ -209,7 +209,7 @@
 	log_eating = TRUE
 
 /obj/item/reagent_containers/food/condiment/syndisauce/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "элитарный соус шефа",
 		GENITIVE = "элитарного соуса шефа",
 		DATIVE = "элитарному соусу шефа",
@@ -301,8 +301,8 @@
 /obj/item/reagent_containers/food/condiment/pack/attack(mob/living/target, mob/living/user, params, def_zone, skip_attack_anim = FALSE)
 	return ATTACK_CHAIN_PROCEED	// Can't feed these to people directly.
 
-/obj/item/reagent_containers/food/condiment/pack/afterattack(obj/target, mob/user, proximity, params)
-	if(!proximity)
+/obj/item/reagent_containers/food/condiment/pack/afterattack(atom/target, mob/user, proximity_flag, list/modifiers, status)
+	if(!proximity_flag)
 		return
 
 	//You can tear the bag open above food to put the condiments on it, obviously.
@@ -353,7 +353,7 @@
 	list_reagents = list("ketchup" = 10)
 
 /obj/item/reagent_containers/food/condiment/pack/ketchup/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "пакетик кетчупа",
 		GENITIVE = "пакетика кетчупа",
 		DATIVE = "пакетику кетчупа",
@@ -368,7 +368,7 @@
 	list_reagents = list("capsaicin" = 10)
 
 /obj/item/reagent_containers/food/condiment/pack/hotsauce/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "пакетик острого соуса",
 		GENITIVE = "пакетика острого соуса",
 		DATIVE = "пакетику острого соуса",
@@ -396,7 +396,7 @@
 	list_reagents = list("cream" = 10)
 
 /obj/item/reagent_containers/food/condiment/pack/creamer/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "пакетик сливок",
 		GENITIVE = "пакетика сливок",
 		DATIVE = "пакетику сливок",
@@ -416,7 +416,7 @@
 	list_reagents = list("sugar" = 10)
 
 /obj/item/reagent_containers/food/condiment/pack/sugar/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "пакетик сахара",
 		GENITIVE = "пакетика сахара",
 		DATIVE = "пакетику сахара",
@@ -436,7 +436,7 @@
 	list_reagents = list("aspartame" = 10)
 
 /obj/item/reagent_containers/food/condiment/pack/aspartame/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "пакетик аспартама",
 		GENITIVE = "пакетика аспартама",
 		DATIVE = "пакетику аспартама",
@@ -456,7 +456,7 @@
 	list_reagents = list("chocolate_sprinkle" = 10)
 
 /obj/item/reagent_containers/food/condiment/pack/chocolate/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "пакетик шоколадной посыпки",
 		GENITIVE = "пакетика шоколадной посыпки",
 		DATIVE = "пакетику шоколадной посыпки",

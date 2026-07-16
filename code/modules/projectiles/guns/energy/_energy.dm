@@ -1,4 +1,5 @@
 /obj/item/gun/energy
+	abstract_type = /obj/item/gun/energy
 	icon_state = "energy"
 	name = "energy gun"
 	desc = "A basic energy-based gun."
@@ -43,10 +44,48 @@
 		else if(sibyl_mod.state == SIBSYS_STATE_WELDER_ACT)
 			. += span_danger("Модуль Sibyl System поврежден.")
 
-/obj/item/gun/energy/attackby(obj/item/I, mob/user, params)
-	if(istype(I, /obj/item/gun_module/sibyl))
+/obj/item/gun/energy/add_weapon_description()
+	AddElement(/datum/element/weapon_description, attached_proc = PROC_REF(add_notes_energy))
+
+/**
+ *
+ * Outputs type-specific weapon stats for energy-based firearms based on its firing modes
+ * and the stats of those firing modes. Esoteric firing modes like ion are currently not supported
+ * but can be added easily
+ *
+ */
+/obj/item/gun/energy/proc/add_notes_energy()
+	var/list/readout = list()
+	readout += "<b><u>СТРЕЛЬБА</u></b>"
+	// Make sure there is something to actually retrieve
+	if(!length(ammo_type))
+		return
+	var/obj/projectile/exam_proj
+	readout += "- Имеет <b>[length(ammo_type)]</b> режим[DECL_CREDIT(length(ammo_type))] стрельбы."
+	for(var/obj/item/ammo_casing/energy/for_ammo as anything in ammo_type)
+		exam_proj = for_ammo.projectile_type
+
+		if((damage_mod <= 0 && stamina_mod <= 0) || (initial(exam_proj.damage) <= 0 && initial(exam_proj.stamina) <= 0))
+			readout += span_boldnotice("- Не наносит значимого ущерба при попадании.")
+			return readout.Join("\n") // Sending over the singular string, rather than the whole list
+
+		if(!ispath(exam_proj))
+			continue
+
+		if(initial(exam_proj.damage) > 0) // Don't divide by 0!!!!!
+			var/lethality_str = initial(exam_proj.damage_type) == STAMINA ? span_blue("<b>нелетального</b>") : span_red("<b>летального</b>")
+			var/lethal_hits_to_crit = span_warning("[HITS_TO_CRIT((initial(exam_proj.damage) * damage_mod) * for_ammo.pellets)] попадан[declension_ru(HITS_TO_CRIT((initial(exam_proj.damage) * damage_mod) * for_ammo.pellets), "ие", "ия", "ий")]")
+			readout += "- Для [lethality_str] устранения противника в режиме \"[span_warning("[for_ammo.select_name]")]\" потребуется в среднем [lethal_hits_to_crit]."
+			if(initial(exam_proj.stamina) > 0) // In case a projectile does damage AND stamina damage (Energy Crossbow)
+				var/non_lethal_hits_to_crit = span_warning("[HITS_TO_CRIT((initial(exam_proj.stamina) * stamina_mod) * for_ammo.pellets)] попадан[declension_ru(HITS_TO_CRIT((initial(exam_proj.stamina) * stamina_mod) * for_ammo.pellets), "ие", "ия", "ий")]")
+				readout += "- Для <b>[span_blue("нелетального")]</b> обезвреживания противника в режиме \"[span_warning("[for_ammo.select_name]")]\" потребуется в среднем [non_lethal_hits_to_crit]."
+
+	return readout.Join("\n") // Sending over the singular string, rather than the whole list
+
+/obj/item/gun/energy/attackby(obj/item/item, mob/living/user, list/modifiers)
+	if(istype(item, /obj/item/gun_module/sibyl))
 		add_fingerprint(user)
-		var/obj/item/gun_module/sibyl/new_sibyl = I
+		var/obj/item/gun_module/sibyl/new_sibyl = item
 		if(!can_add_sibyl_system)
 			to_chat(user, span_warning("The [name] is incompatible with the sibyl systems module."))
 			return ATTACK_CHAIN_PROCEED
@@ -59,9 +98,9 @@
 			return ATTACK_CHAIN_BLOCKED_ALL
 		return ATTACK_CHAIN_PROCEED
 
-	if(sibyl_mod && is_id_card(I))
+	if(sibyl_mod && is_id_card(item))
 		add_fingerprint(user)
-		sibyl_mod.toggle_authorization(I, user)
+		sibyl_mod.toggle_authorization(item, user)
 		return ATTACK_CHAIN_PROCEED_SUCCESS
 
 	return ..()
@@ -108,7 +147,7 @@
 		ammo_type[i] = shot
 	shot = ammo_type[select]
 	fire_sound = shot.fire_sound
-	fire_delay = shot.delay
+	set_fire_delay(shot.delay)
 
 /obj/item/gun/energy/Destroy()
 	if(selfcharge)
@@ -171,8 +210,8 @@
 	chambered = null //either way, released the prepared shot
 	newshot()
 
-/obj/item/gun/energy/process_fire(atom/target, mob/living/user, message = 1, params, zone_override, bonus_spread = 0)
-	if(!chambered && can_shoot(user))
+/obj/item/gun/energy/process_fire(zone_override, secondary_fire = FALSE)
+	if(!chambered && can_shoot(gun_user))
 		process_chamber()
 	return ..()
 
@@ -186,7 +225,7 @@
 			select = 1
 	var/obj/item/ammo_casing/energy/shot = ammo_type[select]
 	fire_sound = shot.fire_sound
-	fire_delay = shot.delay
+	set_fire_delay(shot.delay)
 	if(!isnull(user) && (shot.select_name || shot.fluff_select_name))
 		var/static/gun_modes_ru = list(//about 2/3 of them will never be shown in game, but better save, than sorry
 			"practice" = "режим практики",
@@ -246,7 +285,7 @@
 
 /obj/item/gun/energy/update_icon_state()
 	icon_state = initial(icon_state)
-	ratio = CEILING((cell.charge / cell.maxcharge) * charge_sections, 1)
+	ratio = ceil((cell.charge / cell.maxcharge) * charge_sections)
 	var/obj/item/ammo_casing/energy/shot = ammo_type[select]
 	new_icon_state = "[icon_state]_charge"
 	var/new_item_state = null
@@ -280,8 +319,6 @@
 				. += image(icon = icon, icon_state = new_icon_state, pixel_w = ammo_x_offset * (i - 1))
 		else
 			. += image(icon = icon, icon_state = "[overlay_name]_[modifystate ? "[shot.select_name]_" : ""]charge[ratio]")
-	if(bayonet && bayonet_overlay)
-		. += bayonet_overlay
 
 /obj/item/gun/energy/suicide_act(mob/user)
 	if(can_trigger_gun(user))
@@ -303,12 +340,13 @@
 		return OXYLOSS
 
 /obj/item/gun/energy/vv_edit_var(var_name, var_value)
-	. = ..()
-	if(var_name == NAMEOF(src, selfcharge))
-		if(var_value)
-			START_PROCESSING(SSobj, src)
-		else
-			STOP_PROCESSING(SSobj, src)
+	switch(var_name)
+		if(NAMEOF(src, selfcharge))
+			if(var_value)
+				START_PROCESSING(SSobj, src)
+			else
+				STOP_PROCESSING(SSobj, src)
+	return ..()
 
 /obj/item/gun/energy/proc/robocharge()
 	if(cell.charge == cell.maxcharge)

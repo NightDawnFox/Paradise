@@ -155,7 +155,7 @@
 	messages.Add("<b>The Space Wizards Federation has given you the following tasks:</b>")
 	messages.Add(wizard.prepare_announce_objectives(title = FALSE))
 	messages.Add(span_motd("С полной информацией вы можете ознакомиться на вики: <a href=\"[CONFIG_GET(string/wikiurl)]/index.php/Wizard\">Маг</a>"))
-	to_chat(wizard.current, chat_box_red(messages.Join("<br>")))
+	to_chat(wizard.current, custom_boxed_message("red_box center", messages.Join("<br>")))
 	return
 
 /datum/game_mode/proc/equip_wizard(mob/living/carbon/human/wizard_mob)
@@ -298,7 +298,7 @@
 
 		for(var/datum/mind/wizard in wizards)
 
-			text += "<br>[span_bold(wizard.get_display_key())] was [span_bold(wizard.name)] ("
+			text += "<br>[span_bold(wizard.get_mind_key())] was [span_bold(wizard.name)] ("
 			if(wizard.current)
 				if(wizard.current.stat == DEAD)
 					text += "died"
@@ -341,7 +341,7 @@
 		if(length(apprentices))
 			text += span_bold(span_fontsize3("<br>the wizards/witches apprentices were:"))
 			for(var/datum/mind/apprentice in apprentices)
-				text += "<br><b>[apprentice.get_display_key()]</b> was <b>[apprentice.name]</b> ("
+				text += "<br><b>[apprentice.get_mind_key()]</b> was <b>[apprentice.name]</b> ("
 				if(apprentice.current)
 					if(apprentice.current.stat == DEAD)
 						text += "died"

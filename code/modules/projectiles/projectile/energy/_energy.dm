@@ -1,4 +1,5 @@
 /obj/projectile/energy
+	abstract_type = /obj/projectile/energy
 	name = "energy"
 	icon_state = "spark"
 	damage = 0
@@ -6,3 +7,4 @@
 	damage_type = BURN
 	flag = ENERGY
 	reflectability = REFLECTABILITY_ENERGY
+	miss_sound = SFX_ENERGY_MISS

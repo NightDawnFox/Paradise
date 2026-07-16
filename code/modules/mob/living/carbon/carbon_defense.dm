@@ -36,7 +36,7 @@
 	if(volume > 10) // Anything over 10 volume will make the mob wetter.
 		wetlevel = min(wetlevel + 1,5)
 
-/mob/living/carbon/attackby(obj/item/I, mob/user, params)
+/mob/living/carbon/attackby(obj/item/item, mob/living/user, list/modifiers)
 	if(!length(surgeries) || user.a_intent != INTENT_HELP)
 		return ..()
 
@@ -106,7 +106,7 @@
 	if(!proj.nodamage && !QDELETED(src))
 		apply_damage(proj.damage, proj.damage_type, def_zone, armor)
 		if(proj.damage_type == BRUTE && (!armor || prob(30) || proj.damage - armor >= 25))
-			spray_blood(get_dir(proj.starting, src), rand(1, max(1, floor((proj.damage - armor) / 10))))
+			spray_blood(get_dir(proj.starting, src), min(rand(1, max(1, floor((proj.damage - armor) / 10))), 5))
 		if(proj.dismemberment)
 			check_projectile_dismemberment(proj, def_zone)
 	return proj.on_hit(src, armor, def_zone)

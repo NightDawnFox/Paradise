@@ -230,10 +230,7 @@
 /obj/structure/mirror{
 	pixel_x = 30
 	},
-/obj/structure/sink{
-	dir = 4;
-	pixel_x = 11
-	},
+/obj/structure/sink/directional/west,
 /turf/simulated/floor/plasteel{
 	icon_state = "freezerfloor"
 	},
@@ -247,11 +244,11 @@
 /area/ruin/unpowered)
 "ay" = (
 /obj/structure/table,
-/obj/item/gun/projectile/automatic/wt550{
+/obj/item/gun/projectile/automatic/smg/wt550{
 	pixel_x = -3;
 	pixel_y = 6
 	},
-/obj/item/gun/projectile/automatic/wt550{
+/obj/item/gun/projectile/automatic/smg/wt550{
 	pixel_x = 2
 	},
 /obj/structure/reagent_dispensers/peppertank{
@@ -416,17 +413,13 @@
 	},
 /area/ruin/unpowered)
 "aT" = (
-/obj/machinery/shower{
-	dir = 4
-	},
+/obj/machinery/shower/directional/east,
 /turf/simulated/floor/plasteel{
 	icon_state = "freezerfloor"
 	},
 /area/ruin/unpowered)
 "aU" = (
-/obj/machinery/shower{
-	dir = 8
-	},
+/obj/machinery/shower/directional/west,
 /turf/simulated/floor/plasteel{
 	icon_state = "freezerfloor"
 	},
@@ -474,9 +467,7 @@
 	},
 /area/ruin/unpowered)
 "bb" = (
-/obj/machinery/shower{
-	dir = 4
-	},
+/obj/machinery/shower/directional/east,
 /obj/item/soap,
 /turf/simulated/floor/plasteel{
 	icon_state = "freezerfloor"
@@ -661,11 +652,8 @@
 /turf/simulated/floor/plasteel,
 /area/ruin/unpowered)
 "bG" = (
-/obj/machinery/power/apc/noalarm{
-	dir = 8;
-	keep_preset_name = 1;
-	name = "Bunker APC";
-	pixel_x = -24
+/obj/machinery/power/apc/noalarm/directional/west{
+	keep_preset_name = 1
 	},
 /obj/structure/cable{
 	icon_state = "0-4"

@@ -39,7 +39,7 @@
 	var/status
 
 /obj/structure/morgue/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "холодильник для трупов",
 		GENITIVE = "холодильника для трупов",
 		DATIVE = "холодильнику для трупов",
@@ -205,7 +205,7 @@
 
 	QDEL_NULL(connected)
 
-/obj/structure/morgue/container_resist(mob/living/carbon/user)
+/obj/structure/morgue/container_resist_act(mob/living/carbon/user)
 	if(!iscarbon(user) || user.incapacitated() || HAS_TRAIT(user, TRAIT_HANDS_BLOCKED))
 		return
 
@@ -251,12 +251,11 @@
 	density = TRUE
 	anchored = TRUE
 	pass_flags_self = PASSTABLE|LETPASSTHROW
-	layer = BELOW_OBJ_LAYER
 	max_integrity = 350
 	var/obj/structure/morgue/morgue
 
 /obj/structure/m_tray/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "поддон холодильника для трупов",
 		GENITIVE = "поддона холодильника для трупов",
 		DATIVE = "поддону холодильника для трупов",
@@ -288,7 +287,7 @@
 	add_fingerprint(user)
 	return ATTACK_CHAIN_BLOCKED_ALL
 
-/obj/structure/m_tray/MouseDrop_T(atom/movable/dropping, mob/living/user, params)
+/obj/structure/m_tray/mouse_drop_receive(atom/movable/dropping, mob/living/user, params)
 	if((!istype(dropping) || dropping.anchored || get_dist(user, src) > 1 || get_dist(user, dropping) > 1 || user.contents.Find(src) || user.contents.Find(dropping)))
 		return
 
@@ -306,7 +305,6 @@
 
 	if(user != dropping)
 		user.visible_message(span_warning("[user] помеща[PLUR_ET_YUT(user)] [dropping.declent_ru(GENITIVE)] на [declent_ru(GENITIVE)]!"))
-	return TRUE
 
 /obj/structure/m_tray/CanAllowThrough(atom/movable/mover, border_dir)
 	. = ..()
@@ -358,7 +356,7 @@ GLOBAL_LIST_EMPTY(crematoriums)
 	var/toggle_sound = 'sound/items/deconstruct.ogg'
 
 /obj/machinery/crematorium/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "крематорий",
 		GENITIVE = "крематория",
 		DATIVE = "крематорию",
@@ -505,7 +503,7 @@ GLOBAL_LIST_EMPTY(crematoriums)
 		return
 	tray_toggle(user)
 
-/obj/machinery/crematorium/container_resist(mob/living/carbon/user)
+/obj/machinery/crematorium/container_resist_act(mob/living/carbon/user)
 	if(cremating || !iscarbon(user) || user.incapacitated() || HAS_TRAIT(user, TRAIT_HANDS_BLOCKED))
 		return
 	to_chat(user, span_alert("Вы пытаетесь вылезти из [declent_ru(GENITIVE)]..."))
@@ -664,12 +662,11 @@ GLOBAL_LIST_EMPTY(crematoriums)
 	density = TRUE
 	anchored = TRUE
 	pass_flags_self = PASSTABLE|LETPASSTHROW
-	layer = BELOW_OBJ_LAYER
 	max_integrity = 350
 	var/obj/machinery/crematorium/crematorium
 
 /obj/structure/c_tray/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "поддон крематория",
 		GENITIVE = "поддона крематория",
 		DATIVE = "поддону крематория",
@@ -708,7 +705,7 @@ GLOBAL_LIST_EMPTY(crematoriums)
 	add_fingerprint(user)
 	return ATTACK_CHAIN_BLOCKED_ALL
 
-/obj/structure/c_tray/MouseDrop_T(atom/movable/dropping, mob/living/user, params)
+/obj/structure/c_tray/mouse_drop_receive(atom/movable/dropping, mob/living/user, params)
 	if(!istype(dropping) || dropping.anchored || get_dist(user, src) > 1 || get_dist(user, dropping) > 1 || user.contents.Find(src) || user.contents.Find(dropping))
 		return
 
@@ -726,7 +723,6 @@ GLOBAL_LIST_EMPTY(crematoriums)
 
 	if(user != dropping)
 		user.visible_message(span_warning("[user] помеща[PLUR_ET_YUT(user)] [dropping.declent_ru(GENITIVE)] на [declent_ru(GENITIVE)]!"))
-	return TRUE
 
 /obj/structure/c_tray/Process_Spacemove(movement_dir = NONE, continuous_move = FALSE)
 	return TRUE
@@ -743,7 +739,7 @@ GLOBAL_LIST_EMPTY(crematoriums)
 	var/id = 1
 
 /obj/machinery/crema_switch/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "активатор крематория",
 		GENITIVE = "активатора крематория",
 		DATIVE = "активатору крематория",

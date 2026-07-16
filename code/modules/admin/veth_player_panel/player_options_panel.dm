@@ -72,6 +72,7 @@ ADMIN_VERB_ONLY_CONTEXT_MENU(vuap_personal, R_ADMIN|R_MOD, "Open TGUI PP", mob/t
 					"deadchat" = check_mute(player.client.ckey, MUTE_DEADCHAT),
 					"tts" = check_mute(player.client.ckey, MUTE_TTS),
 					"emote" = check_mute(player.client.ckey, MUTE_EMOTE),
+					"webreq" = check_mute(player.client.ckey, MUTE_INTERNET_REQUEST),
 					"all" = check_mute(player.client.ckey, MUTE_ALL)
 				)
 		player_data["adminRights"] = rights2text(user.client.holder.rights)
@@ -342,13 +343,13 @@ ADMIN_VERB_ONLY_CONTEXT_MENU(vuap_personal, R_ADMIN|R_MOD, "Open TGUI PP", mob/t
 		if("thunderdomeobserve")
 			usr.client.holder.Topic(null, list("tdomeobserve" = selected_player.UID()))
 			return
-		if("contrastop")
+		if("contractor_stop")
 			usr.client.holder.Topic(null, list("contractor_stop" = selected_player.UID()))
 			return
-		if("contrastart")
+		if("contractor_start")
 			usr.client.holder.Topic(null, list("contractor_start" = selected_player.UID()))
 			return
-		if("contrarelease")
+		if("contractor_release")
 			usr.client.holder.Topic(null, list("contractor_release" = selected_player.UID()))
 			return
 		if("prison")
@@ -387,6 +388,10 @@ ADMIN_VERB_ONLY_CONTEXT_MENU(vuap_personal, R_ADMIN|R_MOD, "Open TGUI PP", mob/t
 					return
 				if("emote")
 					cmd_admin_mute(selected_player, MUTE_EMOTE)
+					ui.send_update()
+					return
+				if("webreq")
+					cmd_admin_mute(selected_player, MUTE_INTERNET_REQUEST)
 					ui.send_update()
 					return
 				if("all")

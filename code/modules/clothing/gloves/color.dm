@@ -13,7 +13,7 @@
 	resistance_flags = NONE
 
 /obj/item/clothing/gloves/color/yellow/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "изоляционные перчатки",
 		GENITIVE = "изоляционных перчаток",
 		DATIVE = "изоляционным перчаткам",
@@ -23,12 +23,16 @@
 	)
 
 /obj/item/clothing/gloves/color/yellow/power
-	description_antag = "These are a pair of power gloves, and can be used to fire bolts of electricity while standing over powered power cables."
 	var/old_mclick_override
 	var/datum/middleClickOverride/power_gloves/mclick_override = new /datum/middleClickOverride/power_gloves
 	var/last_shocked = 0
 	var/shock_delay = 40
 	var/unlimited_power = FALSE // Does this really need explanation?
+
+/obj/item/clothing/gloves/color/yellow/power/examine_more(mob/user)
+	. = ..()
+	if(Adjacent(user))
+		. += span_warning("These are a pair of power gloves, and can be used to fire bolts of electricity while standing over powered power cables.")
 
 /obj/item/clothing/gloves/color/yellow/power/equipped(mob/living/carbon/human/user, slot, initial)
 	. = ..()
@@ -87,8 +91,8 @@
 	desc = "Old and worn out insulated gloves, hopefully they still work."
 	name = "worn out insulated gloves"
 
-/obj/item/clothing/gloves/color/fyellow/old/New()
-	..()
+/obj/item/clothing/gloves/color/fyellow/old/Initialize(mapload)
+	. = ..()
 	siemens_coefficient = pick(0,0,0,0.5,0.5,0.5,0.75)
 
 /obj/item/clothing/gloves/color/black
@@ -105,7 +109,7 @@
 	var/can_be_cut = 1
 
 /obj/item/clothing/gloves/color/black/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "чёрные перчатки",
 		GENITIVE = "чёрных перчаток",
 		DATIVE = "чёрным перчаткам",
@@ -153,7 +157,7 @@
 	can_be_cut = FALSE
 
 /obj/item/clothing/gloves/color/black/goliath/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "перчатки из шкуры голиафа",
 		GENITIVE = "перчаток из шкуры голиафа",
 		DATIVE = "перчаткам из шкуры голиафа",
@@ -277,7 +281,7 @@
 	clothing_traits = list(TRAIT_QUICK_CARRY)
 
 /obj/item/clothing/gloves/color/latex/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "латексные перчатки",
 		GENITIVE = "латексных перчаток",
 		DATIVE = "латексным перчаткам",
@@ -298,7 +302,7 @@
 	clothing_traits = list(TRAIT_QUICKER_CARRY)
 
 /obj/item/clothing/gloves/color/latex/nitrile/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "нитриловые перчатки",
 		GENITIVE = "нитриловых перчаток",
 		DATIVE = "нитриловым перчаткам",
@@ -319,7 +323,7 @@
 	clothing_traits = list(TRAIT_QUICKER_CARRY)
 
 /obj/item/clothing/gloves/color/latex/modified/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "модифицированные медицинские перчатки",
 		GENITIVE = "модифицированных медицинских перчаток",
 		DATIVE = "модифицированным медицинским перчаткам",
@@ -343,7 +347,7 @@
 	clothing_traits = list(TRAIT_QUICKER_CARRY)
 
 /obj/item/clothing/gloves/color/latex/inugami/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "медицинские перчатки Inugami",
 		GENITIVE = "медицинских перчаток Inugami",
 		DATIVE = "медицинским перчаткам Inugami",
@@ -354,6 +358,7 @@
 
 /obj/item/clothing/gloves/color/latex/inugami/ComponentInitialize()
 	. = ..()
+	AddElement(/datum/element/right_click_mapper/attack_self, "Включить/выключить встроенный дефибриллятор")
 	AddComponent(/datum/component/defib, ignore_hardsuits = TRUE, safe_by_default = TRUE, emp_proof = TRUE, emag_proof = TRUE)
 
 /obj/item/clothing/gloves/color/latex/inugami/attack_self(mob/living/carbon/human/user)

@@ -37,7 +37,7 @@
 )
 
 /obj/item/storage/bible/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "Библия",
 		GENITIVE = "Библии",
 		DATIVE = "Библии",
@@ -64,7 +64,7 @@
 /obj/item/storage/bible/booze
 
 /obj/item/storage/bible/booze/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "Библия",
 		GENITIVE = "Библии",
 		DATIVE = "Библии",
@@ -185,8 +185,8 @@
 		user.Knockdown(10 SECONDS)
 		to_chat(user, span_userdanger("Вы злоупотребили волей Бога и были за это наказаны!"))
 
-/obj/item/storage/bible/afterattack(atom/target, mob/user, proximity, params)
-	if(!proximity)
+/obj/item/storage/bible/afterattack(atom/target, mob/user, proximity_flag, list/modifiers, status)
+	if(!proximity_flag)
 		return
 
 	if(isfloorturf(target))

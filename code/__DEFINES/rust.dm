@@ -19,7 +19,7 @@
 #ifdef CIBUILDING
 		// CI override, use librustlibs_ci.so if possible.
 		if(fexists("./tools/ci/librustlibs_ci.so"))
-			return __rustlib = "tools/ci/librustlibs_ci.so"
+			return __rustlib = "tools/ci/librustlibs.so"
 #endif
 		// First check if it's built in the usual place.
 		// Linx doesnt get the version suffix because if youre using linux you can figure out what server version youre running for
@@ -49,7 +49,7 @@
 		return assignment_confirmed
 
 #define RUSTLIB (__rustlib || __detect_rustlib())
-#define RUSTLIB_CALL(func, args...) call_ext(RUSTLIB, "byond:[#func]_ffi")(args)
+#define RUSTLIB_CALL(func, args...) call_ext(RUSTLIB, "byond:[#func]")(args)
 
 /// Exists by default in 516, but needs to be defined for 515 or byondapi-rs doesn't like it.
 /proc/byondapi_stack_trace(err)
@@ -84,7 +84,7 @@
 
 #define rustlib_hash_string(algorithm, text) RUSTLIB_CALL(hash_string, algorithm, text)
 #define rustlib_hash_file(algorithm, fname) RUSTLIB_CALL(hash_file, algorithm, fname)
-#define rustlib_hash_generate_totp(seed)RUSTLIB_CALL(generate_totp, seed)
+#define rustlib_hash_generate_totp(seed) RUSTLIB_CALL(generate_totp, seed)
 #define rustlib_hash_generate_totp_tolerance(seed, tolerance) RUSTLIB_CALL(generate_totp_tolerance, seed, tolerance)
 
 #define RUSTLIB_HASH_MD5 "md5"
@@ -119,14 +119,14 @@
 /// Spritesheet will contain all sprites listed within "sprites".
 /// "sprites" format:
 /// list(
-///		"sprite_name" = list( // <--- this list is a [SPRITE_OBJECT]
-///			icon_file = 'icons/path_to/an_icon.dmi',
-///			icon_state = "some_icon_state",
-///			dir = SOUTH,
-///			frame = 1,
-///			transform = list([TRANSFORM_OBJECT], ...)
-///		),
-///		...,
+/// "sprite_name" = list( // <--- this list is a [SPRITE_OBJECT]
+/// icon_file = 'icons/path_to/an_icon.dmi',
+/// icon_state = "some_icon_state",
+/// dir = SOUTH,
+/// frame = 1,
+/// transform = list([TRANSFORM_OBJECT], ...)
+/// ),
+/// ...,
 /// )
 /// TRANSFORM_OBJECT format:
 /// list("type" = RUSTLIB_ICONFORGE_BLEND_COLOR, "color" = "#ff0000", "blend_mode" = ICON_MULTIPLY)
@@ -141,13 +141,13 @@
 /// list("type" = RUSTLIB_ICONFORGE_DRAW_BOX, "color" = "#ff0000", "x1" = 1, "y1" = 1, "x2" = 32, "y2" = 32) // alpha bits supported. color can be null/omitted for transparency. x2 and y2 will default to x1 and y1 if omitted
 ///
 /// Returns a SpritesheetResult as JSON, containing fields:
-///	list(
-///		"sizes" = list("32x32", "64x64", ...),
-///		"sprites" = list("sprite_name" = list("size_id" = "32x32", "position" = 0), ...),
-///		"dmi_hashes" = list("icons/path_to/an_icon.dmi" = "d6325c5b4304fb03", ...),
-///		"sprites_hash" = "a2015e5ff403fb5c", // This is the xxh64 hash of the INPUT field "sprites".
-///		"error" = "[A string, empty if there were no errors.]",
-///	)
+/// list(
+/// "sizes" = list("32x32", "64x64", ...),
+/// "sprites" = list("sprite_name" = list("size_id" = "32x32", "position" = 0), ...),
+/// "dmi_hashes" = list("icons/path_to/an_icon.dmi" = "d6325c5b4304fb03", ...),
+/// "sprites_hash" = "a2015e5ff403fb5c", // This is the xxh64 hash of the INPUT field "sprites".
+/// "error" = "[A string, empty if there were no errors.]",
+/// )
 /// In the case of an unrecoverable panic from within Rust, this function ONLY returns a string containing the error.
 #define rustlib_iconforge_generate(file_path, spritesheet_name, sprites, hash_icons, generate_dmi, flatten) RUSTLIB_CALL(iconforge_generate, file_path, spritesheet_name, sprites, hash_icons, generate_dmi, flatten)
 /// Returns a job_id for use with rustlib_iconforge_check()
@@ -163,8 +163,8 @@
 /// dmi_hashes: xxh64 hashes of the DMIs in a spritesheet, given by `rustlib_iconforge_generate` with `hash_icons` enabled. From the cache.
 /// sprites: The new input that will be passed to rustlib_iconforge_generate().
 /// Returns a CacheResult with the following structure: list(
-///		"result": "1" (if cache is valid) or "0" (if cache is invalid)
-///		"fail_reason": "" (emtpy string if valid, otherwise a string containing the invalidation reason or an error with ERROR: prefixed.)
+/// "result": "1" (if cache is valid) or "0" (if cache is invalid)
+/// "fail_reason": "" (emtpy string if valid, otherwise a string containing the invalidation reason or an error with ERROR: prefixed.)
 /// )
 /// In the case of an unrecoverable panic from within Rust, this function ONLY returns a string containing the error.
 #define rustlib_iconforge_cache_valid(input_hash, dmi_hashes, sprites) RUSTLIB_CALL(iconforge_cache_valid, input_hash, dmi_hashes, sprites)

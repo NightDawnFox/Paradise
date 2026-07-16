@@ -12,7 +12,7 @@
 	var/obj/item/reagent_containers/beaker = null
 
 /obj/machinery/computer/pandemic/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "Панд.Е.М.И.К 220",
 		GENITIVE = "Панд.Е.М.И.К 220",
 		DATIVE = "Панд.Е.М.И.К 220",
@@ -102,7 +102,7 @@
 
 				if(vaccine_type)
 					B.name = "вакцина [capitalize(vaccine_name)]"
-					B.ru_names = list(
+					B.ru_names = alist(
 						NOMINATIVE = "вакцина [capitalize(vaccine_name)]",
 						GENITIVE = "вакцины [capitalize(vaccine_name)]",
 						DATIVE = "вакцине [capitalize(vaccine_name)]",
@@ -138,7 +138,7 @@
 			replicator_cooldown(50)
 			var/list/data = list("diseases"=list(copy))
 			B.name = "культура [capitalize(name)]"
-			B.ru_names = list(
+			B.ru_names = alist(
 				NOMINATIVE = "культура [capitalize(name)]",
 				GENITIVE = "культуры [capitalize(name)]",
 				DATIVE = "культуре [capitalize(name)]",
@@ -346,7 +346,7 @@
 	if(user.a_intent == INTENT_HARM || (stat & (NOPOWER|BROKEN)))
 		return ..()
 
-	if(istype(I, /obj/item/reagent_containers))
+	if(is_reagent_container(I))
 		add_fingerprint(user)
 		if(!(I.container_type & OPENCONTAINER))
 			balloon_alert(user, "несовместимо!")

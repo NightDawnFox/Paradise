@@ -60,6 +60,7 @@ GLOBAL_LIST_EMPTY(airlock_emissive_underlays)
 	interaction_flags_click = ALLOW_SILICON_REACH
 	cares_about_temperature = TRUE
 	rad_insulation = RAD_MEDIUM_INSULATION
+	blocks_emissive = EMISSIVE_BLOCK_NONE // Custom emissive blocker. We don't want the normal behavior.
 
 	var/security_level = 0 //How much are wires secured
 	var/aiControlDisabled = AICONTROLDISABLED_OFF
@@ -83,7 +84,8 @@ GLOBAL_LIST_EMPTY(airlock_emissive_underlays)
 	var/obj/item/access_control/access_electronics
 	var/has_access_electronics = TRUE
 	var/shockCooldown = FALSE //Prevents multiple shocks from happening
-	var/obj/item/note //Any papers pinned to the airlock
+	/// Any papers pinned to the airlock
+	var/obj/item/note
 	var/previous_airlock = /obj/structure/door_assembly //what airlock assembly mineral plating was applied to
 	var/airlock_material //material of inner filling; if its an airlock with glass, this should be set to "glass"
 	var/overlays_file = 'icons/obj/doors/airlocks/station/overlays.dmi'
@@ -166,8 +168,8 @@ GLOBAL_LIST_EMPTY(airlock_emissive_underlays)
 		damage_deflection = AIRLOCK_DAMAGE_DEFLECTION_R
 
 	prepare_huds()
-	for(var/datum/atom_hud/data/diagnostic/diag_hud in GLOB.huds)
-		diag_hud.add_atom_to_hud(src)
+	var/datum/atom_hud/data/diagnostic/diag_hud = GLOB.huds[DATA_HUD_DIAGNOSTIC]
+	diag_hud.add_atom_to_hud(src)
 
 	diag_hud_set_electrified()
 
@@ -203,8 +205,8 @@ GLOBAL_LIST_EMPTY(airlock_emissive_underlays)
 	if(SSradio)
 		SSradio.remove_object(src, frequency)
 	radio_connection = null
-	for(var/datum/atom_hud/data/diagnostic/diag_hud in GLOB.huds)
-		diag_hud.remove_atom_from_hud(src)
+	var/datum/atom_hud/data/diagnostic/diag_hud = GLOB.huds[DATA_HUD_DIAGNOSTIC]
+	diag_hud.remove_atom_from_hud(src)
 	return ..()
 
 /obj/machinery/door/airlock/handle_atom_del(atom/A)
@@ -212,9 +214,8 @@ GLOBAL_LIST_EMPTY(airlock_emissive_underlays)
 		note = null
 		update_icon()
 
-/obj/machinery/door/airlock/MouseDrop_T(atom/dropping, mob/user, params)
+/obj/machinery/door/airlock/mouse_drop_receive(atom/dropping, mob/user, params)
 	. = ..()
-
 	//Adds the component only once. We do it here & not in Initialize() because there are tons of airlocks & we don't want to add to their init times
 	LoadComponent(/datum/component/leanable, dropping)
 
@@ -587,35 +588,33 @@ GLOBAL_LIST_EMPTY(airlock_emissive_underlays)
 
 /// Called when a player uses an airlock painter on this airlock
 /obj/machinery/door/airlock/proc/change_paintjob(obj/item/airlock_painter/painter, mob/user)
-	if((!in_range(src, user) && loc != user)) // user should be adjacent to the airlock.
+	if(!in_range(src, user) || !painter.can_use(user)) // user should be adjacent to the airlock, and the painter should have a toner cartridge that isn't empty
 		return
 
-	if(!painter.paint_setting)
-		to_chat(user, span_warning("You need to select a paintjob first."))
+	// reads from the airlock painter's `available paintjob` list. lets the player choose a paint option, or cancel painting
+	var/current_paintjob = tgui_input_list(user, "Paintjob for this airlock", "Customize", sort_list(painter.available_paint_jobs))
+	if(isnull(current_paintjob) || !in_range(src, user) || !painter.can_use(user)) // if the user clicked cancel on the popup, or moved away, or ran out of ink, return
 		return
 
-	if(!paintable)
-		to_chat(user, span_warning("This type of airlock cannot be painted."))
-		return
-
-	var/obj/machinery/door/airlock/airlock = painter.available_paint_jobs["[painter.paint_setting]"] // get the airlock type path associated with the airlock name the user just chose
+	var/airlock_type = painter.available_paint_jobs["[current_paintjob]"] // get the airlock type path associated with the airlock name the user just chose
+	var/obj/machinery/door/airlock/airlock = airlock_type // we need to create a new instance of the airlock and assembly to read vars from them
 	var/obj/structure/door_assembly/assembly = initial(airlock.assemblytype)
-
-	if(assemblytype == assembly)
-		to_chat(user, span_notice("This airlock is already painted [painter.paint_setting]!"))
-		return
 
 	if(airlock_material == "glass" && initial(assembly.noglass)) // prevents painting glass airlocks with a paint job that doesn't have a glass version, such as the freezer
 		to_chat(user, span_warning("This paint job can only be applied to non-glass airlocks."))
 		return
 
-	if(do_after(user, 2 SECONDS, src))
-		// applies the user-chosen airlock's icon, overlays and assemblytype to the src airlock
-		painter.paint(user)
+	// applies the user-chosen airlock's icon, overlays and assemblytype to the src airlock
+	painter.use_paint(user)
+	if(initial(airlock.greyscale_config))
+		greyscale_config = initial(airlock.greyscale_config)
+		greyscale_colors = initial(airlock.greyscale_colors)
+		update_greyscale()
+	else
 		icon = initial(airlock.icon)
-		overlays_file = initial(airlock.overlays_file)
-		assemblytype = initial(airlock.assemblytype)
-		update_icon()
+	overlays_file = initial(airlock.overlays_file)
+	assemblytype = initial(airlock.assemblytype)
+	update_appearance()
 
 /obj/machinery/door/airlock/examine(mob/user)
 	. = ..()
@@ -1615,7 +1614,8 @@ GLOBAL_LIST_EMPTY(airlock_emissive_underlays)
 	access_electronics.selected_accesses = length(req_access) ? req_access : list()
 	access_electronics.one_access = check_one_access
 
-/obj/machinery/door/airlock/proc/note_type() //Returns a string representing the type of note pinned to this airlock
+/// Returns a string representing the type of note pinned to this airlock
+/obj/machinery/door/airlock/proc/note_type()
 	if(!note)
 		return
 	if(istype(note, /obj/item/paper))
@@ -1627,7 +1627,7 @@ GLOBAL_LIST_EMPTY(airlock_emissive_underlays)
 	if(istype(note, /obj/item/photo))
 		return "photo"
 
-//Removes the current note on the door if any. Returns if a note is removed
+/// Removes the current note on the door if any. Returns if a note is removed
 /obj/machinery/door/airlock/proc/remove_airlock_note(mob/user, wirecutters_used = TRUE)
 	if(!note)
 		return FALSE
@@ -1648,6 +1648,9 @@ GLOBAL_LIST_EMPTY(airlock_emissive_underlays)
 	note = null
 	update_icon()
 	return TRUE
+
+/obj/machinery/door/airlock/IsContainedAtomAccessible(atom/contained, atom/movable/user)
+	return ..() || (contained == note)
 
 /obj/machinery/door/airlock/narsie_act(weak = FALSE)
 	var/turf/T = get_turf(src)
@@ -1688,19 +1691,19 @@ GLOBAL_LIST_EMPTY(airlock_emissive_underlays)
 
 /obj/machinery/door/airlock/rcd_deconstruct_act(mob/user, obj/item/rcd/our_rcd)
 	. = ..()
-	if(our_rcd.checkResource(20, user))
-		to_chat(user, "Deconstructing airlock...")
+	if(our_rcd.checkResource(RCD_COST_AIRLOCK * 2, user))
+		to_chat(user, "Деконструкция шлюза...")
 		playsound(get_turf(our_rcd), 'sound/machines/click.ogg', 50, TRUE)
 		if(do_after(user, 5 SECONDS * our_rcd.toolspeed, src, category = DA_CAT_TOOL))
-			if(!our_rcd.useResource(20, user))
+			if(!our_rcd.useResource(RCD_COST_AIRLOCK * 2, user))
 				return RCD_ACT_FAILED
 			playsound(get_turf(our_rcd), our_rcd.usesound, 50, TRUE)
 			add_attack_logs(user, src, "Deconstructed airlock with RCD")
 			qdel(src)
 			return RCD_ACT_SUCCESSFULL
-		to_chat(user, span_warning("ERROR! Deconstruction interrupted!"))
+		to_chat(user, span_warning("ОШИБКА! Деконструкция прервана!"))
 		return RCD_ACT_FAILED
-	to_chat(user, span_warning("ERROR! Not enough matter in unit to deconstruct this airlock!"))
+	to_chat(user, span_warning("ОШИБКА! Недостаточно материи для деконструкции шлюза!"))
 	playsound(get_turf(our_rcd), 'sound/machines/click.ogg', 50, TRUE)
 	return RCD_ACT_FAILED
 

@@ -17,17 +17,19 @@
 	var/squeak = 0
 	ui_theme = "honker"
 	ui_honked = TRUE
-
+	allowed_equipment = MECH_EQUIPMENT_CLOWN
 	mech_type = MECH_TYPE_HONKER
+	emaggable = TRUE
+	emag_desc = span_danger_alt("</br>Слоты оборудования меха выглядят КРАЙНЕ забавно!")
 
 /obj/mecha/combat/honker/loaded/Initialize(mapload)
 	. = ..()
 	var/obj/item/mecha_parts/mecha_equipment/ME = new /obj/item/mecha_parts/mecha_equipment/weapon/honker
-	ME.attach(src)
+	ME.attach(src, MECH_HAND_LEFT)
 	ME = new /obj/item/mecha_parts/mecha_equipment/weapon/ballistic/missile_rack/banana_mortar
-	ME.attach(src)
+	ME.attach(src, MECH_HAND_RIGHT)
 	ME = new /obj/item/mecha_parts/mecha_equipment/weapon/ballistic/missile_rack/mousetrap_mortar
-	ME.attach(src)
+	ME.attach(src, MECH_HAND_RIGHT)
 
 /obj/mecha/combat/honker/mechstep(direction)
 	var/result = step(src,direction)

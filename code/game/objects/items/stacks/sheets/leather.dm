@@ -123,7 +123,7 @@ GLOBAL_LIST_INIT(xeno_recipes, list (
 	origin_tech = ""
 
 /obj/item/stack/sheet/hairlesshide/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "очищенная шкура",
 		GENITIVE = "очищенной шкуры",
 		DATIVE = "очищенной шкуре",
@@ -143,7 +143,7 @@ GLOBAL_LIST_INIT(xeno_recipes, list (
 	var/drying_threshold_temperature = 500 //Kelvin to start drying
 
 /obj/item/stack/sheet/wetleather/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "мокрая шкура",
 		GENITIVE = "мокрой шкуры",
 		DATIVE = "мокрой шкуре",
@@ -160,7 +160,7 @@ GLOBAL_LIST_INIT(xeno_recipes, list (
 	origin_tech = "materials=2"
 
 /obj/item/stack/sheet/leather/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "кожа",
 		GENITIVE = "кожи",
 		DATIVE = "коже",
@@ -199,7 +199,7 @@ GLOBAL_LIST_INIT(leather_recipes, list (
 	origin_tech = "biotech=4"
 
 /obj/item/stack/sheet/sinew/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "сухожилия наблюдателя",
 		GENITIVE = "сухожилий наблюдателя",
 		DATIVE = "сухожилиям наблюдателя",
@@ -245,7 +245,7 @@ GLOBAL_LIST_INIT(sinew_recipes, list ( \
 	))
 
 /obj/item/stack/sheet/animalhide/goliath_hide/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "пластина шкуры голиафа",
 		GENITIVE = "пластины шкуры голиафа",
 		DATIVE = "пластине шкуры голиафа",
@@ -254,13 +254,15 @@ GLOBAL_LIST_INIT(sinew_recipes, list ( \
 		PREPOSITIONAL = "пластине шкуры голиафа",
 	)
 
-/obj/item/stack/sheet/animalhide/goliath_hide/afterattack(atom/target, mob/user, proximity_flag, params)
+/obj/item/stack/sheet/animalhide/goliath_hide/afterattack(atom/target, mob/user, proximity_flag, list/modifiers, status)
 	if(!proximity_flag)
 		return
+
 	var/uplatable_armor = is_type_in_typecache(target, override_unplatable_armor_typecache)
 	if(uplatable_armor)
 		balloon_alert(user, "нельзя улучшить!")
 		return
+
 	var/platable_armor_with_icon = is_type_in_typecache(target, goliath_platable_armor_with_icon_typecache)
 	if(is_type_in_typecache(target, goliath_platable_armor_typecache) || platable_armor_with_icon)
 		var/obj/item/clothing/C = target
@@ -311,9 +313,10 @@ GLOBAL_LIST_INIT(sinew_recipes, list ( \
 	item_flags = NOBLUDGEON
 	layer = MOB_LAYER
 
-/obj/item/stack/sheet/armour_plate/afterattack(atom/target, mob/user, proximity_flag, params)
+/obj/item/stack/sheet/armour_plate/afterattack(atom/target, mob/user, proximity_flag, list/modifiers, status)
 	if(!proximity_flag)
 		return
+
 	if(istype(target, /obj/mecha/working/ripley))
 		var/obj/mecha/working/ripley/D = target
 		if(D.plates < 3)
@@ -342,7 +345,7 @@ GLOBAL_LIST_INIT(sinew_recipes, list ( \
 	layer = MOB_LAYER
 
 /obj/item/stack/sheet/cartilage_plate/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "толстая хрящевая пластина",
 		GENITIVE = "толстой хрящевой пластины",
 		DATIVE = "толстой хрящевой пластине",
@@ -361,7 +364,7 @@ GLOBAL_LIST_INIT(sinew_recipes, list ( \
 	layer = MOB_LAYER
 
 /obj/item/stack/sheet/animalhide/ashdrake/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "шкура пепельного дрейка",
 		GENITIVE = "шкуры пепельного дрейка",
 		DATIVE = "шкуре пепельного дрейка",

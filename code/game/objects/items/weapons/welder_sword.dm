@@ -20,7 +20,7 @@
 	var/combinable = TRUE
 
 /obj/item/weldingtool/sword/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "сварочный меч",
 		GENITIVE = "сварочного меча",
 		DATIVE = "сварочному мечу",
@@ -46,7 +46,7 @@
 /obj/item/weldingtool/sword/tool_use_check(mob/living/user, amount, silent)
 	return FALSE
 
-/obj/item/weldingtool/sword/afterattack(atom/target, mob/user, proximity, params, status)
+/obj/item/weldingtool/sword/afterattack(atom/target, mob/user, proximity_flag, list/modifiers, status)
 	. = ..()
 	if(ATTACK_CHAIN_SUCCESS_CHECK(status))
 		remove_fuel(1)
@@ -96,7 +96,7 @@
 	combinable = FALSE
 
 /obj/item/weldingtool/sword/double/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "двойной сварочный меч",
 		GENITIVE = "двойного сварочного меча",
 		DATIVE = "двойному сварочному мечу",

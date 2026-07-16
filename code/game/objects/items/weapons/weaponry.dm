@@ -139,7 +139,7 @@
 	var/nemesis_factions = list("mining", "boss")
 
 /obj/item/melee/katana/basalt/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "базальтовая катана",
 		GENITIVE = "базальтовой катаны",
 		DATIVE = "базальтовой катане",
@@ -381,11 +381,7 @@
 	return 1
 
 /obj/item/melee/baseball_bat/homerun/central_command
-	name = "тактическая бита Флота Nanotrasen"
-	description_info = "Выдвижная тактическая бита Центрального командования Nanotrasen. \
-	В официальных документах эта бита проходит под элегантным названием \"Высокоскоростная система доставки СРП\". \
-	Выдаваясь только самым верным и эффективным офицерам Nanotrasen, это оружие является одновременно символом статуса \
-	и инструментом высшего правосудия."
+	name = "тактическая бита Флота \"Нанотрейзен\""
 	w_class = WEIGHT_CLASS_SMALL
 
 	can_deflect = FALSE
@@ -410,9 +406,16 @@
 	/// Attack verbs when extended (created on Initialize)
 	var/list/attack_verb_on = list("шлёпнул", "ударил", "треснул", "поколотил")
 
+/obj/item/melee/baseball_bat/homerun/central_command/examine_more(mob/user)
+	. = ..()
+	. += span_notice("Выдвижная тактическая бита Центрального командования \"Нанотрейзен\". \
+	В официальных документах эта бита проходит под элегантным названием \"Высокоскоростная система доставки СРП\". \
+	Выдаваясь только самым верным и эффективным офицерам \"Нанотрейзен\", это оружие является одновременно символом статуса \
+	и инструментом высшего правосудия.")
+
 /obj/item/melee/baseball_bat/homerun/central_command/srt
 	name = "тактическая бита ГСН"
-	desc = "Выдвижная тактическая бита Центрального командования Nanotrasen. Скорее всего, к этому моменту командование станции уже осознало, что их коленные чашечки не переживут эту встречу."
+	desc = "Выдвижная тактическая бита Центрального командования \"Нанотрейзен\". Скорее всего, к этому моменту командование станции уже осознало, что их коленные чашечки не переживут эту встречу."
 	item_state = "srt_bat_0"
 	item_state_on = "srt_bat_1"
 	icon_state = "srt_bat_0"
@@ -467,7 +470,7 @@
 	block_chance = 30
 
 /obj/item/melee/claymore/bone/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "костяной меч",
 		GENITIVE = "костяного меча",
 		DATIVE = "костяному мечу",
@@ -500,7 +503,7 @@
 	var/stamina_damage = 22
 
 /obj/item/melee/nutcracker/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "колотушка",
 		GENITIVE = "колотушки",
 		DATIVE = "колотушке",
@@ -509,8 +512,8 @@
 		PREPOSITIONAL = "колотушке",
 	)
 
-/obj/item/melee/nutcracker/afterattack(atom/target, mob/user, proximity, params, status)
-	if(!isliving(target) || !proximity || user.incapacitated() || HAS_TRAIT(user, TRAIT_HANDS_BLOCKED))
+/obj/item/melee/nutcracker/afterattack(atom/target, mob/user, proximity_flag, list/modifiers, status)
+	if(!isliving(target) || !proximity_flag || user.incapacitated() || HAS_TRAIT(user, TRAIT_HANDS_BLOCKED))
 		return
 
 	var/mob/living/victim = target

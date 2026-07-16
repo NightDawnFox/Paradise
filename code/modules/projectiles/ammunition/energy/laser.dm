@@ -4,11 +4,9 @@
 	muzzle_flash_color = COLOR_SOFT_RED
 	select_name = "kill"
 	sibyl_tier = SIBYL_TIER_LETHAL
-	bullet_type = BULLET_TYPE_LASER
 
 /obj/item/ammo_casing/energy/laser/light
 	projectile_type = /obj/projectile/beam/laser/light
-	delay = 0.9
 
 /obj/item/ammo_casing/energy/laser/cyborg //to balance cyborg energy cost seperately
 	e_cost = 250
@@ -38,12 +36,15 @@
 	fire_sound = 'sound/weapons/gunshots/1pulse2.ogg'
 
 /obj/item/ammo_casing/energy/laser/pulse
-	projectile_type = /obj/projectile/beam/pulse/hitscan
+	projectile_type = /obj/projectile/beam/pulse
 	muzzle_flash_color = LIGHT_COLOR_DARK_BLUE
 	e_cost = 200
 	select_name = "DESTROY"
 	sibyl_tier = SIBYL_TIER_DESTRUCTIVE
 	fire_sound = 'sound/weapons/gunshots/1pulse2.ogg'
+
+/obj/item/ammo_casing/energy/laser/pulse/hitscan
+	projectile_type = /obj/projectile/beam/pulse/hitscan
 
 /obj/item/ammo_casing/energy/laser/scatter/pulse
 	projectile_type = /obj/projectile/beam/pulse/hitscan
@@ -73,7 +74,7 @@
 	fire_sound = 'sound/weapons/gunshots/accelerator_cannon.ogg'
 	e_cost = 150
 	delay = 20
-	
+
 /obj/item/ammo_casing/energy/laser/old
 	e_cost = 200
 
@@ -89,7 +90,6 @@
 	projectile_type = /obj/projectile/beam/immolator
 	fire_sound = 'sound/weapons/gunshots/1xray.ogg'
 	e_cost = 125
-	bullet_type = BULLET_TYPE_FIRE
 
 /obj/item/ammo_casing/energy/immolator/strong
 	projectile_type = /obj/projectile/beam/immolator/strong

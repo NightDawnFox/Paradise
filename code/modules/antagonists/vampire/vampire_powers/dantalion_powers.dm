@@ -8,7 +8,7 @@
 
 /obj/effect/proc_holder/spell/vampire/enthrall
 	name = "Порабощение"
-	desc = "Вы используете значительную часть своей силы, чтобы поработить разум другого гуманоида."
+	desc = "Вы используете значительную часть своей силы, чтобы поработить разум другого гуманоида или оживить своего раба."
 	gain_desc = "Вы обрели способность подчинять людей своей воле."
 	action_icon_state = "vampire_enthrall"
 	need_active_overlay = TRUE
@@ -27,15 +27,36 @@
 	user.visible_message(span_warning("[user] куса[PLUR_ET_YUT(user)] [target] за шею!"), \
 						span_warning("Вы кусаете [target] за шею и впускаете поток силы."))
 	to_chat(target, span_warning("Вы чувствуете, как в ваш разум проникают потоки нечистой силы."))
-	if(do_after(user, 15 SECONDS, target, NONE))
-		if(can_enthrall(user, target))
-			handle_enthrall(user, target)
-			var/datum/spell_handler/vampire/V = custom_handler
-			var/blood_cost = V.calculate_blood_cost(vampire)
-			vampire.bloodusable -= blood_cost //we take the blood after enthralling, not before
-	else
+
+	if(!do_after(user, 15 SECONDS, target, NONE))
 		revert_cast(user)
 		to_chat(user, span_warning("Вы или ваша цель сдвинулись с места."))
+		return
+
+	if(target.stat == DEAD && isvampirethrall(target))
+		var/datum/antagonist/mindslave/thrall/thrall = target.mind.has_antag_datum(/datum/antagonist/mindslave/thrall)
+		if(thrall && thrall.master == user.mind)
+			var/turf/turf = get_turf(target)
+			playsound(turf, 'sound/magic/staff_healing.ogg', 50, TRUE)
+
+			var/obj/effect/abstract/vampire/target_image = new(turf)
+			target_image.add_overlay(target)
+			target.forceMove(target_image)
+
+			animate(target_image, pixel_y = 16, time = 2 SECONDS, easing = BOUNCE_EASING|EASE_IN)
+			animate(pixel_y = 0, time = 0.5 SECONDS, easing = BOUNCE_EASING|EASE_OUT)
+			addtimer(CALLBACK(src, PROC_REF(revive_thrall_step_first), target, target_image, turf, user, vampire), 1.6 SECONDS)
+			return
+
+		to_chat(user, span_warning("Это не ваш раб."))
+		revert_cast(user)
+		return
+
+	if(can_enthrall(user, target))
+		handle_enthrall(user, target)
+		var/datum/spell_handler/vampire/vamp = custom_handler
+		var/blood_cost = vamp.calculate_blood_cost(vampire)
+		vampire.bloodusable -= blood_cost
 
 /obj/effect/proc_holder/spell/vampire/enthrall/proc/can_enthrall(mob/living/user, mob/living/carbon/C)
 	. = FALSE
@@ -80,6 +101,28 @@
 	H.Stun(4 SECONDS)
 	user.create_log(CONVERSION_LOG, "vampire enthralled", H)
 	H.create_log(CONVERSION_LOG, "was vampire enthralled", user)
+
+/obj/effect/proc_holder/spell/vampire/enthrall/proc/revive_thrall_step_first(mob/living/target, obj/effect/abstract/vampire/target_image, turf/location, mob/living/user, datum/antagonist/vampire/vampire)
+	if(QDELETED(target) || QDELETED(target_image))
+		return
+	target.revive()
+	target.update_revive()
+	new /obj/effect/temp_visual/cult/sparks(location)
+	// Start the second stage after 0.5 seconds, when the animation is completely finished
+	addtimer(CALLBACK(src, PROC_REF(revive_thrall_step_second), target, target_image, location, user, vampire), 0.5 SECONDS)
+
+/// Second stage: return the thrall to the tile and complete the ritual
+/obj/effect/proc_holder/spell/vampire/enthrall/proc/revive_thrall_step_second(mob/living/target, obj/effect/abstract/vampire/target_image, turf/location, mob/living/user, datum/antagonist/vampire/vampire)
+	if(QDELETED(target) || QDELETED(target_image))
+		return
+	target.forceMove(location)
+	qdel(target_image)
+
+	var/datum/spell_handler/vampire/vamp = custom_handler
+	var/blood_cost = vamp.calculate_blood_cost(vampire)
+	vampire.bloodusable -= blood_cost
+	user.create_log(CONVERSION_LOG, "revived thrall", target)
+	target.create_log(CONVERSION_LOG, "was revived by vampire master", user)
 
 /obj/effect/proc_holder/spell/vampire/thrall_commune
 	name = "Телепатическая связь"
@@ -170,11 +213,10 @@
 
 /obj/effect/proc_holder/spell/vampire/switch_places
 	name = "Подпространственный обмен"
-	desc = "Поменяйтесь местами с целью. Также замедляет жертву и вызывает у нее галлюцинации. Возможно использовать сквозь стены."
+	desc = "Поменяйтесь местами с целью. Также замедляет жертву и вызывает у нее галлюцинации. Невозможно использовать сквозь стены."
 	gain_desc = "Вы получили возможность меняться местами с выбранным существом."
 	centcom_cancast = FALSE
 	action_icon_state = "subspace_swap"
-	base_cooldown = 5 SECONDS
 	required_blood = 15
 	need_active_overlay = TRUE
 
@@ -183,7 +225,6 @@
 	T.range = 7
 	T.click_radius = 1
 	T.try_auto_target = FALSE
-	T.selection_type = SPELL_SELECTION_RANGE
 	T.allowed_type = /mob/living
 	return T
 

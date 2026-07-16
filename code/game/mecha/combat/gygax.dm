@@ -15,8 +15,8 @@
 	internal_damage_threshold = 35
 	step_energy_drain = 3
 	normal_step_energy_drain = 3
-
 	mech_type = MECH_TYPE_GYGAX
+	allowed_equipment = MECH_EQUIPMENT_GYGAX
 
 /obj/mecha/combat/gygax/GrantActions(mob/living/user, human_occupant = 0)
 	..()
@@ -29,9 +29,9 @@
 /obj/mecha/combat/gygax/loaded/Initialize(mapload)
 	. = ..()
 	var/obj/item/mecha_parts/mecha_equipment/ME = new /obj/item/mecha_parts/mecha_equipment/weapon/energy/taser
-	ME.attach(src)
+	ME.attach(src, MECH_HAND_LEFT)
 	ME = new /obj/item/mecha_parts/mecha_equipment/weapon/ballistic/missile_rack/flashbang
-	ME.attach(src)
+	ME.attach(src, MECH_HAND_RIGHT)
 
 /obj/mecha/combat/gygax/ert
 	desc = "A lightweight exosuit, painted in a blue scheme. This model appears to have some modifications for ERT."
@@ -53,13 +53,13 @@
 /obj/mecha/combat/gygax/ert/loaded/Initialize(mapload)
 	. = ..()
 	var/obj/item/mecha_parts/mecha_equipment/ME = new /obj/item/mecha_parts/mecha_equipment/weapon/energy/taser
-	ME.attach(src)
+	ME.attach(src, MECH_HAND_RIGHT)
 	ME = new /obj/item/mecha_parts/mecha_equipment/weapon/ballistic/missile_rack/flashbang
-	ME.attach(src)
+	ME.attach(src, MECH_HAND_RIGHT)
 	ME = new /obj/item/mecha_parts/mecha_equipment/tesla_energy_relay
 	ME.attach(src)
 	ME = new /obj/item/mecha_parts/mecha_equipment/weapon/energy/laser
-	ME.attach(src)
+	ME.attach(src, MECH_HAND_LEFT)
 
 /obj/mecha/combat/gygax/ert/add_cell()
 	cell = new /obj/item/stock_parts/cell/bluespace(src)
@@ -95,7 +95,7 @@
 /obj/mecha/combat/gygax/dark/loaded/Initialize(mapload)
 	. = ..()
 	var/obj/item/mecha_parts/mecha_equipment/ME = new /obj/item/mecha_parts/mecha_equipment/weapon/ballistic/scattershot/syndi
-	ME.attach(src)
+	ME.attach(src, MECH_HAND_LEFT)
 	ME = new /obj/item/mecha_parts/mecha_equipment/anticcw_armor_booster
 	ME.attach(src)
 	ME = new /obj/item/mecha_parts/mecha_equipment/antiproj_armor_booster

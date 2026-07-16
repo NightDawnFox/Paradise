@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) 2020 Aleksej Komarov
+ * SPDX-License-Identifier: MIT
+ */
+
 // MARK: GENERAL STUFF
 em {
   font-style: normal;
@@ -97,11 +102,19 @@ h2.alert {
   visibility: hidden;
 }
 
+.infoplain {
+}
+
 // MARK: MOTD
 .motd {
-  color: hsl(214, 38%, 74%);
+  color: hsl(215, 30%, 76%);
   font-family: Verdana, sans-serif;
   white-space: normal;
+  line-height: 1.35;
+}
+
+.motd p {
+  margin: 0.25em 0;
 }
 
 .motd h1,
@@ -110,15 +123,72 @@ h2.alert {
 .motd h4,
 .motd h5,
 .motd h6 {
-  color: hsl(214, 38%, 74%);
-  text-decoration: underline;
+  color: hsl(42, 45%, 72%);
+  text-decoration: none;
+  margin: 0.5em 0 0.3em;
+  padding-bottom: 0.15em;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid hsla(42, 45%, 65%, 0.45);
 }
 
 .motd a,
 .motd a:link,
+.motd a:visited,
 .motd a:active,
 .motd a:hover {
-  color: hsl(214, 38%, 74%);
+  color: hsl(215, 70%, 62%);
+}
+
+.motd .accent {
+  color: hsl(42, 70%, 75%);
+  font-weight: bold;
+  font-style: italic;
+}
+
+.motd .warning {
+  color: hsl(355, 55%, 78%);
+  font-style: normal;
+  background: hsla(355, 55%, 70%, 0.07);
+  border: 1px solid hsla(355, 55%, 70%, 0.25);
+  border-radius: 0.3em;
+  margin: 0.5em 0;
+  padding: 0.25em 0.75em;
+}
+
+.motd .warning > :first-child {
+  margin-top: 0;
+}
+
+.motd .warning > :last-child {
+  margin-bottom: 0;
+}
+
+.motd .warning h1,
+.motd .warning h2,
+.motd .warning h3,
+.motd .warning h4,
+.motd .warning h5,
+.motd .warning h6 {
+  color: hsl(355, 55%, 80%);
+  border-bottom-color: hsla(355, 55%, 70%, 0.5);
+}
+
+.motd > .motd-card:first-child {
+  margin-top: 0;
+}
+
+.motd > .motd-card:last-child {
+  margin-bottom: 0;
+}
+
+.motd-card {
+  background: hsla(42, 45%, 65%, 0.04);
+  border: 1px solid hsla(42, 45%, 65%, 0.25);
+  border-left: 3px solid hsla(42, 45%, 65%, 0.5);
+  margin: 0.5em 0.25em;
+  padding: 0.6em 0.85em;
+  border-radius: 0.4em;
 }
 
 // MARK: MEMO
@@ -405,6 +475,10 @@ h2.alert {
   color: hsl(0, 100%, 50%);
 }
 
+.vox {
+  color: hsl(292, 80%, 45%);
+}
+
 // MARK: Alerts
 .alert {
   color: hsl(0, 74%, 49%);
@@ -465,6 +539,17 @@ h2.alert {
 .boldnotice {
   color: hsl(227, 88%, 68%);
   font-weight: bold;
+}
+
+.smallnotice {
+  color: hsl(227, 87.7%, 68%);
+  font-size: 90%;
+}
+
+.smallnoticeital {
+  color: hsl(227, 87.7%, 68%);
+  font-style: italic;
+  font-size: 90%;
 }
 
 .hear {
@@ -633,6 +718,35 @@ h2.alert {
   font-style: italic;
 }
 
+.hypnophrase {
+  color: hsl(0, 0%, 12.5%);
+  font-weight: bold;
+  animation: hypnocolor 1500ms infinite;
+  animation-direction: alternate;
+}
+
+@keyframes hypnocolor {
+  0% {
+    color: hsl(0, 0%, 12.5%);
+  }
+
+  25% {
+    color: hsl(265.8, 97.7%, 34.1%);
+  }
+
+  50% {
+    color: hsl(272, 86.3%, 60%);
+  }
+
+  75% {
+    color: hsl(266.2, 69.6%, 36.1%);
+  }
+
+  100% {
+    color: hsl(191.9, 83.4%, 71.6%);
+  }
+}
+
 .shadowling {
   color: hsl(281, 39%, 59%);
 }
@@ -746,7 +860,7 @@ h2.alert {
   color: hsl(120, 61%, 34%);
 }
 
-.vox {
+.vox_raid {
   color: hsl(300, 100%, 33%);
 }
 
@@ -864,46 +978,94 @@ h2.alert {
 
 // MARK: Boxed messages
 .boxed_message {
-  background: hsl(216, 10%, 10%);
-  border: 1px solid hsla(220, 40%, 75%, 0.251);
-  border-width: 1em * calc(1px / 12px) 1em * calc(5px / 12px);
-  margin: 0.5em 0.25em;
+  background: hsl(220, 10%, 10%);
+  border: 0.085em solid;
+  border-left: 0.33em solid;
+  border-color: hsla(220, 40%, 75%, 0.25);
+  margin: 0.5em 0;
   padding: 0.5em 0.75em;
-  border-radius: 0.5em;
+  border-radius: 0.33rem;
+
+  &.red_box {
+    background: hsl(0, 20%, 10%);
+    border-color: hsla(0, 100%, 50%, 0.5);
+  }
+
+  &.green_box {
+    background: hsl(140, 20%, 10%);
+    border-color: hsla(120, 100%, 50%, 0.5);
+  }
+
+  &.blue_box {
+    background: hsl(220, 20%, 10%);
+    border-color: hsla(225, 90%, 65%, 0.5);
+  }
+
+  &.purple_box {
+    background: hsl(260, 25%, 12.5%);
+    border-color: hsla(260, 100%, 75%, 0.5);
+  }
+
+  &.yellow_box {
+    background: hsl(259, 25%, 13%);
+    border-color: hsla(56, 100%, 50%, 0.502);
+  }
+
+  hr {
+    margin: 0.5em -0.75em;
+    border-color: inherit;
+  }
+}
+
+.fieldset_legend {
+  position: relative;
+  max-width: 95%;
+  font-size: 120%;
+  background-color: hsl(0, 0%, 8%);
+  padding: 0.25em 0.5em;
+  border-color: inherit;
+  z-index: 0;
+
+  &:before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 0.085em solid;
+    border-color: inherit;
+    border-radius: 0.33rem;
+    mask-image: linear-gradient(to top, black 50%, transparent 50%);
+    z-index: -1;
+  }
+}
+
+// MARK:  Helper classes
+
+.tooltip {
+  font-style: italic;
+  border-bottom: 1px dashed;
+}
+
+// Provides a horizontal bar with text in the middle
+// I got this off stackoverflow
+.separator {
+  display: flex;
+  align-items: center;
   text-align: center;
 }
 
-.boxed_message.red_border {
-  background: hsl(0, 22%, 10%);
-  border-color: hsla(0, 100%, 50%, 0.502);
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid hsl(213.6, 37.9%, 74.1%);
 }
 
-.boxed_message.green_border {
-  background: hsl(142, 22%, 10%);
-  border-color: hsla(120, 100%, 50%, 0.502);
+.separator:not(:empty)::before {
+  margin-right: 0.25em;
 }
 
-.boxed_message.purple_border {
-  background: hsl(259, 25%, 13%);
-  border-color: hsla(260, 100%, 75%, 0.502);
-}
-
-.boxed_message.yellow_border {
-  background: hsl(259, 25%, 13%);
-  border-color: hsla(56, 100%, 50%, 0.502);
-}
-
-.boxed_message.notice_border {
-  background: hsl(218, 22%, 10%);
-  border-color: hsla(225, 90%, 65%, 0.502);
-}
-
-.boxed_message.thick_border {
-  border-width: 0.5em;
-}
-
-.boxed_message.left_align_text {
-  text-align: left;
+.separator:not(:empty)::after {
+  margin-left: 0.25em;
 }
 
 /**

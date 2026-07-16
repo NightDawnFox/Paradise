@@ -14,7 +14,7 @@
 	custom_price = PAYCHECK_MIN * 0.2
 
 /obj/item/reagent_containers/dropper/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "пипетка",
 		GENITIVE = "пипетки",
 		DATIVE = "пипетке",
@@ -42,7 +42,7 @@
 			if(91 to INFINITY)
 				filling.icon_state = "[icon_state]100"
 
-		filling.color = mix_color_from_reagents(reagents.reagent_list)
+		filling.color = get_color_matrix_from_reagents(reagents.reagent_list)
 		. += filling
 
 /obj/item/reagent_containers/dropper/on_reagent_change()
@@ -51,9 +51,10 @@
 /obj/item/reagent_containers/dropper/attack(mob/living/target, mob/living/user, params, def_zone, skip_attack_anim = FALSE)
 	return ATTACK_CHAIN_PROCEED
 
-/obj/item/reagent_containers/dropper/afterattack(atom/target, mob/user, proximity, params)
-	if(!proximity)
+/obj/item/reagent_containers/dropper/afterattack(atom/target, mob/user, proximity_flag, list/modifiers, status)
+	if(!proximity_flag)
 		return
+
 	var/to_transfer = 0
 	if(iscarbon(target))
 		var/mob/living/carbon/C = target
@@ -138,7 +139,7 @@
 	volume = 10
 
 /obj/item/reagent_containers/dropper/cyborg/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "промышленная пипетка",
 		GENITIVE = "промышленной пипетки",
 		DATIVE = "промышленной пипетке",
@@ -162,7 +163,7 @@
 	icon_state = "[initial(icon_state)][reagents.total_volume ? "1" : ""]"
 
 /obj/item/reagent_containers/dropper/precision/get_ru_names()
-	return list(
+	return alist(
 		NOMINATIVE = "микропипетка",
 		GENITIVE = "микропипетки",
 		DATIVE = "микропипетке",

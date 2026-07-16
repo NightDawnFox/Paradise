@@ -10,7 +10,9 @@
 				src << link(CONFIG_GET(string/overflow_server_url))
 
 	if(GLOB.join_motd)
-		to_chat(src, "<div class=\"motd\">[GLOB.join_motd]</div>")
+		// Strip source newlines so to_chat() does not turn HTML indentation into <br>.
+		var/motd_html = replacetext(GLOB.join_motd, "\n", "")
+		to_chat(src, span_infoplain("<div class=\"motd\">[motd_html]</div>"))
 
 	if(!mind)
 		mind = new /datum/mind(key)
@@ -45,8 +47,7 @@
 
 	SStitle.show_title_screen_to(client)
 
-	spawn(4 SECONDS)
-		client?.playtitlemusic()
+	client?.playtitlemusic()
 
 /mob/new_player/proc/whitelist_check()
 	// Admins are immune to overflow rerouting
