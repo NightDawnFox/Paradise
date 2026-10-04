@@ -124,13 +124,11 @@ To draw a rune, use a ritual dagger.
 
 /obj/effect/rune/cult_conceal() //for concealing spell
 	visible_message(span_danger("[src] fades away."))
-	invisibility = INVISIBILITY_HIDDEN_RUNES
-	alpha = 100 //To help ghosts distinguish hidden runes
+	set_cult_veil(TRUE)
 
 /obj/effect/rune/cult_reveal() //for revealing spell
-	invisibility = 0
+	set_cult_veil(FALSE)
 	visible_message(span_danger("[src] suddenly appears!"))
-	alpha = initial(alpha)
 
 /obj/effect/rune/is_cleanable()
 	return TRUE
@@ -138,7 +136,7 @@ To draw a rune, use a ritual dagger.
 /obj/effect/rune/wash_tg(clean_types)
 	. = ..()
 
-	if(!.)
+	if(!. && !(clean_types & CLEAN_TYPE_BLOOD))
 		return
 
 	qdel(src)
@@ -155,7 +153,7 @@ structure_check() searches for nearby cultist structures required for the invoca
 	//This proc determines if the rune can be invoked at the time. If there are multiple required cultists, it will find all nearby cultists.
 	var/list/invokers = list() //people eligible to invoke the rune
 	var/list/chanters = list() //people who will actually chant the rune when passed to invoke()
-	if(invisibility == INVISIBILITY_HIDDEN_RUNES)//hidden rune
+	if(HAS_TRAIT(src, TRAIT_CULT_CONCEALED))//hidden rune
 		return
 	// Get the user
 	if(user)
@@ -208,13 +206,14 @@ structure_check() searches for nearby cultist structures required for the invoca
  * * target - Location to teleport to
  */
 /obj/effect/rune/proc/teleport_effect(mob/living/user, turf/location, target)
+	var/trait_source = UNIQUE_TRAIT_SOURCE(src)
 	new /obj/effect/temp_visual/dir_setting/cult/phase/out(location, user.dir)
 	new /obj/effect/temp_visual/dir_setting/cult/phase(target, user.dir)
 	// So that the mob only appears after the effect is finished
-	ADD_TRAIT(user, TRAIT_NO_TRANSFORM, UNIQUE_TRAIT_SOURCE(src))
+	ADD_TRAIT(user, TRAIT_NO_TRANSFORM, trait_source)
 	user.invisibility = INVISIBILITY_MAXIMUM
 	sleep(1.2 SECONDS)
-	REMOVE_TRAIT(user, TRAIT_NO_TRANSFORM, UNIQUE_TRAIT_SOURCE(src))
+	REMOVE_TRAIT(user, TRAIT_NO_TRANSFORM, trait_source)
 	user.invisibility = 0
 
 /obj/effect/rune/proc/do_invoke_glow()
@@ -224,7 +223,7 @@ structure_check() searches for nearby cultist structures required for the invoca
 
 /obj/effect/rune/proc/fail_invoke()
 	//This proc contains the effects of a rune if it is not invoked correctly, through either invalid wording or not enough cultists. By default, it's just a basic fizzle.
-	if(!invisibility) // No visible messages if not visible
+	if(!HAS_TRAIT(src, TRAIT_CULT_CONCEALED)) // No visible messages if not visible
 		visible_message(span_warning("The markings pulse with a small flash of red light, then fall dark."))
 	animate(src, color = rgb(255, 0, 0), time = 0)
 	animate(src, color = rune_blood_color, time = 5)
@@ -278,7 +277,7 @@ structure_check() searches for nearby cultist structures required for the invoca
 	// Offering a head/brain
 	for(var/obj/item/organ/O in T)
 		var/mob/living/carbon/brain/b_mob
-		if(istype(O, /obj/item/organ/external/head)) // Offering a head
+		if(ishead(O)) // Offering a head
 			var/obj/item/organ/external/head/H = O
 			for(var/obj/item/organ/internal/brain/brain in H.contents)
 				b_mob = brain.brainmob

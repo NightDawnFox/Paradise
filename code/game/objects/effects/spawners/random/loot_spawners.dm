@@ -9,7 +9,7 @@
 /obj/effect/spawner/random/loot/cryo_beakers
 	name = "3x cryo beaker spawner"
 	spawn_loot_count = 3
-	loot = list(/obj/item/reagent_containers/glass/beaker/bluespace)
+	loot = list(/obj/item/reagent_containers/cup/beaker/bluespace)
 
 /obj/effect/spawner/random/loot/good_times
 	name = "good times spawner"
@@ -17,8 +17,8 @@
 	loot = list(
 		/obj/item/reagent_containers/food/snacks/grown/ambrosia/deus,
 		/obj/item/lighter,
-		/obj/item/reagent_containers/food/drinks/bottle/rum,
-		/obj/item/reagent_containers/food/drinks/bottle/whiskey,
+		/obj/item/reagent_containers/cup/glass/bottle/rum,
+		/obj/item/reagent_containers/cup/glass/bottle/whiskey,
 	)
 
 /obj/effect/spawner/random/loot/bank_robber
@@ -70,6 +70,16 @@
 		/obj/item/clothing/suit/space,
 	)
 
+/obj/effect/spawner/random/loot/skill_manuals
+	name = "skill manuals spawner"
+	spawn_all_loot = TRUE
+	loot = list(
+		/obj/item/book/skill_manual/random,
+		/obj/item/book/skill_manual/random,
+		/obj/item/book/skill_manual/random,
+		/obj/item/book/skill_manual/random,
+	)
+
 /obj/effect/spawner/random/loot_crate
 	name = "lootcrate spawner"
 	icon_state = "crate_secure"
@@ -82,7 +92,7 @@
 		/obj/effect/spawner/random/loot/outfit/shorts = 5,
 		/obj/item/melee/baton = 5,
 		///obj/item/melee/skateboard/pro = 5,
-		/obj/item/reagent_containers/glass/beaker/bluespace = 5,
+		/obj/item/reagent_containers/cup/beaker/bluespace = 5,
 		/obj/item/seeds/firelemon = 5,
 		/obj/item/stack/ore/diamond/ten = 5,
 
@@ -92,6 +102,7 @@
 		/obj/effect/spawner/random/loot/outfit/ian_fan = 2,
 		/obj/effect/spawner/random/loot/pet_uhhh_supplies = 2,
 		/obj/effect/spawner/random/loot/space_kit = 2,
+		/obj/effect/spawner/random/loot/skill_manuals = 2,
 		/obj/effect/spawner/random/stock_parts = 2,
 		///obj/effect/spawner/random/toy/mech_figure = 2,
 		/obj/item/defibrillator/compact = 2,
@@ -104,8 +115,7 @@
 		/obj/item/stack/ore/bluespace_crystal/five = 2,
 		/obj/item/toy/balloon = 2,
 		/obj/item/toy/katana = 2,
-		/obj/item/toy/syndicateballoon = 2,
-
+		/obj/item/toy/balloon/syndicate = 2,
 		/obj/effect/spawner/random/loot/bank_robber = 1,
 		/obj/effect/spawner/random/loot/outfit/luchador = 1,
 		/obj/effect/spawner/random/loot/outfit/mime = 1,

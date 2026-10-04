@@ -22,7 +22,6 @@
 		temperature_max = temperature_maximum
 
 /datum/reagents/Destroy()
-	. = ..()
 	QDEL_LIST(reagent_list)
 	reagent_list = null
 	QDEL_LIST(addiction_list)
@@ -30,6 +29,7 @@
 	if(my_atom && my_atom.reagents == src)
 		my_atom.reagents = null
 	my_atom = null
+	return ..()
 
 /datum/reagents/proc/remove_any(amount = 1)
 	var/list/cached_reagents = reagent_list
@@ -197,6 +197,9 @@
 	if(!target)
 		return
 	if(!target.reagents || total_volume <= 0 || !get_reagent_amount(reagent))
+		return
+
+	if(!isnum(amount) || amount <= 0 || !IS_FINITE(amount))
 		return
 
 	var/datum/reagents/R = target.reagents
@@ -704,7 +707,7 @@
 		return TRUE
 
 /datum/reagents/proc/remove_reagent(reagent, amount, safety) //Added a safety check for the trans_id_to
-	if(!isnum(amount))
+	if(!isnum(amount) || amount <= 0 || !IS_FINITE(amount))
 		return TRUE
 
 	for(var/A in reagent_list)
@@ -953,3 +956,17 @@
 
 #undef ADDICTION_TIME
 #undef MINOR_ADDICTION_TIME
+
+//Creates foam from the reagent. Metaltype is for metal foam, notification is what to show people in textbox
+/datum/reagents/proc/create_foam(foamtype, foam_volume, result_type = null, notification = null, log = FALSE, lifetime, slippery)
+	var/location = get_turf(my_atom)
+
+	var/datum/effect_system/fluid_spread/foam/foam = new foamtype(location)
+	foam.set_up(null, foam_volume, my_atom, location, carry = src, result_type = result_type)
+	foam.start(log = log, lifetime = lifetime, slippery = slippery)
+
+	clear_reagents()
+	if(!notification)
+		return
+	for(var/mob/viewer in viewers(5, location))
+		to_chat(viewer, notification)

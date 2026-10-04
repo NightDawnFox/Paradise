@@ -28,6 +28,19 @@
 	)
 	exp_type = EXP_TYPE_SERVICE
 	outfit = /datum/outfit/job/hop
+	skill_levels = list(
+		/datum/skill/general/cooking = SKILL_LEVEL_ADVANCED,
+		/datum/skill/general/mod_use = SKILL_LEVEL_BEGINNER,
+		/datum/skill/service/drink_mixing = SKILL_LEVEL_ADVANCED,
+		/datum/skill/service/botany = SKILL_LEVEL_ADVANCED,
+		/datum/skill/service/cleaning = SKILL_LEVEL_ADVANCED,
+		/datum/skill/combat/accuracy = SKILL_LEVEL_BEGINNER,
+		/datum/skill/combat/guns = SKILL_LEVEL_BEGINNER,
+		/datum/skill/combat/melee = SKILL_LEVEL_BEGINNER,
+	)
+	discount_skill_category = /datum/skill/service
+	base_free_skill_point = DEFAULT_FREE_POINTS_FOR_SERVICE_JOBS
+
 
 /datum/outfit/job/hop
 	name = JOB_TITLE_RU_HOP
@@ -45,7 +58,6 @@
 		/obj/item/storage/box/ids = 1,
 		/obj/item/melee/baton/telescopic = 1,
 	)
-
 	implants = list()
 
 /datum/job/service
@@ -59,6 +71,8 @@
 	exp_requirements = 300
 	exp_type = EXP_TYPE_CREW
 	paycheck = PAYCHECK_CREW
+	discount_skill_category = /datum/skill/service
+	base_free_skill_point = DEFAULT_FREE_POINTS_FOR_SERVICE_JOBS
 
 /datum/job/service/bartender
 	title = JOB_TITLE_BARTENDER
@@ -71,6 +85,13 @@
 		ALT_JOB_TITLE_RU_BARISTA,
 	)
 	outfit = /datum/outfit/job/bartender
+	skill_levels = list(
+		/datum/skill/general/mod_use = SKILL_LEVEL_BEGINNER,
+		/datum/skill/general/cooking = SKILL_LEVEL_BASIC,
+		/datum/skill/service/drink_mixing = SKILL_LEVEL_PROFESSIONAL,
+		/datum/skill/service/cleaning = SKILL_LEVEL_BEGINNER,
+		/datum/skill/combat/guns = SKILL_LEVEL_BEGINNER,
+	)
 
 /datum/outfit/job/bartender
 	name = JOB_TITLE_RU_BARTENDER
@@ -106,6 +127,14 @@
 		ALT_JOB_TITLE_RU_ART_CHEF,
 	)
 	outfit = /datum/outfit/job/chef
+	skill_levels = list(
+		/datum/skill/general/mod_use = SKILL_LEVEL_BEGINNER,
+		/datum/skill/general/cooking = SKILL_LEVEL_PROFESSIONAL,
+		/datum/skill/service/drink_mixing = SKILL_LEVEL_BASIC,
+		/datum/skill/service/botany = SKILL_LEVEL_BASIC,
+		/datum/skill/service/cleaning = SKILL_LEVEL_BEGINNER,
+		/datum/skill/combat/fists = SKILL_LEVEL_BASIC,
+	)
 
 /datum/outfit/job/chef
 	name = JOB_TITLE_RU_CHEF
@@ -152,6 +181,13 @@
 		ALT_JOB_TITLE_RU_AGROBIOLOGIST,
 	)
 	outfit = /datum/outfit/job/botanist
+	skill_levels = list(
+		/datum/skill/general/mod_use = SKILL_LEVEL_BEGINNER,
+		/datum/skill/service/cleaning = SKILL_LEVEL_BEGINNER,
+		/datum/skill/general/cooking = SKILL_LEVEL_BEGINNER,
+		/datum/skill/service/drink_mixing = SKILL_LEVEL_BEGINNER,
+		/datum/skill/service/botany = SKILL_LEVEL_PROFESSIONAL,
+	)
 
 /datum/outfit/job/botanist
 	name = JOB_TITLE_RU_BOTANIST
@@ -181,6 +217,12 @@
 		ALT_JOB_TITLE_RU_COMEDIANT,
 	)
 	outfit = /datum/outfit/job/clown
+	skill_levels = list(
+		/datum/skill/general/mod_use = SKILL_LEVEL_BEGINNER,
+		/datum/skill/service/cleaning = SKILL_LEVEL_BEGINNER,
+		/datum/skill/general/cooking = SKILL_LEVEL_BEGINNER,
+		/datum/skill/service/drink_mixing = SKILL_LEVEL_BEGINNER,
+	)
 
 /datum/outfit/job/clown
 	name = JOB_TITLE_RU_CLOWN
@@ -200,7 +242,7 @@
 		/obj/item/toy/crayon/rainbow = 1,
 		/obj/item/storage/fancy/crayons = 1,
 		/obj/item/reagent_containers/spray/waterflower = 1,
-		/obj/item/reagent_containers/food/drinks/bottle/bottleofbanana = 1,
+		/obj/item/reagent_containers/cup/glass/bottle/bottleofbanana = 1,
 		/obj/item/instrument/bikehorn = 1,
 		/obj/item/clown_recorder = 1,
 	)
@@ -237,7 +279,6 @@
 	if(!(locate(/datum/action/innate/mimicking) in actions))
 		var/datum/action/innate/mimicking/mimicking = new
 		mimicking.Grant(src)
-	add_verb(src, /mob/living/carbon/human/proc/mimicking)
 
 /datum/action/innate/mimicking
 	name = "Подражание"
@@ -346,8 +387,6 @@
 	return list("name" = name, "voice" = voice, "selected" = selected, "id" = UID())
 
 /mob/living/carbon/human/proc/mimicking(mob/living/carbon/human/H)
-	set name = "Имитировать голос"
-	set category = VERB_CATEGORY_IC
 	if(!H)
 		to_chat(usr, span_notice("Используйте <b>ПКМ</b> для выбора цели."))
 	var/datum/action/innate/mimicking/mimic = locate(/datum/action/innate/mimicking) in usr.actions
@@ -394,6 +433,12 @@
 		ALT_JOB_TITLE_RU_PANTHOMIMIST,
 	)
 	outfit = /datum/outfit/job/mime
+	skill_levels = list(
+		/datum/skill/general/mod_use = SKILL_LEVEL_BEGINNER,
+		/datum/skill/service/cleaning = SKILL_LEVEL_BEGINNER,
+		/datum/skill/general/cooking = SKILL_LEVEL_BEGINNER,
+		/datum/skill/service/drink_mixing = SKILL_LEVEL_BEGINNER,
+	)
 
 /datum/outfit/job/mime
 	name = JOB_TITLE_RU_MIME
@@ -409,7 +454,7 @@
 	pda = /obj/item/pda/mime
 	backpack_contents = list(
 		/obj/item/toy/crayon/mime = 1,
-		/obj/item/reagent_containers/food/drinks/bottle/bottleofnothing = 1,
+		/obj/item/reagent_containers/cup/glass/bottle/bottleofnothing = 1,
 		/obj/item/cane = 1,
 	)
 	backpack = /obj/item/storage/backpack/mime
@@ -429,9 +474,8 @@
 		return
 
 	if(H.mind)
-		H.mind.AddSpell(new /obj/effect/proc_holder/spell/aoe/conjure/build/mime_wall(null))
-		H.mind.AddSpell(new /obj/effect/proc_holder/spell/mime/speak(null))
-		H.mind.miming = TRUE
+		H.mind.AddSpell(new /datum/action/cooldown/spell/mime)
+		H.mind.AddSpell(new /datum/action/cooldown/spell/forcewall/mime)
 
 /datum/job/service/janitor
 	title = JOB_TITLE_JANITOR
@@ -444,6 +488,12 @@
 		ALT_JOB_TITLE_RU_CLEANING_SPECIALIST,
 	)
 	outfit = /datum/outfit/job/janitor
+	skill_levels = list(
+		/datum/skill/general/mod_use = SKILL_LEVEL_BEGINNER,
+		/datum/skill/general/cooking = SKILL_LEVEL_BEGINNER,
+		/datum/skill/service/drink_mixing = SKILL_LEVEL_BEGINNER,
+		/datum/skill/service/cleaning = SKILL_LEVEL_PROFESSIONAL,
+	)
 
 /datum/outfit/job/janitor
 	name = JOB_TITLE_RU_JANITOR
@@ -467,6 +517,11 @@
 		ALT_JOB_TITLE_RU_CORRESPONDENT,
 	)
 	outfit = /datum/outfit/job/librarian
+	skill_levels = list(
+		/datum/skill/general/mod_use = SKILL_LEVEL_BEGINNER,
+		/datum/skill/service/cleaning = SKILL_LEVEL_BEGINNER,
+		/datum/skill/general/cooking = SKILL_LEVEL_BEGINNER,
+	)
 
 /datum/outfit/job/librarian
 	name = JOB_TITLE_RU_LIBRARIAN
@@ -497,6 +552,13 @@
 		ALT_JOB_TITLE_RU_SPIRITUAL_MENTOR,
 	)
 	outfit = /datum/outfit/job/chaplain
+	skill_levels = list(
+		/datum/skill/general/mod_use = SKILL_LEVEL_BEGINNER,
+		/datum/skill/general/cooking = SKILL_LEVEL_BEGINNER,
+		/datum/skill/general/carrying = SKILL_LEVEL_BEGINNER,
+		/datum/skill/service/cleaning = SKILL_LEVEL_BEGINNER,
+		/datum/skill/combat/melee = SKILL_LEVEL_BASIC,
+	)
 
 /datum/outfit/job/chaplain
 	name = JOB_TITLE_RU_CHAPLAIN
@@ -563,23 +625,8 @@
 		new_deity = deity_name
 	bible.deity_name = new_deity
 	SSblackbox.record_feedback("text", "religion_deity", 1, "[new_deity]", 1)
-
-	user.AddSpell(new /obj/effect/proc_holder/spell/chaplain_bless(null))
+	var/datum/action/cooldown/spell/pointed/bless/b_action = new()
+	b_action.Grant(user)
 
 	if(SSticker)
 		SSticker.Bible_deity_name = bible.deity_name
-
-/datum/job/service/explorer
-	title = JOB_TITLE_EXPLORER
-	flag = JOB_FLAG_EXPLORER
-	access = list(ACCESS_MAINT_TUNNELS, ACCESS_GATEWAY, ACCESS_EVA, ACCESS_EXTERNAL_AIRLOCKS)
-	minimal_access = list(ACCESS_MAINT_TUNNELS, ACCESS_GATEWAY, ACCESS_EVA, ACCESS_EXTERNAL_AIRLOCKS)
-	outfit = /datum/outfit/job/explorer
-	hidden_from_job_prefs = TRUE
-
-/datum/outfit/job/explorer
-	// This outfit is never used, because there are no slots for this job.
-	// To get it, you have to go to the HOP and ask for a transfer to it.
-	name = JOB_TITLE_RU_EXPLORER
-	jobtype = /datum/job/service/explorer
-	uniform = /obj/item/clothing/under/color/random

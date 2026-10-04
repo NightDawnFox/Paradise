@@ -89,7 +89,6 @@
 	I'll make some notes on where certain variable defines should probably go.
 	Changing this around would probably require a good look-over the pre-existing code.   :resident_sleeper:
 	*/
-	var/atom/movable/screen/leap_icon = null
 	var/atom/movable/screen/healthdoll/healthdoll = null
 
 	/// Allows all mobs to use the me verb by default, will have to manually specify they cannot
@@ -300,9 +299,6 @@
 	var/list/tkgrabbed_objects = list()
 
 	var/registered_z
-
-	/// Any ranged ability the mob has, as a click override
-	var/obj/effect/proc_holder/ranged_ability
 
 	/// The datum receiving keyboard input. src by default
 	var/datum/focus

@@ -1,4 +1,5 @@
 /obj/structure/closet/loot_crate
+	abstract_type = /obj/structure/closet/loot_crate
 	icon = 'icons/obj/supplypods.dmi'
 	icon_state = null
 	locked = TRUE
@@ -41,7 +42,8 @@
 
 	to_chat(user, span_notice("Вы начинаете взламывать кодовый замок"))
 
-	if(!do_after(user, tier.open_time, src))
+	CALCULATE_SKILL_MOD(user, LOCKPICK_SPEED_MOD, lockpick_mod)
+	if(!do_after(user, tier.open_time * lockpick_mod, src))
 		return
 
 	balloon_alert(user, "взлом окончен")
@@ -53,7 +55,8 @@
 	if(locked || opened)
 		return ..()
 
-	if(!do_after(user, 5 SECONDS, src))
+	CALCULATE_SKILL_MOD(user, LOCKPICK_SPEED_MOD, lockpick_mod)
+	if(!do_after(user, 5 SECONDS * lockpick_mod, src))
 		return
 
 	open()

@@ -28,10 +28,8 @@ GLOBAL_LIST_INIT(icons_to_ignore_at_floor_init, list("damaged1","damaged2","dama
 	var/icon_regular_floor_dmi = 'icons/turf/floors.dmi' //used to remember what icon the tile should have by default (fix bug for change dmi)
 	var/floor_regular_dir = SOUTH  //used to remember what dir the tile should have by default
 	var/icon_plating = "plating"
-	thermal_conductivity = 0.040
 	heat_capacity = 10000
 	explosion_vertical_block = 1
-	var/lava = 0
 	var/broken = 0
 	var/burnt = 0
 	var/current_overlay = null
@@ -296,7 +294,8 @@ GLOBAL_LIST_INIT(icons_to_ignore_at_floor_init, list("damaged1","damaged2","dama
 	if(our_rcd.checkResource(RCD_COST_FLOOR * 2, user))
 		to_chat(user, "Деконструкция пола...")
 		playsound(get_turf(our_rcd), 'sound/machines/click.ogg', 50, TRUE)
-		if(do_after(user, 5 SECONDS * our_rcd.toolspeed, src, category = DA_CAT_TOOL))
+		CALCULATE_SKILL_MOD(user, BUILDING_SPEED_MOD, building_mod)
+		if(do_after(user, 5 SECONDS * our_rcd.toolspeed * building_mod, src, category = DA_CAT_TOOL))
 			if(!our_rcd.useResource(RCD_COST_FLOOR * 2, user))
 				return RCD_ACT_FAILED
 			playsound(get_turf(our_rcd), our_rcd.usesound, 50, TRUE)
@@ -314,12 +313,13 @@ GLOBAL_LIST_INIT(icons_to_ignore_at_floor_init, list("damaged1","damaged2","dama
 		to_chat(user, span_warning("ОШИБКА! В соответствии с протоколами безопасности строительства в высокоэнергетических зонах запрещено!"))
 		playsound(loc, 'sound/machines/click.ogg', 50, TRUE)
 		return RCD_ACT_FAILED
+	CALCULATE_SKILL_MOD(user, BUILDING_SPEED_MOD, building_mod)
 	switch(rcd_mode)
 		if(RCD_MODE_TURF)
 			if(our_rcd.checkResource(RCD_COST_WALL, user))
 				to_chat(user, "Печать стены...")
 				playsound(get_turf(our_rcd), 'sound/machines/click.ogg', 50, TRUE)
-				if(do_after(user, 2 SECONDS * our_rcd.toolspeed, src, category = DA_CAT_TOOL))
+				if(do_after(user, 2 SECONDS * our_rcd.toolspeed * building_mod, src, category = DA_CAT_TOOL))
 					if(!our_rcd.useResource(RCD_COST_WALL, user))
 						return RCD_ACT_FAILED
 					playsound(get_turf(our_rcd), our_rcd.usesound, 50, TRUE)
@@ -335,7 +335,7 @@ GLOBAL_LIST_INIT(icons_to_ignore_at_floor_init, list("damaged1","damaged2","dama
 			if(our_rcd.checkResource(RCD_COST_AIRLOCK, user))
 				to_chat(user, "Печать шлюза...")
 				playsound(get_turf(our_rcd), 'sound/machines/click.ogg', 50, TRUE)
-				if(do_after(user, 5 SECONDS * our_rcd.toolspeed, src, category = DA_CAT_TOOL))
+				if(do_after(user, 5 SECONDS * our_rcd.toolspeed * building_mod, src, category = DA_CAT_TOOL))
 					if(locate(/obj/machinery/door/airlock) in src.contents)
 						return RCD_NO_ACT
 					if(!our_rcd.useResource(RCD_COST_AIRLOCK, user))
@@ -362,7 +362,7 @@ GLOBAL_LIST_INIT(icons_to_ignore_at_floor_init, list("damaged1","damaged2","dama
 				return RCD_ACT_FAILED
 			to_chat(user, "Печать окна...")
 			playsound(get_turf(our_rcd), 'sound/machines/click.ogg', 50, TRUE)
-			if(!do_after(user, 2 SECONDS * our_rcd.toolspeed, src, category = DA_CAT_TOOL))
+			if(!do_after(user, 2 SECONDS * our_rcd.toolspeed * building_mod, src, category = DA_CAT_TOOL))
 				to_chat(user, span_warning("ОШИБКА! Печать прервана!"))
 				return RCD_ACT_FAILED
 			if(locate(/obj/structure/grille) in src)
@@ -392,7 +392,7 @@ GLOBAL_LIST_INIT(icons_to_ignore_at_floor_init, list("damaged1","damaged2","dama
 			if(our_rcd.checkResource(RCD_COST_FIRELOCK, user))
 				to_chat(user, "Печать пожарного шлюза...")
 				playsound(get_turf(our_rcd), 'sound/machines/click.ogg', 50, TRUE)
-				if(do_after(user, 5 SECONDS * our_rcd.toolspeed, src, category = DA_CAT_TOOL))
+				if(do_after(user, 5 SECONDS * our_rcd.toolspeed * building_mod, src, category = DA_CAT_TOOL))
 					if(locate(/obj/machinery/door/firedoor) in src)
 						return RCD_NO_ACT
 					if(!our_rcd.useResource(RCD_COST_FIRELOCK, user))

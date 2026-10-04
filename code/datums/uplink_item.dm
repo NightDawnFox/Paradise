@@ -330,7 +330,7 @@
 	name = "Элитарный соус шефа"
 	desc = "Фирменный соус, приготовленный из мухоморов. Токсический эффект будет зависеть от того, как долго он остаётся в организме, \
 			чем больше доза, тем больше времени потребуется для её усвоения."
-	item = /obj/item/reagent_containers/food/condiment/syndisauce
+	item = /obj/item/reagent_containers/condiment/syndisauce
 	cost = 1
 	job = list(JOB_TITLE_CHEF)
 
@@ -481,7 +481,7 @@
 /datum/uplink_item/jobspecific/gbs
 	name = "Бутылка с вирусом ГБС"
 	desc = "Содержит чрезвычайно смертельный вирус ГБС, в начальной фазе имитирующий симптомы гриппа, но со временем разрывает тело носителя."
-	item = /obj/item/reagent_containers/glass/bottle/gbs
+	item = /obj/item/reagent_containers/cup/bottle/gbs
 	cost = 60
 	job = list(JOB_TITLE_VIROLOGIST)
 	surplus = 0
@@ -566,6 +566,16 @@
 	excludefrom = list(UPLINK_TYPE_NUCLEAR, UPLINK_TYPE_SST)
 	job = list(JOB_TITLE_ENGINEER, JOB_TITLE_ENGINEER_TRAINEE, JOB_TITLE_CHIEF_ENGINEER, \
 			JOB_TITLE_SPACEPOD_TECHNICIAN, JOB_TITLE_ROBOTICIST, JOB_TITLE_PARAMEDIC)
+
+/datum/uplink_item/jobspecific/meltdown_rod
+	name = "Стержень ядерного расплава"
+	desc = "Специально разработанный ядерный стержень, гарантирующий вызов расплава любого реактора, в который он будет помещён."
+	item = /obj/item/nuclear_rod/fuel/meltdown
+	cost = 25
+	job = list(JOB_TITLE_ENGINEER, JOB_TITLE_CHIEF_ENGINEER, JOB_TITLE_ENGINEER_TRAINEE, JOB_TITLE_ATMOSTECH)
+	hijack_only = TRUE
+	excludefrom = list(UPLINK_TYPE_NUCLEAR)
+	surplus = 0
 
 //SCI
 
@@ -663,7 +673,7 @@
 /datum/uplink_item/jobspecific/poisonbottle
 	name = "Бутылка с ядом"
 	desc = "Синдикат отправит вам флакон с 40 единицами случайно выбранного яда. Этот яд может быть как совершенно неэффективным, так и крайне смертельным."
-	item = /obj/item/reagent_containers/glass/bottle/traitor
+	item = /obj/item/reagent_containers/cup/bottle/traitor
 	cost = 10
 	job = list(JOB_TITLE_RD, JOB_TITLE_CMO, JOB_TITLE_DOCTOR, JOB_TITLE_MINING_MEDIC, JOB_TITLE_MEDICAL_INTERN, JOB_TITLE_PSYCHIATRIST, \
 			JOB_TITLE_CHEMIST, JOB_TITLE_PARAMEDIC, JOB_TITLE_VIROLOGIST, JOB_TITLE_BARTENDER, JOB_TITLE_CHEF)
@@ -830,7 +840,7 @@
 
 /datum/uplink_item/dangerous/kedr
 	name = "Пистолет-пулемёт K-45"
-	desc = "Комплект с компактным пистолет-пулемётом K-45 калибра 9 мм, четыре дополнительных магазина к нему и универсальный глушитель."
+	desc = "Комплект с компактным пистолетом-пулемётом K-45 калибра 9 мм, четыре дополнительных магазина к нему и универсальный глушитель."
 	item = /obj/item/storage/box/syndie_kit/kedr_kit
 	cost = 35
 	excludefrom = list(UPLINK_TYPE_NUCLEAR, UPLINK_TYPE_SST)
@@ -1087,7 +1097,7 @@
 
 /datum/uplink_item/ammo/kedr_ammo
 	name = "Пистолет-пулемет K-45 — 4 магазина 9 мм"
-	desc = "Четыре магазина на 20 стандартных патронов калибра 9 мм. Подходят к пистолет-пулемету K-45."
+	desc = "Четыре магазина на 20 стандартных патронов калибра 9 мм. Подходят к пистолету-пулемёту K-45."
 	item = /obj/item/storage/box/syndie_kit/kedr_ammo
 	cost = 4
 
@@ -1299,6 +1309,13 @@
 	cost = 4
 	excludefrom = list(UPLINK_TYPE_NUCLEAR, UPLINK_TYPE_SST)
 
+/datum/uplink_item/ammo/quiver
+	name = "Колчан стрел"
+	desc = "Колчан с 30 композитными стрелами"
+	item = /obj/item/storage/backpack/quiver/modern/full
+	cost = 4
+	uplinktypes = list(UPLINK_TYPE_NUCLEAR, UPLINK_TYPE_SST, UPLINK_TYPE_TRAITOR)
+
 /**
  * MARK: Stealthy Weapons
  */
@@ -1446,7 +1463,7 @@
 	name = "Дегидрированный Космический карп"
 	desc = "Просто добавьте воды, чтобы обзавестись ручным карпом, который будет настроен агрессивно по отношению ко всем, кроме вас. \
 			Он замаскирован под игрушечного карпа. Не забудьте обнять карпа перед тем, как налить воду, иначе он не признает вас своим хозяином."
-	item = /obj/item/toy/carpplushie/dehy_carp
+	item = /obj/item/toy/plushie/carp/dehy_carp
 	cost = 7
 
 /**
@@ -1592,6 +1609,12 @@
 	desc = "Пояс, содержащий 4 мощные боевые осколочные гранаты."
 	item = /obj/item/storage/belt/grenade/frag
 	cost = 10
+
+/datum/uplink_item/explosives/contact_frag_grenade
+	name = "Пояс боевых контактных осколочных гранат"
+	desc = "Пояс, содержащий 4 мощные боевые контактные осколочные гранаты."
+	item = /obj/item/storage/belt/grenade/frag/contact
+	cost = 20
 
 /datum/uplink_item/explosives/grenadier
 	name = "Пояс гренадера"
@@ -1779,6 +1802,14 @@
 			Однако, они не отличаются стабильностью, и маскировка отключается примерно через 30 минут."
 	item = /obj/item/storage/box/syndie_kit/chameleon_counter
 	cost = 6
+
+/datum/uplink_item/stealthy_tools/midichlorian_injector
+	name = "Инъектор мидихлориан"
+	desc = "Всего одна инъекция наделит любой организм связью с Силой, а также дарует мастерство владения энергетическим мечом. \
+			Энергетический меч в комплекте."
+	item = /obj/item/storage/box/syndie_kit/midichlorian
+	cost = 60
+	excludefrom = list(UPLINK_TYPE_NUCLEAR, UPLINK_TYPE_SST)
 
 /**
  * MARK: Devices & Tools
@@ -2336,6 +2367,18 @@
 	item = /obj/item/implanter/fake_mindshield
 	cost = 5
 
+/datum/uplink_item/implants/neurotrainer
+	name = "Нейротренер небоевых навыков"
+	desc = "Нейротренер который позволяет улучший любой небоевой навык на ваш выбор."
+	item = /obj/item/neurotrainer/all_without_combat
+	cost = 8
+
+/datum/uplink_item/implants/combat_neurotrainer
+	name = "Нейротренер боевых навыков"
+	desc = "Нейротренер который позволяет улучший любой боевой навык на ваш выбор."
+	item = /obj/item/neurotrainer/combat
+	cost = 15
+
 /**
  * MARK: Cybernetic Implants
  */
@@ -2459,7 +2502,7 @@
 /datum/uplink_item/badass/balloon
 	name = "Фирменный воздушный шар \"Синдикат\""
 	desc = "Изящный красный воздушный шар с эмблемой \"Синдиката\"."
-	item = /obj/item/toy/syndicateballoon
+	item = /obj/item/toy/balloon/syndicate
 	cost = 100
 	can_discount = FALSE
 
@@ -2555,6 +2598,13 @@
 	excludefrom = list(UPLINK_TYPE_NUCLEAR, UPLINK_TYPE_SST)
 	var/crate_value = 250
 
+/datum/uplink_item/bundles_TC/bow
+	name = "Набор — Тактический лук"
+	desc = "Сумка, в которой находятся: тактический лук и 2 колчана со стрелами"
+	item = /obj/item/storage/backpack/duffel/syndie/bow
+	cost = 30
+	uplinktypes = list(UPLINK_TYPE_TRAITOR, UPLINK_TYPE_NUCLEAR, UPLINK_TYPE_SST)
+
 /datum/uplink_item/bundles_TC/surplus_crate/super
 	name = "Большой ящик снабжения \"Синдиката\""
 	desc = "Ящик с различным снаряжением, стоимость которого составляет 625 телекристаллов. Из-за высокой цены этот набор не доступен для покупки в одиночку."
@@ -2625,7 +2675,7 @@
 	name = "Воздушный шарик Контрактника"
 	desc = "Изящный воздушный шар, выполненный в черно-золотых тонах и украшенный символикой контрактников. \
 			Чтобы приобрести этот предмет, необходимо успешно завершить все предоставленные контракты в самой сложной локации."
-	item = /obj/item/toy/syndicateballoon/contractor
+	item = /obj/item/toy/balloon/contractor
 	cost = 240
 
 /datum/uplink_item/contractor/baton

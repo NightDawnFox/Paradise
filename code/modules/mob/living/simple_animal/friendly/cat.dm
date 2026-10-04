@@ -116,9 +116,7 @@
 	..()
 	make_babies()
 
-/mob/living/simple_animal/pet/cat/verb/sit()
-	set name = "Сесть"
-	set category = VERB_CATEGORY_IC
+GAME_VERB(/mob/living/simple_animal/pet/cat, sit, "Сесть", VERB_CATEGORY_IC)
 
 	if(resting)
 		set_resting(FALSE)
@@ -177,7 +175,7 @@
 				movement_target = null
 				stop_automated_movement = FALSE
 				break
-		for(var/obj/item/toy/cattoy/toy in view(1, src))
+		for(var/obj/item/toy/plushie/cattoy/toy in view(1, src))
 			if(toy.cooldown < world.time)
 				custom_emote(EMOTE_VISIBLE, "подбрасыва%(ет,ют)% игрушечную мышь своей лапой!")
 				toy.cooldown = world.time + 40 SECONDS

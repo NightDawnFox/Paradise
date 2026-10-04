@@ -153,7 +153,7 @@
 		if(KNOCK_SPELL)
 			if(!proximity_flag) //magical key only works if you're close enough
 				return
-			if(istype(target, /obj/machinery/door))
+			if(is_door(target))
 				var/obj/machinery/door/door = target
 				if(istype(door, /obj/machinery/door/airlock/hatch/gamma))
 					return
@@ -165,7 +165,7 @@
 				deplete_spell()
 			else if(iscloset(target))
 				var/obj/structure/closet/closet = target
-				if(istype(closet, /obj/structure/closet/secure_closet))
+				if(is_secure_closet(closet))
 					var/obj/structure/closet/secure_closet/SC = closet
 					SC.locked = FALSE
 				playsound(get_turf(usr), 'sound/magic/knock.ogg', 20, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
@@ -227,12 +227,14 @@
 	attack_verb = list("уколол", "ткнул", "полоснул")
 	hitsound = 'sound/weapons/bladeslice.ogg'
 	w_class = WEIGHT_CLASS_HUGE
-	block_chance = 20
 	needs_permit = TRUE
 
 /obj/item/twohanded/ratvarian_spear/Initialize(mapload)
 	. = ..()
 	enchants = GLOB.spear_spells
+
+/obj/item/twohanded/ratvarian_spear/add_parry_component()
+	AddComponent(/datum/component/parry, _stamina_constant = 2.5, _stamina_coefficient = 0.5, _parryable_attack_types = ALL_ATTACK_TYPES, _parry_cooldown = (2 / 3) SECONDS ) // 0.666667 seconds for 60% uptime.
 
 /obj/item/twohanded/ratvarian_spear/update_icon_state()
 	icon_state = "ratvarian_spear[HAS_TRAIT(src, TRAIT_WIELDED)]"
@@ -316,12 +318,14 @@
 	force = 25
 	armour_penetration = 30
 	sharp = TRUE
-	block_chance = 25
 	hitsound = 'sound/weapons/bladeslice.ogg'
 
 /obj/item/clock_borg_spear/Initialize(mapload)
 	. = ..()
 	enchants = GLOB.spear_spells
+
+/obj/item/clock_borg_spear/add_parry_component()
+	AddComponent(/datum/component/parry, _stamina_constant = 2.2, _stamina_coefficient = 0.45, _parryable_attack_types = ALL_ATTACK_TYPES, _parry_cooldown = (2 / 3) SECONDS ) // 0.666667 seconds for 60% uptime.
 
 /obj/item/clock_borg_spear/update_overlays()
 	. = ..()
@@ -372,11 +376,13 @@
 	throwforce = 40
 	w_class = WEIGHT_CLASS_HUGE
 	needs_permit = TRUE
-	block_chance = 25
 
 /obj/item/twohanded/clock_hammer/Initialize(mapload)
 	. = ..()
 	enchants = GLOB.hammer_spells
+
+/obj/item/twohanded/clock_hammer/add_parry_component()
+	AddComponent(/datum/component/parry, _stamina_constant = 2.2, _stamina_coefficient = 0.45, _parryable_attack_types = ALL_ATTACK_TYPES, _parry_cooldown = (2 / 3) SECONDS ) // 0.666667 seconds for 60% uptime.
 
 /obj/item/twohanded/clock_hammer/ComponentInitialize()
 	. = ..()
@@ -596,11 +602,13 @@
 	throw_range = 3
 	attack_verb = list("стукнул", "толкнул", "долбанул", "ударил")
 	hitsound = 'sound/weapons/smash.ogg'
-	block_chance = 55
 
 /obj/item/shield/clock_buckler/Initialize(mapload)
 	. = ..()
 	enchants = GLOB.shield_spells
+
+/obj/item/shield/clock_buckler/add_parry_component()
+	AddComponent(/datum/component/parry, _stamina_constant = 2, _stamina_coefficient = 0.4, _parry_time_out_time = PARRY_SHIELD_TIMEOUT, _parryable_attack_types = ALL_ATTACK_TYPES)
 
 /obj/item/shield/clock_buckler/update_overlays()
 	. = ..()
@@ -846,21 +854,26 @@
 	normal_armor = armor //initialize, so it will be easier to change armors stats
 	harden_armor = getArmor(arglist(harden_armor))
 
+/obj/item/clothing/suit/armor/clockwork/Destroy()
+	normal_armor = null
+	harden_armor = null
+	return ..()
+
 /obj/item/clothing/suit/armor/clockwork/hit_reaction(mob/living/carbon/human/owner, atom/movable/hitby, attack_text, final_block_chance, damage, attack_type)
 	if(enchant_type == ABSORB_SPELL && isclocker(owner))
 		owner.visible_message(span_danger("[attack_text] is absorbed by [src] sparks!"))
 		playsound(loc, "sparks", 100, TRUE)
 		new /obj/effect/temp_visual/ratvar/sparks(get_turf(owner))
 		deplete_spell()
-		return TRUE
-	return FALSE
+		return HIT_RESULT_SUCCESS
+	return HIT_RESULT_FAILED
 
 /obj/item/clothing/suit/armor/clockwork/IsReflect(def_zone)
 	if(!ishuman(loc))
-		return FALSE
+		return REFLECT_NOTHING
 	var/mob/living/carbon/human/owner = loc
 	if(owner.wear_suit != src)
-		return FALSE
+		return REFLECT_NOTHING
 	if(enchant_type == REFLECT_SPELL && isclocker(owner))
 		playsound(loc, "sparks", 100, TRUE)
 		new /obj/effect/temp_visual/ratvar/sparks(get_turf(owner))
@@ -869,8 +882,8 @@
 			deplete_spell()
 		else
 			reflect_uses--
-		return TRUE
-	return FALSE
+		return REFLECT_NORMAL
+	return REFLECT_NOTHING
 
 /obj/item/clothing/suit/armor/clockwork/attack_self(mob/user)
 	. = ..()
@@ -1261,10 +1274,9 @@
 	var/obj/item/borg/upgrade/vtec/vtec_upgrade = locate() in robot.upgrades
 	if(!vtec_upgrade)
 		vtec_upgrade = new
-		if(vtec_upgrade.action(robot))
-			robot.install_upgrade(vtec_upgrade)
-		else
+		if(!robot.install_upgrade(vtec_upgrade, user))
 			qdel(vtec_upgrade)
+			return .
 
 // A drone shell. Just click on it and it will boot up itself!
 /obj/item/clockwork/cogscarab
@@ -1574,10 +1586,10 @@
 	. = ..()
 	playsound(src, soundin = 'sound/magic/clockwork/heart_beat.ogg', vol = 100, vary = FALSE, extrarange = radius, pressure_affected = FALSE, falloff_distance = radius)
 
-/obj/effect/temp_visual/ratvar/reconstruct/heart_pulse/Initialize(mapload)
-	radius = GLOB.heart.pulse_range
-	sleep_time = 1 * GLOB.heart.pulse_range
-	duration = 1 * GLOB.heart.pulse_range
+/obj/effect/temp_visual/ratvar/reconstruct/heart_pulse/Initialize(mapload, pulse_range)
+	radius = pulse_range
+	sleep_time = 1 * pulse_range
+	duration = 1 * pulse_range
 	. = ..()
 
 /obj/effect/temp_visual/ratvar/reconstruct/heart_pulse/heal

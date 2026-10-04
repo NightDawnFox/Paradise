@@ -191,11 +191,12 @@
 
 /obj/structure/chair/comfy/Initialize(mapload)
 	armrest = GetArmrest()
-	armrest.layer = ABOVE_MOB_LAYER
 	return ..()
 
 /obj/structure/chair/comfy/proc/GetArmrest()
-	return mutable_appearance('icons/obj/chairs.dmi', "comfychair_armrest")
+	var/mutable_appearance/comfy_armrest = mutable_appearance('icons/obj/chairs.dmi', "comfychair_armrest", ABOVE_MOB_LAYER, appearance_flags = KEEP_APART | RESET_COLOR)
+	comfy_armrest.color = color
+	return comfy_armrest
 
 /obj/structure/chair/comfy/Destroy()
 	QDEL_NULL(armrest)
@@ -249,13 +250,13 @@
 	anchored = TRUE
 
 /obj/structure/chair/comfy/shuttle/GetArmrest()
-	return mutable_appearance('icons/obj/chairs.dmi', "shuttle_chair_armrest")
+	return mutable_appearance('icons/obj/chairs.dmi', "shuttle_chair_armrest", ABOVE_MOB_LAYER)
 
 /obj/structure/chair/comfy/shuttle/dark
 	icon_state = "shuttle_chair_dark"
 
 /obj/structure/chair/comfy/shuttle/dark/GetArmrest()
-	return mutable_appearance('icons/obj/chairs.dmi', "shuttle_chair_dark_armrest")
+	return mutable_appearance('icons/obj/chairs.dmi', "shuttle_chair_dark_armrest", ABOVE_MOB_LAYER)
 
 /obj/structure/chair/office
 	movable = TRUE
@@ -334,6 +335,9 @@
 	var/break_chance = 5 //Likely hood of smashing the chair.
 	var/obj/structure/chair/origin_type = /obj/structure/chair
 
+/obj/item/chair/add_parry_component()
+	AddComponent(/datum/component/parry, _stamina_constant = 3, _stamina_coefficient = 0.6, _parryable_attack_types = UNARMED_ATTACK, _parry_cooldown = (2 / 3) SECONDS ) // 0.666667 seconds for 60% uptime.
+
 /obj/item/chair/stool
 	name = "stool"
 	icon_state = "stool_toppled"
@@ -386,12 +390,6 @@
 		for(var/M=1 to remaining_mats)
 			new stack_type(get_turf(loc))
 	qdel(src)
-
-/obj/item/chair/hit_reaction(mob/living/carbon/human/owner, atom/movable/hitby, attack_text = "the attack", final_block_chance = 0, damage = 0, attack_type = ITEM_ATTACK)
-	if(attack_type == UNARMED_ATTACK && prob(hit_reaction_chance))
-		owner.visible_message(span_danger("[owner] fends off [attack_text] with [src]!"))
-		return TRUE
-	return FALSE
 
 /obj/item/chair/attack(mob/living/carbon/target, mob/living/user, params, def_zone, skip_attack_anim = FALSE)
 	. = ..()
@@ -483,7 +481,7 @@
 	buildstacktype = /obj/item/stack/sheet/mineral/abductor
 
 /obj/structure/chair/comfy/abductor/GetArmrest()
-	return mutable_appearance('icons/obj/chairs.dmi', "alien_chair_armrest")
+	return mutable_appearance('icons/obj/chairs.dmi', "alien_chair_armrest", ABOVE_MOB_LAYER)
 
 /obj/structure/chair/comfy/mouse
 	name = "Кресло Господина Мышкина"

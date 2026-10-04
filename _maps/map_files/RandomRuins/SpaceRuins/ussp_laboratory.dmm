@@ -145,7 +145,7 @@
 /obj/item/stack/sheet/mineral/plasma{
 	layer = 2.8
 	},
-/obj/item/reagent_containers/glass/beaker,
+/obj/item/reagent_containers/cup/beaker,
 /obj/item/reagent_containers/dropper{
 	layer = 2.8
 	},
@@ -187,7 +187,7 @@
 	dir = 1
 	},
 /obj/structure/rack,
-/obj/item/reagent_containers/glass/beaker/waterbottle/large{
+/obj/item/reagent_containers/cup/beaker/waterbottle/large{
 	pixel_x = -2;
 	pixel_y = 9
 	},
@@ -699,7 +699,7 @@
 /area/template_noop)
 "jL" = (
 /obj/item/mop,
-/obj/item/reagent_containers/glass/bucket{
+/obj/item/reagent_containers/cup/bucket{
 	pixel_x = 7;
 	pixel_y = -8
 	},
@@ -757,7 +757,7 @@
 /obj/item/kitchen/utensil/spoon{
 	pixel_x = -4
 	},
-/obj/item/reagent_containers/food/drinks/drinkingglass/shotglass{
+/obj/item/reagent_containers/cup/glass/drinkingglass/shotglass{
 	pixel_x = 5;
 	pixel_y = 13
 	},
@@ -920,9 +920,7 @@
 	},
 /area/ruin/ussp_xeno/entrance)
 "nU" = (
-/obj/structure/toilet{
-	dir = 8
-	},
+/obj/structure/toilet/directional/east,
 /obj/item/bikehorn/rubberducky{
 	pixel_x = 11;
 	pixel_y = 12
@@ -1256,7 +1254,7 @@
 /area/ruin/ussp_xeno/entrance)
 "tE" = (
 /obj/structure/table/wood,
-/obj/item/reagent_containers/food/drinks/cans/beer{
+/obj/item/reagent_containers/cup/soda_cans/beer{
 	pixel_x = -8
 	},
 /obj/item/paper_bin{
@@ -1408,7 +1406,7 @@
 	pixel_x = -1;
 	pixel_y = 14
 	},
-/obj/item/reagent_containers/food/drinks/drinkingglass/shotglass{
+/obj/item/reagent_containers/cup/glass/drinkingglass/shotglass{
 	pixel_x = 9;
 	pixel_y = 14
 	},
@@ -1465,15 +1463,15 @@
 	dir = 5
 	},
 /obj/structure/rack,
-/obj/item/reagent_containers/food/drinks/cans/beer{
+/obj/item/reagent_containers/cup/soda_cans/beer{
 	pixel_x = -7;
 	pixel_y = 4
 	},
-/obj/item/reagent_containers/food/drinks/cans/beer{
+/obj/item/reagent_containers/cup/soda_cans/beer{
 	pixel_x = 1;
 	pixel_y = 3
 	},
-/obj/item/reagent_containers/food/drinks/cans/beer{
+/obj/item/reagent_containers/cup/soda_cans/beer{
 	pixel_x = 10;
 	pixel_y = -7
 	},
@@ -1629,7 +1627,7 @@
 /area/ruin/ussp_xeno/gym_ussp)
 "xp" = (
 /obj/structure/rack,
-/obj/item/reagent_containers/food/drinks/bottle/vodka{
+/obj/item/reagent_containers/cup/glass/bottle/vodka{
 	desc = "Кто это тут к нам колёса катит?";
 	name = "Старая бутылка водки";
 	pixel_x = -5
@@ -1681,7 +1679,7 @@
 	pixel_x = 7;
 	pixel_y = -2
 	},
-/obj/item/reagent_containers/food/drinks/cans/beer{
+/obj/item/reagent_containers/cup/soda_cans/beer{
 	pixel_x = -12;
 	pixel_y = -11
 	},
@@ -1993,7 +1991,7 @@
 	dir = 8
 	},
 /obj/structure/table/wood,
-/obj/item/reagent_containers/food/drinks/cans/beer{
+/obj/item/reagent_containers/cup/soda_cans/beer{
 	pixel_x = 7
 	},
 /obj/item/folder/red{
@@ -2032,7 +2030,7 @@
 	},
 /area/ruin/ussp_xeno/gym_ussp)
 "CV" = (
-/obj/item/reagent_containers/glass/beaker,
+/obj/item/reagent_containers/cup/beaker,
 /obj/machinery/atmospherics/unary/vent_pump/on{
 	dir = 8
 	},
@@ -2123,7 +2121,7 @@
 /obj/machinery/alarm/directional/south{
 	alarm_frequency = 1200
 	},
-/obj/structure/sink/directional/north,
+/obj/structure/sink/directional/south,
 /obj/structure/alien/weeds,
 /turf/simulated/floor/plasteel{
 	icon_state = "whiteblue"
@@ -2845,7 +2843,7 @@
 /area/ruin/ussp_xeno/medbay)
 "NO" = (
 /obj/structure/dresser,
-/obj/item/reagent_containers/food/drinks/cans/beer{
+/obj/item/reagent_containers/cup/soda_cans/beer{
 	pixel_x = -8;
 	pixel_y = 13
 	},
@@ -3588,7 +3586,7 @@
 	},
 /area/ruin/ussp_xeno/entrance)
 "YA" = (
-/obj/structure/sink/directional/east,
+/obj/structure/sink/directional/west,
 /obj/structure/mirror{
 	pixel_x = -26
 	},
@@ -3637,7 +3635,7 @@
 	pixel_x = 9;
 	pixel_y = 13
 	},
-/obj/item/reagent_containers/glass/beaker/waterbottle/large{
+/obj/item/reagent_containers/cup/beaker/waterbottle/large{
 	pixel_x = -6;
 	pixel_y = 14
 	},
@@ -3672,7 +3670,7 @@
 /area/ruin/ussp_xeno/entrance)
 "Zr" = (
 /obj/structure/dresser,
-/obj/item/toy/plushie/blue_fox{
+/obj/item/toy/plushie/fox/blue{
 	layer = 3.1;
 	pixel_y = 12
 	},

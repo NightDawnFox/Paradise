@@ -21,7 +21,7 @@
 			stack_trace("Mob [type] has improper ventcrawler_trait value.")
 
 	if(mobility_flags & MOBILITY_REST)
-		add_verb(src, /mob/living/proc/toggle_resting)
+		ASSIGN_GAME_VERB(src, /mob/living, toggle_resting)
 		if(!density)	// we want undense mobs to stay undense when they stop resting
 			ADD_TRAIT(src, TRAIT_UNDENSE, INNATE_TRAIT)
 
@@ -45,8 +45,6 @@
 		S.sharerDies(FALSE)
 		S.removeSoulsharer(src) //If a sharer is destroy()'d, they are simply removed
 	sharedSoullinks = null
-	if(ranged_ability)
-		ranged_ability.remove_ranged_ability(src)
 	remove_from_all_data_huds()
 	now_pushing = null
 	if(LAZYLEN(status_effects))
@@ -92,11 +90,7 @@
 	med_hud_set_status()
 
 /mob/living/ghostize(can_reenter_corpse = 1)
-	var/prev_client = client
 	. = ..()
-	if(.)
-		if(ranged_ability && prev_client)
-			ranged_ability.remove_mousepointer(prev_client)
 	SEND_SIGNAL(src, COMSIG_LIVING_GHOSTIZED)
 
 /mob/living/proc/OpenCraftingMenu()
@@ -104,11 +98,6 @@
 
 /mob/living/IsLying()
 	return body_position == LYING_DOWN
-
-/mob/living/canface()
-	if(!(mobility_flags & MOBILITY_MOVE))
-		return FALSE
-	return ..()
 
 /mob/living/onZImpact(turf/impacted_turf, levels, impact_flags = NONE)
 	if(!isopenspaceturf(impacted_turf))
@@ -312,11 +301,6 @@
 	// okay, so we didn't switch. but should we push?
 	// not if he's not CANPUSH of course
 	if(!(bumped_mob.status_flags & CANPUSH) || HAS_TRAIT(bumped_mob, TRAIT_PUSHIMMUNE))
-		return TRUE
-	//anti-riot equipment is also anti-push
-	if(bumped_mob.r_hand && !isclothing(bumped_mob.r_hand) && prob(bumped_mob.r_hand.block_chance * 2))
-		return TRUE
-	if(bumped_mob.l_hand && !isclothing(bumped_mob.l_hand) && prob(bumped_mob.l_hand.block_chance * 2))
 		return TRUE
 
 //Called when we bump into an obj
@@ -590,18 +574,13 @@
 	update_pull_movespeed()
 	pullin?.update_icon(UPDATE_ICON_STATE)
 
-/mob/living/verb/stop_pulling1()
-	set name = "Прекратить тащить"
-	set category = VERB_CATEGORY_IC
-	stop_pulling()
-
 /mob/living/proc/stop_hand_bleedsuppress()
 	left_hand_bleed_suppress_lib = null
 	right_hand_bleed_suppress_lib = null
 	update_hands_HUD()
 
 //same as above
-/mob/living/pointed(atom/A as mob|obj|turf in view())
+/mob/living/pointed(atom/A)
 	if(incapacitated())
 		return FALSE
 	if(HAS_TRAIT(src, TRAIT_FAKEDEATH))
@@ -900,10 +879,7 @@
 /mob/living/proc/UpdateDamageIcon()
 	return
 
-/mob/living/proc/Examine_OOC()
-	set name = "Мета-инфа (OOC)"
-	set category = VERB_CATEGORY_OOC
-	set src in view()
+GAME_VERB_SRC(/mob/living, Examine_OOC, view(), "Мета-инфа (OOC)", VERB_CATEGORY_HIDDEN)
 
 	if(CONFIG_GET(flag/allow_metadata))
 		if(client)
@@ -1049,10 +1025,7 @@
 		return FALSE
 	return TRUE
 
-/mob/living/verb/resist()
-	set name = "Сопротивляться"
-	set category = VERB_CATEGORY_IC
-
+GAME_VERB(/mob/living, resist, "Сопротивляться", VERB_CATEGORY_IC)
 	DEFAULT_QUEUE_OR_CALL_VERB(VERB_CALLBACK(src, PROC_REF(execute_resist)))
 
 ///proc extender of [/mob/living/verb/resist] meant to make the process queable if the server is overloaded when the verb is called
@@ -1098,19 +1071,19 @@
 			if(vampire_grab)
 				. = vampire_grab.grab_resist_chances[MARTIAL_GRAB_AGGRESSIVE]
 			else
-				var/martial_override = grabber.mind?.martial_art?.get_resist_chance(GRAB_AGGRESSIVE)
+				var/martial_override = grabber.mind?.martial_art?.get_resist_chance(GRAB_AGGRESSIVE, grabber.pulling)
 				. = isnull(martial_override) ? GRAB_RESIST_CHANCE_AGGRESSIVE : martial_override
 		if(GRAB_NECK)
 			if(vampire_grab)
 				. = vampire_grab.grab_resist_chances[MARTIAL_GRAB_NECK]
 			else
-				var/martial_override = grabber.mind?.martial_art?.get_resist_chance(GRAB_NECK)
+				var/martial_override = grabber.mind?.martial_art?.get_resist_chance(GRAB_NECK, grabber.pulling)
 				. = isnull(martial_override) ? GRAB_RESIST_CHANCE_NECK : martial_override
 		if(GRAB_KILL)
 			if(vampire_grab)
 				. = vampire_grab.grab_resist_chances[MARTIAL_GRAB_KILL]
 			else
-				var/martial_override = grabber.mind?.martial_art?.get_resist_chance(GRAB_KILL)
+				var/martial_override = grabber.mind?.martial_art?.get_resist_chance(GRAB_KILL, grabber.pulling)
 				. = isnull(martial_override) ? GRAB_RESIST_CHANCE_KILL : martial_override
 	if(. > 0)
 		if(ishuman(src))
@@ -1454,7 +1427,9 @@
 	. = TRUE
 	to_chat(user, span_notice("Вы начинаете разделывать [declent_ru(ACCUSATIVE)]..."))
 	playsound(loc, 'sound/weapons/slice.ogg', 50, TRUE, -1)
-	if(!do_after(user, I.has_speed_harvest ? 1 SECONDS : (4 SECONDS * mob_size), src, NONE, max_interact_count = 1, cancel_on_max = TRUE) || !Adjacent(user))
+	CALCULATE_SKILL_MOD(user, BUTCHERING_SPEED_MOD, butchering_skill_mod)
+	var/butchering_duration = I.has_speed_harvest ? 1 SECONDS : (4 SECONDS * mob_size)
+	if(!do_after(user, butchering_duration * butchering_skill_mod, src, NONE, max_interact_count = 1, cancel_on_max = TRUE) || !Adjacent(user))
 		return .
 	harvest(user)
 
@@ -1610,6 +1585,8 @@
 	update_pull_movespeed()
 
 /mob/living/proc/set_pull_offsets(mob/living/target, grab_state_to_offset = GRAB_PASSIVE, animate = TRUE)
+	if(HAS_TRAIT(target, TRAIT_FORCE_GRASPED))
+		return // Force Grab should not rotate or pixel-shift the victim.
 	if(target.buckled)
 		return //don't make them change direction or offset them if they're buckled into something.
 	var/offset = 0
@@ -1937,9 +1914,7 @@
 /mob/living/proc/get_transform_translation_size(value)
 	return (value-1) * get_cached_height() * 0.5
 
-/mob/living/proc/toggle_resting()
-	set name = "Лечь"
-	set category = VERB_CATEGORY_IC
+GAME_VERB_PROC(/mob/living, toggle_resting, "Лечь", VERB_CATEGORY_IC)
 
 	set_resting(!resting, silent = FALSE)
 
@@ -2140,10 +2115,10 @@
 
 	update_ssd_overlay()	// special SSD overlay handling
 
-/mob/living/verb/succumb()
-	set hidden = TRUE
+GAME_VERB_HIDDEN(/mob/living, succumb, "succumb")
+	VERB_ARG(whispered, VERB_ARG_TYPE_NUM, VERB_ARG_SOURCE_INPUT)
 	// if you use the verb you better mean it
-	do_succumb(FALSE)
+	do_succumb(!whispered)
 
 /mob/living/proc/do_succumb(cancel_on_no_words)
 	if(stat == DEAD)
@@ -2193,19 +2168,19 @@
 
 /mob/living/magic_charge_act(mob/user)
 	if(LAZYLEN(mob_spell_list))
-		for(var/obj/effect/proc_holder/spell/spell as anything in mob_spell_list)
-			if(spell.cooldown_handler.is_on_cooldown())
+		for(var/datum/action/cooldown/spell/spell as anything in mob_spell_list)
+			if(spell.next_use_time >= world.time)
 				continue
 
-			spell.revert_cast()
+			spell.reset_spell_cooldown()
 			. |= RECHARGE_SUCCESSFUL
 
 	if(LAZYLEN(mind?.spell_list))
-		for(var/obj/effect/proc_holder/spell/spell as anything in mind?.spell_list)
-			if(spell.cooldown_handler.is_on_cooldown())
+		for(var/datum/action/cooldown/spell/spell as anything in mind?.spell_list)
+			if(spell.next_use_time >= world.time)
 				continue
 
-			spell.revert_cast()
+			spell.reset_spell_cooldown()
 			. |= RECHARGE_SUCCESSFUL
 
 	to_chat(src, span_notice("Вы чувствуете [(. & RECHARGE_SUCCESSFUL) ? "поток магической энергии, это приятно!" : "себя очень странно на мгновение, но это проходит."]"))
@@ -2396,4 +2371,29 @@
  * A wrapper for [mob/living/carbon/human/proc/update_lips] that sets the lip style and color to null.
  **/
 /mob/living/proc/clean_lips()
+	return
+
+/mob/living/proc/set_gene_stability(value)
+	if(gene_stability == value)
+		return
+
+	gene_stability = value
+
+	if(ignore_gene_stability)
+		return
+
+	if(value < GENETIC_DAMAGE_STAGE_3)
+		apply_status_effect(/datum/status_effect/gene_instability/major/critical)
+		return
+
+	if(value < GENETIC_DAMAGE_STAGE_2)
+		apply_status_effect(/datum/status_effect/gene_instability/major)
+		return
+
+	if(value < GENETIC_DAMAGE_STAGE_1)
+		apply_status_effect(/datum/status_effect/gene_instability/minor)
+		return
+	remove_status_effect(/datum/status_effect/gene_instability)
+
+/mob/living/proc/embed_item_inside(obj/item/thing, embedded_zone, silent = FALSE)
 	return

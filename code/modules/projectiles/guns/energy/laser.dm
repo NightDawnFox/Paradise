@@ -20,6 +20,10 @@
 	. = ..()
 	install_sibyl()
 
+/obj/item/gun/energy/laser/hitscan/carbine/sibyl/Initialize(mapload)
+	. = ..()
+	install_sibyl()
+
 // MARK: Practice
 /obj/item/gun/energy/laser/practice
 	name = "practice laser gun"
@@ -56,6 +60,7 @@
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | ACID_PROOF
 	var/high_risk = TRUE
 	accuracy = GUN_ACCURACY_RIFLE
+	weapon_weight = WEAPON_LIGHT
 	attachable_allowed = GUN_MODULE_CLASS_NONE
 
 /obj/item/gun/energy/laser/captain/Initialize(mapload, ...)
@@ -201,6 +206,7 @@
 	ammo_x_offset = 2
 	selfcharge = TRUE
 	accuracy = GUN_ACCURACY_PISTOL
+	weapon_weight = WEAPON_LIGHT
 	attachable_allowed = GUN_MODULE_CLASS_NONE
 
 /obj/item/gun/energy/laser/tag/blue

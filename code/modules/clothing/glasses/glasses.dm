@@ -22,8 +22,6 @@
 	var/see_in_dark = 2
 	/// Level of invisibility the wearer can see (default SEE_INVISIBLE_LIVING).
 	var/invis_view = SEE_INVISIBLE_LIVING
-	/// Override to allow glasses to see higher invisibility levels than normal.
-	var/invis_override = 0
 	/// Alpha value for lighting plane when worn (affects darkness rendering).
 	var/lighting_alpha
 	/// List of examine extensions (e.g., medical HUD, science HUD).
@@ -952,3 +950,19 @@
 /obj/item/clothing/glasses/heart/Initialize(mapload)
 	. = ..()
 	AddComponent(/datum/component/spraycan_paintable)
+
+/obj/item/clothing/glasses/goldblue
+	name = "round gold-rimmed glasses"
+	desc = "Круглые очки в золотистой оправе с тёмно-синими линзами."
+	icon_state = "goldblue"
+	item_state = "goldblue"
+
+/obj/item/clothing/glasses/goldblue/get_ru_names()
+	return alist(
+		NOMINATIVE = "очки в золотистой оправе",
+		GENITIVE = "очков в золотистой оправе",
+		DATIVE = "очкам в золотистой оправе",
+		ACCUSATIVE = "очки в золотистой оправе",
+		INSTRUMENTAL = "очками в золотистой оправе",
+		PREPOSITIONAL = "очках в золотистой оправе",
+	)

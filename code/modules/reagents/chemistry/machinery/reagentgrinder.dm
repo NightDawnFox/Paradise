@@ -9,7 +9,7 @@
 	pass_flags = PASSTABLE
 	resistance_flags = ACID_PROOF
 	var/operating = FALSE
-	var/obj/item/reagent_containers/beaker = new /obj/item/reagent_containers/glass/beaker/large
+	var/obj/item/reagent_containers/beaker = new /obj/item/reagent_containers/cup/beaker/large
 	var/limit = null
 	var/efficiency = null
 
@@ -33,6 +33,7 @@
 			/obj/item/grown/nettle/death = list("facid" = 0, "sacid" = 0),
 			/obj/item/grown/novaflower = list("capsaicin" = 0, "condensedcapsaicin" = 0),
 			/obj/item/stack/sheet/cheese = list("milk" = 20),
+			/obj/item/stack/ammonia_crystals = list("ammonia" = 10),
 
 			//Blender Stuff
 			/obj/item/reagent_containers/food/snacks/grown/tomato = list("ketchup" = 0),

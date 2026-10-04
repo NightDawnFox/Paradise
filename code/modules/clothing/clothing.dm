@@ -541,10 +541,7 @@
 			if(H.w_uniform == src)
 				H.update_suit_sensors()
 
-/obj/item/clothing/under/verb/toggle()
-	set name = "Датчики костюма"
-	set category = VERB_CATEGORY_OBJECT
-	set src in usr
+GAME_VERB_SRC(/obj/item/clothing/under, toggle, usr, "Датчики костюма", VERB_CATEGORY_HIDDEN)
 	set_sensors(usr)
 
 /obj/item/clothing/under/GetID()
@@ -1028,7 +1025,7 @@
 	name = "Space helmet"
 	icon_state = "space"
 	desc = "A special helmet designed for work in a hazardous, low-pressure environment."
-	clothing_flags = STOPSPRESSUREDAMAGE|THICKMATERIAL|STACKABLE_HELMET_EXEMPT
+	clothing_flags = STOPSPRESSUREDAMAGE|THICKMATERIAL|STACKABLE_HELMET_EXEMPT|PEPPERPROOF
 	flags_cover = HEADCOVERSEYES|HEADCOVERSMOUTH
 	flags_inv = parent_type::flags_inv|HIDEHAIR|HIDENAME|HIDEMASK
 	item_state = "s_helmet"
@@ -1073,6 +1070,8 @@
 	undyeable = TRUE
 	var/obj/item/tank/jetpack/suit/jetpack = null
 	var/jetpack_upgradable = FALSE
+	/// Original slowdown with modifiers
+	var/original_slowdown
 
 /obj/item/clothing/suit/space/Initialize(mapload)
 	. = ..()
@@ -1102,9 +1101,17 @@
 
 /obj/item/clothing/suit/space/equipped(mob/user, slot, initial = FALSE)
 	. = ..()
-	if(jetpack && slot == ITEM_SLOT_CLOTH_OUTER)
-		for(var/datum/action/action as anything in jetpack.actions)
-			action.Grant(user)
+	if(slot == ITEM_SLOT_CLOTH_OUTER)
+		if(isnull(original_slowdown))
+			original_slowdown = slowdown
+		CALCULATE_SKILL_MOD(user, SPACESUIT_SLOWDOWN_MOD, skill_factor)
+		slowdown = original_slowdown * skill_factor
+		if(jetpack)
+			for(var/datum/action/action as anything in jetpack.actions)
+				action.Grant(user)
+	else if(!isnull(original_slowdown))
+		slowdown = original_slowdown
+		original_slowdown = null
 
 /obj/item/clothing/suit/space/dropped(mob/user, slot, silent = FALSE)
 	. = ..()
@@ -1112,6 +1119,8 @@
 		for(var/datum/action/action as anything in jetpack.actions)
 			action.Remove(user)
 		jetpack.turn_off(user)
+	if(!isnull(original_slowdown))
+		slowdown = original_slowdown
 
 /obj/item/clothing/suit/space/attackby(obj/item/I, mob/user, params)
 	if(istype(I, /obj/item/tank/jetpack/suit))
@@ -1298,12 +1307,6 @@
 		to_chat(user, span_notice("Вы прикрепили [accessory.declent_ru(ACCUSATIVE)] к [declent_ru(DATIVE)]."))
 	return TRUE
 
-/obj/item/clothing/under/verb/removetie()
-	set name = "Убрать аксессуар"
-	set category = VERB_CATEGORY_OBJECT
-	set src in usr
-	handle_accessories_removal(usr)
-
 /obj/item/clothing/under/click_alt(mob/user)
 	if(handle_accessories_removal(user))
 		return CLICK_ACTION_SUCCESS
@@ -1344,10 +1347,7 @@
 	for(var/obj/item/clothing/accessory/accessory as anything in accessories)
 		. += accessory.attached_examine(user, src)
 
-/obj/item/clothing/under/verb/rollsuit()
-	set name = "Сменить стиль униформы"
-	set category = VERB_CATEGORY_OBJECT
-	set src in usr
+GAME_VERB_SRC(/obj/item/clothing/under, rollsuit, usr, "Сменить стиль униформы", VERB_CATEGORY_HIDDEN)
 
 	if(!ishuman(usr))
 		return
@@ -1434,9 +1434,9 @@
 			turfs += pick(/turf in orange(3, H))
 		var/turf/picked = pick(turfs)
 		if(!isturf(picked))
-			return
+			return HIT_RESULT_FAILED
 		H.forceMove(picked)
-		return 1
+		return HIT_RESULT_SUCCESS
 	return ..()
 
 /**

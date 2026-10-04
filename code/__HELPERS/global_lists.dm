@@ -1,22 +1,4 @@
 /proc/makeDatumRefLists()
-	// Markings
-	init_sprite_accessory_subtypes(/datum/sprite_accessory/body_markings, GLOB.marking_styles_list)
-	// Head accessory
-	init_sprite_accessory_subtypes(/datum/sprite_accessory/head_accessory, GLOB.head_accessory_styles_list)
-	// Hair
-	init_sprite_accessory_subtypes(/datum/sprite_accessory/hair, GLOB.hair_styles_public_list, GLOB.hair_styles_male_list, GLOB.hair_styles_female_list, GLOB.hair_styles_full_list)
-	// Hair gradients
-	init_sprite_accessory_subtypes(/datum/sprite_accessory/hair_gradient, GLOB.hair_gradients_list)
-	// Facial hair
-	init_sprite_accessory_subtypes(/datum/sprite_accessory/facial_hair, GLOB.facial_hair_styles_list, GLOB.facial_hair_styles_male_list, GLOB.facial_hair_styles_female_list)
-	// Underwear
-	init_sprite_accessory_subtypes(/datum/sprite_accessory/underwear, GLOB.underwear_list, GLOB.underwear_m, GLOB.underwear_f)
-	// Undershirt
-	init_sprite_accessory_subtypes(/datum/sprite_accessory/undershirt, GLOB.undershirt_list, GLOB.undershirt_m, GLOB.undershirt_f)
-	// Socks
-	init_sprite_accessory_subtypes(/datum/sprite_accessory/socks, GLOB.socks_list, GLOB.socks_m, GLOB.socks_f)
-	// Alt heads
-	init_sprite_accessory_subtypes(/datum/sprite_accessory/alt_heads, GLOB.alt_heads_list)
 
 	init_datum_subtypes(/datum/wryn_building, GLOB.wryn_structures, null, "name")
 
@@ -25,8 +7,6 @@
 	init_subtypes(/datum/surgery_step, GLOB.surgery_steps)
 	init_subtypes(/obj/item/slimepotion, GLOB.slime_potions)
 	init_subtypes(/datum/preference_info, GLOB.preferences_info)
-	// Different bodies
-	__init_body_accessory(/datum/body_accessory/body)
 	// Different tails
 	__init_body_accessory(/datum/body_accessory/tail)
 	// Different wings
@@ -219,6 +199,38 @@
 		GLOB.exoframe_types[exoframe_instance.id] = exoframe_instance
 
 	init_dice_rolls()
+
+	// Init list for skills
+	init_datum_subtypes(/datum/skill, GLOB.skills, null, "name")
+
+	var/list/banned_skill_books = list(
+		/obj/item/book/skill_manual/random,
+		/obj/item/book/skill_manual/general,
+		/obj/item/book/skill_manual/general/random,
+		/obj/item/book/skill_manual/service,
+		/obj/item/book/skill_manual/service/random,
+		/obj/item/book/skill_manual/combat,
+		/obj/item/book/skill_manual/combat/random,
+		/obj/item/book/skill_manual/engineering,
+		/obj/item/book/skill_manual/engineering/random,
+		/obj/item/book/skill_manual/medical,
+		/obj/item/book/skill_manual/medical/random,
+		/obj/item/book/skill_manual/research,
+		/obj/item/book/skill_manual/research/random,
+	)
+	GLOB.skill_manual_types = subtypesof(/obj/item/book/skill_manual) - banned_skill_books
+
+	GLOB.skill_neurotrainers = subtypesof(/obj/item/neurotrainer) - GLOB.skill_neurotrainer_blacklist
+
+	var/list/banned_skill_types = list(
+		/datum/skill/general,
+		/datum/skill/service,
+		/datum/skill/combat,
+		/datum/skill/medical,
+		/datum/skill/research,
+	)
+	GLOB.skill_types = subtypesof(/datum/skill) - banned_skill_types
+
 /**
  * Creates every subtype of a given prototype (excluding the prototype itself) and adds them to a list
  *
@@ -339,7 +351,7 @@
 		EQUIPMENT("Industrial Mining Charge", /obj/item/grenade/plastic/miningcharge, 500),
 		EQUIPMENT("Whetstone", /obj/item/whetstone, 500),
 		EQUIPMENT("Fulton Pack", /obj/item/extraction_pack, 1500),
-		EQUIPMENT("Jaunter", /obj/item/wormhole_jaunter, 900),
+		EQUIPMENT("Jaunter", /obj/item/wormhole_jaunter, 2000),
 		EQUIPMENT("Chasm Jaunter Recovery Grenade", /obj/item/grenade/jaunter_grenade, 3000), // fishing rod supremacy
 		EQUIPMENT("Lazarus Injector", /obj/item/lazarus_injector, 600),
 		EQUIPMENT("Point Transfer Card (500)", /obj/item/card/mining_point_card, 500),
@@ -385,7 +397,7 @@
 		EQUIPMENT("Minebot Melee Upgrade", /obj/item/mine_bot_upgrade, 400),
 	)
 	prize_list["Miscellaneous"] = list(
-		EQUIPMENT("Absinthe", /obj/item/reagent_containers/food/drinks/bottle/absinthe/premium, 500),
+		EQUIPMENT("Absinthe", /obj/item/reagent_containers/cup/glass/bottle/absinthe/premium, 500),
 		EQUIPMENT("Alien Toy", /obj/item/clothing/mask/facehugger/toy, 300),
 		EQUIPMENT("Richard & Co cigarettes", /obj/item/storage/fancy/cigarettes/cigpack_richard, 400),
 		EQUIPMENT("Cigar", /obj/item/clothing/mask/cigarette/cigar/havana, 300),
@@ -396,7 +408,7 @@
 		EQUIPMENT("Luxury Elite Bar Capsule", /obj/item/survivalcapsule/luxuryelite, 10000),
 		EQUIPMENT("Soap", /obj/item/soap/nanotrasen, 400),
 		EQUIPMENT("Space Cash", /obj/item/stack/spacecash/magic_linked, 2500),
-		EQUIPMENT("Whiskey", /obj/item/reagent_containers/food/drinks/bottle/whiskey, 500),
+		EQUIPMENT("Whiskey", /obj/item/reagent_containers/cup/glass/bottle/whiskey, 500),
 		EQUIPMENT("HRD-MDE Project Box", /obj/item/storage/box/hardmode_box, 2500),
 	)
 	prize_list["Extra"] = list(
@@ -412,9 +424,9 @@
 	)
 	prize_list["Scum"] = list(
 		EQUIPMENT("Trauma Kit", /obj/item/stack/medical/bruise_pack/advanced, 150),
-		EQUIPMENT("Whisky", /obj/item/reagent_containers/food/drinks/bottle/whiskey, 100),
-		EQUIPMENT("Beer", /obj/item/reagent_containers/food/drinks/cans/beer, 50),
-		EQUIPMENT("Absinthe", /obj/item/reagent_containers/food/drinks/bottle/absinthe/premium, 250),
+		EQUIPMENT("Whisky", /obj/item/reagent_containers/cup/glass/bottle/whiskey, 100),
+		EQUIPMENT("Beer", /obj/item/reagent_containers/cup/soda_cans/beer, 50),
+		EQUIPMENT("Absinthe", /obj/item/reagent_containers/cup/glass/bottle/absinthe/premium, 250),
 		EQUIPMENT("Cigarettes", /obj/item/storage/fancy/cigarettes, 100),
 		EQUIPMENT("Medical Marijuana", /obj/item/storage/fancy/cigarettes/cigpack_med, 250),
 		EQUIPMENT("Richard & Co cigarettes", /obj/item/storage/fancy/cigarettes/cigpack_richard, 400),

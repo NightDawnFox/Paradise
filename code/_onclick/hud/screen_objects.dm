@@ -129,7 +129,7 @@
 	mouse_over_pointer = MOUSE_HAND_POINTER
 
 /atom/movable/screen/act_intent/Click(location, control, params)
-	if(ishuman(usr) || isdevil(usr))
+	if(is_advanced_user(usr))
 		var/list/modifiers = params2list(params)
 		var/_x = text2num(LAZYACCESS(modifiers, ICON_X))
 		var/_y = text2num(LAZYACCESS(modifiers, ICON_Y))
@@ -143,6 +143,23 @@
 			usr.a_intent_change(INTENT_DISARM)
 	else
 		usr.a_intent_change("right")
+
+/// Proc used to check if we swap intents based on click location
+/atom/movable/screen/act_intent/proc/is_advanced_user(mob/user)
+	if(ishuman(usr) || isdevil(usr)) // someone should probably draw separate intents for devils
+		return TRUE
+	return FALSE
+
+/// Separate act_intent for swarmers
+/atom/movable/screen/act_intent/swarmer
+	icon = 'icons/mob/screen_swarmer.dmi'
+	screen_loc = ui_zonesel
+
+/// Swarmers have the same kind of intents humans do
+/atom/movable/screen/act_intent/swarmer/is_advanced_user(mob/user)
+	if(isswarmer(user))
+		return TRUE
+	return FALSE
 
 /atom/movable/screen/act_intent/alien
 	icon = 'icons/mob/screen_alien.dmi'
@@ -447,6 +464,7 @@
 		hud.mymob.zone_selected = choice
 		if(update_overlay)
 			update_icon(UPDATE_OVERLAYS)
+		SEND_SIGNAL(hud.mymob, COMSIG_MOB_SELECTED_ZONE_SET, choice)
 	return TRUE
 
 /atom/movable/screen/zone_sel/update_overlays()
@@ -490,6 +508,22 @@
 	if(!istype(M))
 		return
 	M.check_languages()
+
+/atom/movable/screen/area_creator
+	name = "create new area"
+	icon = 'icons/mob/screen_midnight.dmi'
+	icon_state = "area_edit"
+	screen_loc = ui_area_creator
+	mouse_over_pointer = MOUSE_HAND_POINTER
+
+/atom/movable/screen/area_creator/Click()
+	if(usr.incapacitated() || (isobserver(usr) && !usr.can_admin_interact()))
+		return TRUE
+	var/area/our_area = get_area(usr)
+	if(!our_area.outdoors)
+		to_chat(usr, span_warning("Здесь уже есть обозначенная зона."))
+		return TRUE
+	create_area(usr)
 
 /atom/movable/screen/inventory
 	/// The identifier for the slot. It has nothing to do with ID cards.

@@ -91,6 +91,7 @@
 
 	var/list/equipment = new
 	var/list/list/equipment_in_hands
+	// Associative list of "hand_define" = equipment
 	var/list/obj/item/mecha_parts/mecha_equipment/selected_equipment_in_hands = list()
 	var/max_equip = 3
 	var/turf/crashing = null
@@ -246,9 +247,9 @@
 	QDEL_NULL(spark_system)
 	QDEL_NULL(smoke_system)
 	QDEL_LIST(trackers)
-	LAZYCLEARLIST(selected_equipment_in_hands)
+	QDEL_LIST_ASSOC_VAL(selected_equipment_in_hands)
 	for(var/list/equipment in equipment_in_hands)
-		equipment.Cut()
+		QDEL_LIST(equipment)
 	QDEL_NULL(ui_view)
 	lose_hearing_sensitivity(trait_source = ROUNDSTART_TRAIT)
 	remove_from_all_data_huds()
@@ -532,6 +533,8 @@
 	var/move_type = FALSE
 	var/old_direction = dir //Initial direction of the mecha
 	var/step_in_final = strafe ? (step_in * strafe_speed_factor) : step_in //Modifies strafe speed, if "strafe_speed_factor" is anything other than 1
+	CALCULATE_SKILL_MOD(occupant, MECHA_DRIVING_SPEED_MOD, skill_factor)
+	step_in_final *= skill_factor
 	var/strafed_backwards = FALSE //Checks if mecha moved backwards, while strafe is active (used later to modify speed and energy drain)
 
 	var/keyheld = FALSE //Checks if player pressed ALT button down while strafe is active
@@ -800,7 +803,7 @@
 		booster_damage_modifier /= facing_modifier
 		booster_deflection_modifier *= facing_modifier
 	if(prob(deflect_chance * booster_deflection_modifier))
-		visible_message(span_danger("[src]'s armour deflects the attack!"), projectile_message = projectile_check)
+		visible_message(span_danger("[src]'s armour deflects the attack!"))
 		return FALSE
 	if(.)
 		. *= booster_damage_modifier
@@ -1387,7 +1390,8 @@
 	INVOKE_ASYNC(src, TYPE_PROC_REF(/obj/mecha, put_in), user)
 
 /obj/mecha/proc/put_in(mob/user)
-	if(do_after(user, mech_enter_time, src, category = DA_CAT_TOOL))
+	CALCULATE_SKILL_MOD(user, MECHA_CLIMBING_SPEED_MOD, skill_factor)
+	if(do_after(user, mech_enter_time * skill_factor, src, category = DA_CAT_TOOL))
 		if(obj_integrity <= 0)
 			to_chat(user, span_warning("You cannot get in the [name], it has been destroyed!"))
 		else if(occupant)
@@ -1587,8 +1591,7 @@
 		dir = dir_in
 
 	if(L?.client)
-		ASYNC
-			L.client.RemoveViewMod("mecha")
+		INVOKE_ASYNC(L.client.view_size, TYPE_PROC_REF(/datum/view_data, resetToDefault))
 		zoom_mode = FALSE
 
 	if(ishuman(L))
@@ -1650,9 +1653,12 @@
 
 /obj/mecha/proc/use_power(amount)
 	if(get_charge())
-		cell.use(amount)
 		if(occupant)
+			CALCULATE_SKILL_MOD(occupant, MECHA_CELL_USAGE_MOD, skill_factor)
+			cell.use(round(amount / skill_factor))
 			update_cell()
+			return TRUE
+		cell.use(amount)
 		return TRUE
 	return FALSE
 

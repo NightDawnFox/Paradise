@@ -4,6 +4,7 @@
 	icon = 'icons/obj/machines/heavy_lathe.dmi'
 	icon_state = "h_lathe"
 	base_icon_state = "h_lathe"
+	wires_type = /datum/wires/experimentor
 
 	/// Weakref to the station Ian the corgi (or whichever we can find)
 	var/datum/weakref/tracked_ian_ref
@@ -16,7 +17,7 @@
 	/// How long is the cooldown between experiments
 	var/cooldown = EXPERIMENT_COOLDOWN_BASE
 	/// List of experiment handler datums by scantype
-	var/list/experimentor_result_handlers = list()
+	var/alist/experimentor_result_handlers = alist()
 	/// Reactions that can occur for specific items
 	var/list/item_reactions = list()
 	/// Items that we can get by transforming
@@ -32,13 +33,10 @@
 	/// The distance to your rnd console. Useful for creative mapping.
 	var/console_dist = 3
 
-	var/datum/wires/experimentator_wires
-
 	COOLDOWN_DECLARE(run_experiment)
 
 /obj/machinery/r_n_d/experimentor/Initialize(mapload)
 	. = ..()
-	experimentator_wires = new /datum/wires/experimentor(src)
 
 	load_handlers()
 
@@ -85,7 +83,7 @@
 	tracked_runtime_ref = WEAKREF(locate(/mob/living/simple_animal/pet/cat/Runtime) in GLOB.mob_living_list)
 
 /obj/machinery/r_n_d/experimentor/Destroy()
-	QDEL_NULL(experimentator_wires)
+	QDEL_LIST_ASSOC_VAL(experimentor_result_handlers)
 	return ..()
 
 /obj/machinery/r_n_d/experimentor/RefreshParts()
@@ -479,18 +477,6 @@
 	item_eject()
 	default_deconstruction_crowbar(user, I)
 
-/obj/machinery/r_n_d/experimentor/multitool_act(mob/living/user, obj/item/tool)
-	if(panel_open)
-		experimentator_wires.Interact(user)
-		return TRUE
-	return FALSE
-
-/obj/machinery/r_n_d/experimentor/wirecutter_act(mob/living/user, obj/item/tool)
-	if(panel_open)
-		experimentator_wires.Interact(user)
-		return TRUE
-	return FALSE
-
 /obj/machinery/r_n_d/experimentor/attack_hand(mob/user)
 	if(..())
 		return TRUE
@@ -498,7 +484,7 @@
 
 /obj/machinery/r_n_d/experimentor/attack_ghost(mob/dead/observer/user)
 	ui_interact(user)
-	. = ..()
+	return ..()
 
 /obj/machinery/r_n_d/experimentor/proc/console_connect()
 	var/obj/machinery/computer/rdconsole/console = locate() in oview(console_dist, src)

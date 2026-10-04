@@ -1,6 +1,7 @@
 /datum/species/vox
 	name = SPECIES_VOX
 	name_plural = "Vox"
+	ru_genitive = "вокса"
 	icobase = 'icons/mob/human_races/vox/r_vox.dmi'
 	deform = 'icons/mob/human_races/vox/r_def_vox.dmi'
 	dangerous_existence = TRUE
@@ -31,7 +32,7 @@
 		TRAIT_TOXIC_FUEL_PROTECTED,
 	)
 	clothing_flags = HAS_UNDERWEAR | HAS_UNDERSHIRT | HAS_SOCKS //Species-fitted 'em all.
-	bodyflags = HAS_ICON_SKIN_TONE | HAS_TAIL | TAIL_WAGGING | TAIL_OVERLAPPED | HAS_BODY_MARKINGS | HAS_TAIL_MARKINGS | HAS_SKIN_COLOR
+	bodyflags = HAS_ICON_SKIN_TONE | HAS_TAIL | TAIL_WAGGING | TAIL_OVERLAPPED | HAS_BODY_MARKINGS | HAS_TAIL_MARKINGS | HAS_SKIN_COLOR | HAS_HAIR
 
 	silent_steps = TRUE
 
@@ -119,14 +120,18 @@
 	)
 	autohiss_exempt = list("Вокс-пиджин")
 
+	max_select_skills = list(
+		/datum/skill/general/carrying = 1,
+		/datum/skill/combat/fists = 1,
+		/datum/skill/engineering/electrician = 3,
+		/datum/skill/engineering/atmos = 3,
+	)
+
 /datum/species/vox/handle_death(gibbed, mob/living/carbon/human/H)
 	H.stop_tail_wagging()
 
 /datum/species/vox/on_species_gain(mob/living/carbon/human/H)
 	. = ..()
-	add_verb(H, /mob/living/carbon/human/proc/emote_wag)
-	add_verb(H, /mob/living/carbon/human/proc/emote_swag)
-	add_verb(H, /mob/living/carbon/human/proc/emote_quill)
 	H.faction |= list("Vox")
 
 /datum/species/vox/gain_muscles(mob/living/target, default, max_level, can_become_stronger)
@@ -134,9 +139,6 @@
 
 /datum/species/vox/on_species_loss(mob/living/carbon/human/H)
 	. = ..()
-	remove_verb(H, /mob/living/carbon/human/proc/emote_wag)
-	remove_verb(H, /mob/living/carbon/human/proc/emote_swag)
-	remove_verb(H, /mob/living/carbon/human/proc/emote_quill)
 	H.faction -= "Vox"
 
 /datum/species/vox/after_equip_job(datum/job/J, mob/living/carbon/human/H)
@@ -264,18 +266,6 @@
 
 /datum/species/vox/armalis/handle_reagents() //Skip the Vox oxygen reagent toxicity. Armalis are above such things.
 	return TRUE
-
-/datum/species/vox/armalis/on_species_gain(mob/living/carbon/human/H)
-	. = ..()
-	if(/mob/living/carbon/human/proc/emote_wag in H.verbs)
-		remove_verb(H, /mob/living/carbon/human/proc/emote_wag)
-	if(/mob/living/carbon/human/proc/emote_swag in H.verbs)
-		remove_verb(H, /mob/living/carbon/human/proc/emote_swag)
-
-/datum/species/vox/armalis/on_species_loss(mob/living/carbon/human/H)
-	. = ..()
-	if(/mob/living/carbon/human/proc/emote_quill in H.verbs)
-		remove_verb(H, /mob/living/carbon/human/proc/emote_quill)
 
 /datum/species/vox/compressor_grind(location)
 	new /obj/item/reagent_containers/food/snacks/fried_vox(location)

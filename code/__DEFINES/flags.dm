@@ -60,6 +60,8 @@
 #define RICOCHET_HARD (1<<1)
 /// If the thing can reflect ballistic bullets with low chance
 #define RICOCHET_BALLISTIC (1<<2)
+/// If the thing can reflect special weapons type
+#define RICOCHET_SPECIAL (1<<3)
 
 //Reagent flags
 #define REAGENT_NOREACT 1
@@ -86,6 +88,7 @@
 #define HAS_BODYACC_COLOR (1<<13)
 #define BALD (1<<14)
 #define ALL_RPARTS (1<<15)
+#define HAS_HAIR (1<<16)
 
 //Pre-baked combinations of the above body flags
 #define HAS_BODY_ACCESSORY (HAS_TAIL|HAS_WING)
@@ -161,6 +164,8 @@
 #define DF_VAR_EDITED (1<<1)
 #define DF_ISPROCESSING (1<<2)
 #define DF_UID_INVALID (1<<3)
+/// Set on datums that should be tracked by the event logger.
+#define DF_EVLOGGING (1<<4)
 
 //TURF FLAGS
 /// If a turf cant be jaunted through.
@@ -244,6 +249,11 @@
 #define GROSS (1<<11)
 #define TOXIC (1<<12)
 
+///Food preference enums
+#define FOOD_LIKED 1
+#define FOOD_DISLIKED 2
+#define FOOD_TOXIC 3
+
 GLOBAL_LIST_INIT(bitflags, list(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768))
 GLOBAL_LIST_INIT(more_bitflags, list(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288))
 
@@ -292,6 +302,8 @@ GLOBAL_LIST_INIT(more_bitflags, list(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024
 #define DA_IGNORE_EMPTY_GRIPPER (1<<8)
 /// Used to prevent important slowdowns to be modified by mob's actions slowdown
 #define DA_IGNORE_SLOWDOWNS (1<<9)
+/// Cancel the action if the user does another action (mainly via clicking)
+#define DA_DO_AFTER_CHECK_NEXT_MOVE (1<<10)
 
 /// All ignore flags considered as default old do_after behavior.
 #define DEFAULT_DOAFTER_IGNORE (DA_IGNORE_LYING|DA_IGNORE_RESTRAINED)
@@ -316,3 +328,6 @@ GLOBAL_LIST_INIT(more_bitflags, list(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024
 		REMOVE_TRAIT(x, TRAIT_KEEP_TOGETHER, KEEP_TOGETHER_ORIGINAL);\
 	else if(!HAS_TRAIT(x, TRAIT_KEEP_TOGETHER))\
 		x.appearance_flags &= ~KEEP_TOGETHER
+
+//gun flags
+#define GUN_AMMO_COUNTER (1<<0)

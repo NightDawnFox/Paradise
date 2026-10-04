@@ -160,7 +160,11 @@ GLOBAL_LIST_INIT(default_pirate_channels, list(
 /obj/item/radio/dummy/Initialize(mapload)
 	. = ..()
 	// this is just dummy. We minimalize memmory usage for this object
-	Destroy()
+	return INITIALIZE_HINT_QDEL
+
+/obj/item/radio/dummy/Destroy(force)
+	GLOB.global_announcer = null
+	return ..()
 
 //simple getters only because i NEED to enforce complex setter use for these vars for caching purposes but VAR_PROTECTED requires getter usage as well.
 //if another decorator is made that doesnt require getters feel free to nuke these and change these vars over to that
@@ -232,16 +236,15 @@ GLOBAL_LIST_INIT(default_pirate_channels, list(
 
 ///setter for the on var that sets both broadcasting and listening to off or whatever they were supposed to be
 /obj/item/radio/proc/set_on(new_on)
-
-	on = new_on
-
-	if(on)
-		set_broadcasting(should_be_broadcasting)//set them to whatever theyre supposed to be
-		set_listening(should_be_listening)
+	if(!new_on)
+		set_broadcasting(FALSE, actual_setting = FALSE)//fake set them to off
+		set_listening(FALSE, actual_setting = FALSE)
+		on = FALSE
 		return
 
-	set_broadcasting(FALSE, actual_setting = FALSE)//fake set them to off
-	set_listening(FALSE, actual_setting = FALSE)
+	on = TRUE
+	set_broadcasting(should_be_broadcasting)//set them to whatever theyre supposed to be
+	set_listening(should_be_listening)
 
 /obj/item/radio/proc/set_frequency(new_frequency)
 	SEND_SIGNAL(src, COMSIG_RADIO_NEW_FREQUENCY, args)
@@ -639,8 +642,6 @@ GLOBAL_LIST_INIT(default_pirate_channels, list(
 	if(freq in SSradio.ANTAG_FREQS)
 		if(!(syndiekey))//Checks to see if it's allowed on that frequency, based on the encryption keys
 			return -1
-		if(freq == SYND_TAIPAN_FREQ && !istype(syndiekey, /obj/item/encryptionkey/syndicate/taipan)) //Чтобы тайпановскую частоту, слышали только тайпановцы
-			return -1
 
 	if(!freq) //received on main frequency
 		if(!listening)
@@ -648,7 +649,7 @@ GLOBAL_LIST_INIT(default_pirate_channels, list(
 	else if(syndiekey && !(freq in SSradio.syndicate_blacklist))
 		return canhear_range
 	else
-		var/accept = (freq==frequency && listening)
+		var/accept = (freq == frequency && listening)
 		if(!accept)
 			for(var/ch_name in channels)
 				var/datum/radio_frequency/RF = LAZYACCESS(secure_radio_connections, ch_name)
@@ -913,7 +914,9 @@ GLOBAL_LIST_INIT(default_pirate_channels, list(
 
 /obj/item/radio/borg/get_base_channels()
 	var/mob/living/silicon/robot/robot = loc
-	return robot?.module?.channels | keyslot?.channels
+	if(!istype(robot))
+		return
+	return robot.module?.channels | keyslot?.channels
 
 /obj/item/radio/borg/make_broken()
 	name = "broken radio"

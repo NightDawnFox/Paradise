@@ -599,7 +599,7 @@
 /area/mine/living_quarters)
 "ej" = (
 /obj/structure/table,
-/obj/item/reagent_containers/food/drinks/cans/beer,
+/obj/item/reagent_containers/cup/soda_cans/beer,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/plasteel{
 	dir = 8;
@@ -740,11 +740,11 @@
 /obj/effect/decal/cleanable/cobweb,
 /obj/effect/decal/cleanable/vomit,
 /obj/structure/toilet/cancollectmapitems{
-	dir = 4
+	dir = 8
 	},
 /obj/item/card/id/prisoner{
-	name = "Prisoner 1-984";
 	goal = 100000;
+	name = "Prisoner 1-984";
 	points = 1984;
 	registered_name = "Prisoner 1-984"
 	},
@@ -859,7 +859,7 @@
 	},
 /area/mine/laborcamp)
 "gg" = (
-/obj/machinery/shower/directional/west,
+/obj/machinery/shower/directional/east,
 /obj/effect/decal/cleanable/dirt,
 /obj/machinery/atmospherics/unary/vent_scrubber/on,
 /turf/simulated/floor/plasteel/white,
@@ -1241,9 +1241,9 @@
 /area/ruin/unpowered/safe_cave)
 "ih" = (
 /obj/structure/reagent_dispensers/watertank,
-/obj/item/reagent_containers/glass/bucket,
-/obj/item/reagent_containers/glass/bucket,
-/obj/item/reagent_containers/glass/bucket,
+/obj/item/reagent_containers/cup/bucket,
+/obj/item/reagent_containers/cup/bucket,
+/obj/item/reagent_containers/cup/bucket,
 /turf/simulated/floor/plasteel{
 	dir = 6;
 	icon_state = "green"
@@ -1549,8 +1549,8 @@
 	},
 /obj/effect/decal/cleanable/dirt,
 /obj/item/cigbutt{
-	pixel_y = 9;
-	pixel_x = 8
+	pixel_x = 8;
+	pixel_y = 9
 	},
 /turf/simulated/floor/plasteel{
 	dir = 8;
@@ -1707,8 +1707,8 @@
 /obj/effect/decal/cleanable/dirt,
 /obj/machinery/camera{
 	c_tag = "Mining Smeltery";
-	network = list("Mining Outpost");
-	dir = 4
+	dir = 4;
+	network = list("Mining Outpost")
 	},
 /turf/simulated/floor/plasteel,
 /area/mine/living_quarters)
@@ -1845,7 +1845,7 @@
 /turf/simulated/floor/plasteel,
 /area/mine/living_quarters)
 "lb" = (
-/obj/structure/sink/directional/east,
+/obj/structure/sink/directional/west,
 /obj/structure/mirror{
 	pixel_x = -28
 	},
@@ -1996,9 +1996,9 @@
 	dir = 1
 	},
 /obj/machinery/door/window/eastleft{
-	name = "Break Room Bar";
+	color = "red";
 	dir = 1;
-	color = "red"
+	name = "Break Room Bar"
 	},
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/wood,
@@ -2007,8 +2007,8 @@
 /obj/structure/table,
 /obj/item/folder/red,
 /obj/item/folder/red{
-	pixel_y = 2;
-	pixel_x = 2
+	pixel_x = 2;
+	pixel_y = 2
 	},
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/plasteel{
@@ -2100,12 +2100,12 @@
 /area/lavaland/surface/outdoors/necropolis)
 "mn" = (
 /obj/structure/table/wood,
-/obj/item/reagent_containers/food/drinks/cans/beer{
+/obj/item/reagent_containers/cup/soda_cans/beer{
 	pixel_x = 5;
 	pixel_y = -2
 	},
 /obj/effect/decal/cleanable/dirt,
-/obj/item/reagent_containers/food/condiment/saltshaker,
+/obj/item/reagent_containers/condiment/saltshaker,
 /obj/effect/turf_decal/siding/wood{
 	dir = 8
 	},
@@ -2250,8 +2250,8 @@
 /obj/machinery/vending/cigarette,
 /obj/machinery/camera{
 	c_tag = "Mining Bar";
-	network = list("Mining Outpost");
-	dir = 8
+	dir = 8;
+	network = list("Mining Outpost")
 	},
 /turf/simulated/floor/plasteel/dark,
 /area/mine/cafeteria)
@@ -2342,7 +2342,7 @@
 	},
 /area/mine/laborcamp)
 "ob" = (
-/obj/machinery/shower/directional/west,
+/obj/machinery/shower/directional/east,
 /obj/structure/extinguisher_cabinet/directional/north,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/plasteel{
@@ -3165,7 +3165,7 @@
 /turf/simulated/floor/indestructible/boss,
 /area/lavaland/surface/outdoors/necropolis)
 "tN" = (
-/obj/machinery/shower/directional/west,
+/obj/machinery/shower/directional/east,
 /obj/effect/decal/cleanable/dirt,
 /obj/machinery/camera/labor_camp{
 	c_tag = "Labor Camp Bathroom";
@@ -3869,7 +3869,7 @@
 /area/lavaland/surface/outdoors/necropolis)
 "xx" = (
 /obj/machinery/biogenerator,
-/obj/item/reagent_containers/glass/bucket,
+/obj/item/reagent_containers/cup/bucket,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/plasteel{
 	dir = 9;
@@ -4156,8 +4156,8 @@
 "zg" = (
 /obj/structure/table,
 /obj/item/restraints/handcuffs{
-	pixel_y = 3;
-	pixel_x = 2
+	pixel_x = 2;
+	pixel_y = 3
 	},
 /obj/item/restraints/handcuffs,
 /obj/effect/decal/cleanable/dirt,
@@ -4486,13 +4486,11 @@
 	},
 /area/mine/lobby)
 "AP" = (
-/obj/structure/toilet{
-	dir = 8
-	},
+/obj/structure/toilet/directional/east,
 /obj/structure/mirror{
 	pixel_y = 32
 	},
-/obj/structure/sink/directional/south,
+/obj/structure/sink/directional/north,
 /obj/machinery/light/small{
 	dir = 4
 	},
@@ -4532,8 +4530,8 @@
 	dir = 1
 	},
 /obj/item/toy/plushie/ashwalkerplushie{
-	name = "Зюзя";
-	desc = "Мило выглядящая плюшевая игрушка пеплоходца с странным именем."
+	desc = "Мило выглядящая плюшевая игрушка пеплоходца с странным именем.";
+	name = "Зюзя"
 	},
 /turf/simulated/floor/plasteel{
 	dir = 10;
@@ -4567,9 +4565,7 @@
 /turf/simulated/floor/plasteel,
 /area/mine/laborcamp)
 "Bi" = (
-/obj/structure/toilet{
-	dir = 4
-	},
+/obj/structure/toilet/directional/west,
 /obj/item/soap/homemade,
 /obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/cobweb,
@@ -4938,13 +4934,13 @@
 /obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /obj/structure/table,
-/obj/item/reagent_containers/food/drinks/bottle/whiskey{
+/obj/item/reagent_containers/cup/glass/bottle/whiskey{
 	pixel_y = 17
 	},
-/obj/item/reagent_containers/food/drinks/drinkingglass/shotglass{
+/obj/item/reagent_containers/cup/glass/drinkingglass/shotglass{
 	pixel_x = -6
 	},
-/obj/item/reagent_containers/food/drinks/drinkingglass/shotglass{
+/obj/item/reagent_containers/cup/glass/drinkingglass/shotglass{
 	pixel_x = 8
 	},
 /turf/simulated/floor/plasteel/dark,
@@ -5241,16 +5237,14 @@
 /turf/simulated/floor/plating/asteroid/basalt/lava_land_surface,
 /area/ruin/unpowered/safe_cave)
 "EP" = (
-/obj/structure/toilet{
-	dir = 8
-	},
+/obj/structure/toilet/directional/east,
 /obj/structure/mirror{
 	pixel_y = 32
 	},
 /obj/machinery/light/small{
 	dir = 4
 	},
-/obj/structure/sink/directional/south,
+/obj/structure/sink/directional/north,
 /turf/simulated/floor/plasteel{
 	icon_state = "freezerfloor"
 	},
@@ -5368,7 +5362,7 @@
 	dir = 9
 	},
 /obj/item/storage/box/donkpockets,
-/obj/item/reagent_containers/food/drinks/shaker,
+/obj/item/reagent_containers/cup/glass/shaker,
 /turf/simulated/floor/wood,
 /area/mine/cafeteria)
 "FM" = (
@@ -6012,8 +6006,8 @@
 "Jx" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/item/cigbutt{
-	pixel_y = 4;
-	pixel_x = 8
+	pixel_x = 8;
+	pixel_y = 4
 	},
 /turf/simulated/floor/plasteel/white,
 /area/mine/laborcamp)
@@ -6563,7 +6557,7 @@
 	network = list("Mining Outpost")
 	},
 /obj/machinery/optable,
-/obj/machinery/shower/directional/south,
+/obj/machinery/shower/directional/north,
 /obj/item/tank/internals/anesthetic,
 /obj/item/clothing/mask/breath/medical,
 /turf/simulated/floor/plasteel{
@@ -7093,7 +7087,7 @@
 /area/lavaland/surface/outdoors/necropolis)
 "Px" = (
 /obj/structure/table,
-/obj/item/reagent_containers/food/drinks/cans/beer,
+/obj/item/reagent_containers/cup/soda_cans/beer,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/plasteel{
 	dir = 8;
@@ -7141,7 +7135,7 @@
 "PR" = (
 /obj/structure/table,
 /obj/item/reagent_containers/food/snacks/breadslice,
-/obj/item/reagent_containers/glass/beaker/waterbottle/large,
+/obj/item/reagent_containers/cup/beaker/waterbottle/large,
 /turf/simulated/floor/plating,
 /area/mine/laborcamp)
 "PT" = (
@@ -7205,8 +7199,8 @@
 /obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /obj/structure/sign/nuke{
-	pixel_y = -32;
-	pixel_x = -32
+	pixel_x = -32;
+	pixel_y = -32
 	},
 /turf/simulated/floor/plasteel/dark,
 /area/mine/cafeteria)
@@ -7614,7 +7608,7 @@
 "SB" = (
 /obj/structure/table/wood,
 /obj/effect/decal/cleanable/dirt,
-/obj/item/reagent_containers/food/condiment/peppermill,
+/obj/item/reagent_containers/condiment/peppermill,
 /obj/effect/turf_decal/siding/wood{
 	dir = 8
 	},
@@ -7757,8 +7751,8 @@
 /obj/effect/decal/cleanable/dirt,
 /obj/machinery/camera{
 	c_tag = "Mining Airlock";
-	network = list("Mining Outpost");
-	dir = 1
+	dir = 1;
+	network = list("Mining Outpost")
 	},
 /turf/simulated/floor/plasteel{
 	dir = 10;
@@ -7848,9 +7842,9 @@
 /obj/structure/table,
 /obj/item/shovel/spade/wooden,
 /obj/item/cultivator/wooden,
-/obj/item/reagent_containers/glass/bottle/nutrient/ez,
-/obj/item/reagent_containers/glass/bottle/nutrient/ez,
-/obj/item/reagent_containers/glass/bottle/nutrient/ez,
+/obj/item/reagent_containers/cup/bottle/nutrient/ez,
+/obj/item/reagent_containers/cup/bottle/nutrient/ez,
+/obj/item/reagent_containers/cup/bottle/nutrient/ez,
 /obj/item/plant_analyzer,
 /obj/item/seeds/lavaland/fireblossom,
 /obj/machinery/light/small,

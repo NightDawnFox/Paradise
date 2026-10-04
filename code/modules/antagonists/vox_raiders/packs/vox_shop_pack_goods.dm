@@ -33,19 +33,12 @@
 	cost = 25
 	random_subtype = /obj/item/toy/plushie
 
-/datum/vox_pack/goods/therapy
-	name = "Плюшка-Обнимашка"
-	desc = "Случайный товар для продажи."
-	reference = "G_THER"
-	cost = 25
-	random_subtype = /obj/item/toy/therapy
-
 /datum/vox_pack/goods/carp_plushie
 	name = "Плюшка-Карпушка"
 	desc = "Случайный товар для продажи."
 	reference = "G_CARP"
 	cost = 25
-	random_subtype = /obj/item/toy/carpplushie
+	random_subtype = /obj/item/toy/plushie/carp
 
 /datum/vox_pack/goods/food
 	name = "Еда"
@@ -213,7 +206,7 @@
 		/obj/item/toy/crayon/rainbow,
 		/obj/item/storage/fancy/crayons,
 		/obj/item/reagent_containers/spray/waterflower,
-		/obj/item/reagent_containers/food/drinks/bottle/bottleofbanana,
+		/obj/item/reagent_containers/cup/glass/bottle/bottleofbanana,
 	)
 
 /datum/vox_pack/goods/clown/sec
@@ -238,7 +231,7 @@
 		/obj/item/toy/crayon/rainbow,
 		/obj/item/storage/fancy/crayons,
 		/obj/item/reagent_containers/spray/waterflower,
-		/obj/item/reagent_containers/food/drinks/bottle/bottleofbanana,
+		/obj/item/reagent_containers/cup/glass/bottle/bottleofbanana,
 		/obj/item/instrument/bikehorn,
 		/obj/item/restraints/handcuffs/toy,
 		/obj/item/restraints/handcuffs/toy,

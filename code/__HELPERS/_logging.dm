@@ -76,6 +76,11 @@ GLOBAL_PROTECT(log_end)
 		if(last_mob.ckey in GLOB.admin_datums)
 			WRITE_LOG(GLOB.world_game_log, "ADMIN: Admin [key_name(last_mob)] logged out[GLOB.log_end]")
 
+/proc/log_access_afk(client/last_mob)
+	if(CONFIG_GET(flag/log_access))
+		var/message = "[key_name(last_mob)]"
+		WRITE_LOG(GLOB.world_game_log, "AFK: [message][GLOB.log_end]")
+
 /proc/log_say(text, mob/speaker)
 	if(CONFIG_GET(flag/log_say))
 		WRITE_LOG(GLOB.world_game_log, "SAY: [speaker.simple_info_line()]: [html_decode(text)][GLOB.log_end]")
@@ -207,6 +212,13 @@ GLOBAL_PROTECT(log_end)
 	messages.Add(": [text]")
 	messages.Add("[GLOB.log_end]")
 	WRITE_LOG(GLOB.tgui_log, messages.Join())
+
+#if defined(REFERENCE_TRACKING) // Doing it locally
+#define log_reftracker(msg) log_gc("## REF SEARCH [msg]")
+
+#else //Not tracking at all
+#define log_reftracker(msg)
+#endif
 
 #ifdef REFERENCE_TRACKING
 /proc/log_gc(text)
@@ -428,10 +440,3 @@ GLOBAL_PROTECT(log_end)
 		return "([AREACOORD(T)])"
 	else if(A.loc)
 		return "(UNKNOWN (?, ?, ?))"
-
-#if defined(REFERENCE_TRACKING) // Doing it locally
-#define log_reftracker(msg) log_gc("## REF SEARCH [msg]")
-
-#else //Not tracking at all
-#define log_reftracker(msg)
-#endif

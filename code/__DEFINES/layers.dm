@@ -23,10 +23,11 @@
 
 #define TRANSPARENT_FLOOR_PLANE -10
 
-#define FLOOR_PLANE -7
+#define FLOOR_PLANE -8
 
-#define WALL_PLANE -6
-#define BELOW_GAME_PLANE -5
+#define WALL_PLANE -7
+#define BELOW_GAME_PLANE -6
+#define CULT_VEIL_PLANE -5
 #define GAME_PLANE -4
 
 #define ABOVE_GAME_PLANE -3
@@ -342,6 +343,12 @@
 
 /// Layer for light overlays
 #define LIGHT_DEBUG_LAYER 35
+
+/// Layer for pathfinding arrows
+#define PATH_ARROW_DEBUG_LAYER 36
+
+/// Layer for pathfinding overlays
+#define PATH_DEBUG_LAYER 37
 
 //-------------------- Radial ---------------------
 

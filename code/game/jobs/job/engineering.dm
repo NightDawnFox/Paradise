@@ -20,6 +20,18 @@
 	exp_type = EXP_TYPE_ENGINEERING
 	outfit = /datum/outfit/job/chief_engineer
 	liver_traits = list(TRAIT_ENGINEER_METABOLISM)
+	skill_levels = list(
+		/datum/skill/engineering/building = SKILL_LEVEL_PROFESSIONAL,
+		/datum/skill/engineering/construction = SKILL_LEVEL_PROFESSIONAL,
+		/datum/skill/engineering/electrician = SKILL_LEVEL_PROFESSIONAL,
+		/datum/skill/engineering/atmos = SKILL_LEVEL_PROFESSIONAL,
+		/datum/skill/combat/accuracy = SKILL_LEVEL_BEGINNER,
+		/datum/skill/combat/guns = SKILL_LEVEL_BEGINNER,
+		/datum/skill/combat/melee = SKILL_LEVEL_BEGINNER,
+		/datum/skill/general/mech_drive = SKILL_LEVEL_BASIC,
+		/datum/skill/general/mod_use = SKILL_LEVEL_ADVANCED,
+	)
+	discount_skill_category = /datum/skill/engineering
 
 /datum/outfit/job/chief_engineer
 	name = JOB_TITLE_RU_CHIEF_ENGINEER
@@ -58,6 +70,7 @@
 	exp_type = EXP_TYPE_ENGINEERING
 	paycheck = PAYCHECK_CREW
 	liver_traits = list(TRAIT_ENGINEER_METABOLISM)
+	discount_skill_category = /datum/skill/engineering
 
 /datum/job/engineering/engineer
 	title = JOB_TITLE_ENGINEER
@@ -72,6 +85,16 @@
 		ALT_JOB_TITLE_RU_ELECTRICIAN,
 	)
 	outfit = /datum/outfit/job/engineer
+	skill_levels = list(
+		/datum/skill/engineering/building = SKILL_LEVEL_PROFESSIONAL,
+		/datum/skill/engineering/construction = SKILL_LEVEL_ADVANCED,
+		/datum/skill/engineering/electrician = SKILL_LEVEL_ADVANCED,
+		/datum/skill/engineering/atmos = SKILL_LEVEL_BASIC,
+		/datum/skill/general/mech_drive = SKILL_LEVEL_BEGINNER,
+		/datum/skill/general/mod_use = SKILL_LEVEL_BASIC,
+		/datum/skill/service/cleaning = SKILL_LEVEL_BEGINNER,
+		/datum/skill/general/cooking = SKILL_LEVEL_BEGINNER,
+	)
 
 /datum/outfit/job/engineer
 	name = JOB_TITLE_RU_ENGINEER
@@ -105,6 +128,17 @@
 		ALT_JOB_TITLE_RU_LIFE_SUPPORT_SPECIALIST,
 	)
 	outfit = /datum/outfit/job/atmos
+	skill_levels = list(
+		//engineering
+		/datum/skill/engineering/building = SKILL_LEVEL_ADVANCED,
+		/datum/skill/engineering/construction = SKILL_LEVEL_BASIC,
+		/datum/skill/engineering/electrician = SKILL_LEVEL_BASIC,
+		/datum/skill/engineering/atmos = SKILL_LEVEL_PROFESSIONAL,
+		/datum/skill/general/mech_drive = SKILL_LEVEL_BEGINNER,
+		/datum/skill/general/mod_use = SKILL_LEVEL_BASIC,
+		/datum/skill/service/cleaning = SKILL_LEVEL_BEGINNER,
+		/datum/skill/general/cooking = SKILL_LEVEL_BEGINNER,
+	)
 
 /datum/outfit/job/atmos
 	name = JOB_TITLE_RU_ATMOSTECH
@@ -137,6 +171,15 @@
 	is_novice = TRUE
 	outfit = /datum/outfit/job/engineer/trainee
 	paycheck = PAYCHECK_LOWER
+	skill_levels = list(
+		/datum/skill/engineering/building = SKILL_LEVEL_BEGINNER,
+		/datum/skill/engineering/construction = SKILL_LEVEL_BEGINNER,
+		/datum/skill/engineering/electrician = SKILL_LEVEL_BEGINNER,
+		/datum/skill/engineering/atmos = SKILL_LEVEL_BEGINNER,
+		/datum/skill/general/mod_use = SKILL_LEVEL_BEGINNER,
+		/datum/skill/service/cleaning = SKILL_LEVEL_BEGINNER,
+		/datum/skill/general/cooking = SKILL_LEVEL_BEGINNER,
+	)
 
 /datum/outfit/job/engineer/trainee
 	name = JOB_TITLE_RU_ENGINEER_TRAINEE
@@ -156,3 +199,8 @@
 				uniform = /obj/item/clothing/under/rank/engineer/trainee/assistant
 				if(H.gender == FEMALE)
 					uniform = /obj/item/clothing/under/rank/engineer/trainee/assistant/skirt
+				head = /obj/item/clothing/head/soft/orange
+			if("Technical Student", "Technical Trainee")
+				head = /obj/item/clothing/head/soft/orange
+			if("Engineer Student")
+				head = /obj/item/clothing/head/beret/eng

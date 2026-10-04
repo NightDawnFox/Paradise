@@ -111,16 +111,16 @@
 /datum/martial_art/proc/check_combos(step, mob/living/carbon/human/user, mob/living/carbon/human/target, could_start_new_combo = TRUE)
 	. = FALSE
 	for(var/thing in current_combos)
-		var/datum/martial_combo/MC = thing
-		if(!MC.check_combo(step, target))
-			current_combos -= MC	// It failed so remove it
+		var/datum/martial_combo/combo = thing
+		if(!combo.check_combo(step, target))
+			current_combos -= combo
 		else
-			switch(MC.progress_combo(user, target, src))
+			switch(combo.progress_combo(user, target, src))
 				if(MARTIAL_COMBO_FAIL)
-					current_combos -= MC
+					current_combos -= combo
 				if(MARTIAL_COMBO_DONE_NO_CLEAR)
 					. = TRUE
-					current_combos -= MC
+					current_combos -= combo
 				if(MARTIAL_COMBO_DONE)
 					reset_combos()
 					return TRUE
@@ -173,9 +173,9 @@
 		D.visible_message(span_danger("[A] has weakened [D]!!"), \
 								span_userdanger("[A] has weakened [D]!"))
 		D.apply_effect(4 SECONDS, KNOCKDOWN, armor_block)
-		D.forcesay(GLOB.hit_appends)
+		D.force_say(GLOB.hit_appends)
 	else if(D.body_position == LYING_DOWN)
-		D.forcesay(GLOB.hit_appends)
+		D.force_say(GLOB.hit_appends)
 	return TRUE
 
 /datum/martial_art/proc/attack_reaction(mob/living/carbon/human/defender, mob/living/carbon/human/attacker, obj/item/I, visible_message, self_message)
@@ -222,10 +222,10 @@
 			human.drop_r_hand()
 
 	if(has_explaination_verb)
-		add_verb(human, /mob/living/carbon/human/proc/martial_arts_help)
+		ASSIGN_GAME_VERB(human, /mob/living/carbon/human, martial_arts_help)
 
 	if(has_dirslash)
-		add_verb(human, /mob/living/carbon/human/proc/dirslash_enabling)
+		ASSIGN_GAME_VERB(human, /mob/living/carbon/human, dirslash_enabling)
 		human.dirslash_enabled = TRUE
 
 	human.mind.known_martial_arts.Add(src)
@@ -251,8 +251,8 @@
 	return TRUE
 
 /datum/martial_art/proc/remove_martial_art_verbs(mob/living/carbon/human/old_human)
-	remove_verb(old_human, /mob/living/carbon/human/proc/martial_arts_help)
-	remove_verb(old_human, /mob/living/carbon/human/proc/dirslash_enabling)
+	UNASSIGN_GAME_VERB(old_human, /mob/living/carbon/human, martial_arts_help)
+	UNASSIGN_GAME_VERB(old_human, /mob/living/carbon/human, dirslash_enabling)
 	old_human.dirslash_enabled = initial(old_human.dirslash_enabled)
 	return TRUE
 
@@ -264,20 +264,15 @@
 			highest_weight = MA
 	return highest_weight
 
-/mob/living/carbon/human/proc/martial_arts_help()
-	set name = "Информацию о БИ"
-	set desc = "Gives information about the martial arts you know."
-	set category = VERB_CATEGORY_MARTIALARTS
+GAME_VERB_PROC_DESC(/mob/living/carbon/human, martial_arts_help, "Информацию о БИ", "Gives information about the martial arts you know.", VERB_CATEGORY_MARTIALARTS)
 	var/mob/living/carbon/human/human = usr
 	if(!istype(human))
 		to_chat(usr, span_warning("You shouldn't have access to this verb. Report this as a bug to the github please."))
 		return
 	human.mind.martial_art.give_explaination(human)
 
-/mob/living/carbon/human/proc/dirslash_enabling()
-	set name = "Атака по направлению"
-	set desc = "If direction slash is enabled, you can attack mobs, by clicking behind their backs"
-	set category = VERB_CATEGORY_MARTIALARTS
+GAME_VERB_PROC_DESC(/mob/living/carbon/human, dirslash_enabling, "Атака по направлению", "If direction slash is enabled, you can attack mobs, by clicking behind their backs", VERB_CATEGORY_MARTIALARTS)
+
 	dirslash_enabled = !dirslash_enabled
 	to_chat(src, span_notice("Directrion slash is [dirslash_enabled? "enabled" : "disabled"] now."))
 
@@ -633,7 +628,9 @@
 	throwforce = 20
 	attack_verb = list("сокрушил", "ударил", "огрел")
 	icon_state = "bostaff0"
-	block_chance = 50
+
+/obj/item/twohanded/bostaff/add_parry_component()
+	AddComponent(/datum/component/parry, _stamina_constant = 2, _stamina_coefficient = 0.5, _parryable_attack_types = ALL_ATTACK_TYPES)
 
 /obj/item/twohanded/bostaff/update_icon_state()
 	icon_state = "bostaff[HAS_TRAIT(src, TRAIT_WIELDED)]"
@@ -699,7 +696,7 @@
 /obj/item/twohanded/bostaff/hit_reaction(mob/living/carbon/human/owner, atom/movable/hitby, attack_text = "the attack", final_block_chance = 0, damage = 0, attack_type = ITEM_ATTACK)
 	if(HAS_TRAIT(src, TRAIT_WIELDED))
 		return ..()
-	return FALSE
+	return HIT_RESULT_FAILED
 
 /atom/movable/screen/combo
 	icon_state = ""
@@ -735,6 +732,50 @@
 	if(!streak)
 		return
 	icon_state = "combo"
+
+/obj/item/midichlorian_injector
+	name = "midichlorian injector"
+	desc = "Странный автоинъектор, наполненный странной светящейся жидкостью. Да прибудет с тобой сила."
+	icon = 'icons/obj/ninjaobjects.dmi'
+	icon_state = "injector"
+	var/used = FALSE
+
+/obj/item/midichlorian_injector/get_ru_names()
+	return alist(
+		NOMINATIVE = "инъектор мидихлориан",
+		GENITIVE = "инъектора мидихлориан",
+		DATIVE = "инъектору мидихлориан",
+		ACCUSATIVE = "инъектор мидихлориан",
+		INSTRUMENTAL = "инъектором мидихлориан",
+		PREPOSITIONAL = "инъекторе мидихлориан",
+	)
+
+/obj/item/midichlorian_injector/update_icon_state()
+	icon_state = used ? "injector-used" : "injector"
+
+/obj/item/midichlorian_injector/update_desc(updates = ALL)
+	. = ..()
+	desc = used ? "Пустой автоинъектор." : initial(desc)
+
+/obj/item/midichlorian_injector/attack_self(mob/living/carbon/human/user)
+	if(!istype(user))
+		return TRUE
+
+	if(used)
+		to_chat(user, span_warning("В [declent_ru(PREPOSITIONAL)] больше ничего не осталось."))
+		return TRUE
+
+	user.visible_message(
+		span_warning("[user] вкалывает себе что-то [declent_ru(INSTRUMENTAL)]."),
+		span_warning("Вы вводите себе содержимое [declent_ru(GENITIVE)].")
+	)
+
+	var/datum/martial_art/force/force_art = new
+	force_art.teach(user)
+
+	used = TRUE
+	update_appearance(UPDATE_ICON_STATE|UPDATE_DESC)
+	return FALSE
 
 #undef HAS_COMBOS
 #undef COMBO_ALIVE_TIME

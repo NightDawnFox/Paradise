@@ -1,6 +1,7 @@
 /datum/species/wryn
 	name = SPECIES_WRYN
 	name_plural = "Wryn"
+	ru_genitive = "врина"
 	icobase = 'icons/mob/human_races/r_wryn.dmi'
 	deform = 'icons/mob/human_races/r_wryn.dmi'
 	language = LANGUAGE_WRYN
@@ -83,6 +84,15 @@
 		SPECIES_AGE_MAX = 55,
 		JOB_MIN_AGE_HIGH_ED = 22,
 		JOB_MIN_AGE_COMMAND = 22,
+	)
+
+	max_select_skills = list(
+		/datum/skill/general/carrying = 3,
+		/datum/skill/combat/melee = 1,
+		/datum/skill/combat/fists = 1,
+		/datum/skill/engineering/building = 3,
+		/datum/skill/engineering/construction = 3,
+		/datum/skill/engineering/atmos = 1,
 	)
 
 /datum/species/wryn/on_species_gain(mob/living/carbon/human/H)

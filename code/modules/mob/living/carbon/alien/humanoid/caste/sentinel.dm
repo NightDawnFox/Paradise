@@ -14,8 +14,8 @@
 		name = text("alien sentinel ([rand(1, 1000)])")
 	real_name = name
 	. = ..()
-	AddSpell(new /obj/effect/proc_holder/spell/alien_spell/break_vents)
-	AddSpell(new /obj/effect/proc_holder/spell/alien_spell/evolve/praetorian)
+	AddSpell(new /datum/action/cooldown/spell/pointed/break_vent)
+	AddSpell(new /datum/action/cooldown/spell/evolve/praetorian)
 
 /mob/living/carbon/alien/humanoid/sentinel/get_caste_organs()
 	. = ..()
@@ -45,7 +45,7 @@
 	time_to_open_doors = 0.2 SECONDS
 	environment_smash = ENVIRONMENT_SMASH_WALLS
 	role_text = "Вы — Преторианец. Вы являетесь более сильной и неповоротливой версией Часового. Ваша основная задача — защита гнезда от непрошенных гостей."
-	var/datum/action/innate/small_sprite_alien/praetorian/action_sprite
+	var/datum/action/innate/alien/sprite_toggle/praetorian/action_sprite
 
 /mob/living/carbon/alien/humanoid/praetorian/Initialize(mapload)
 	. = ..()
@@ -54,7 +54,7 @@
 	real_name = name
 	action_sprite = new
 	action_sprite.Grant(src)
-	AddSpell(new /obj/effect/proc_holder/spell/alien_spell/break_vents)
+	AddSpell(new /datum/action/cooldown/spell/pointed/break_vent)
 	praetorian_count++
 
 /mob/living/carbon/alien/humanoid/praetorian/Destroy()

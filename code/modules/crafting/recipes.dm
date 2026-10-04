@@ -36,10 +36,10 @@
 		/datum/reagent/fuel = 50,
 		/obj/item/stack/cable_coil = 1,
 		/obj/item/assembly/igniter = 1,
-		/obj/item/reagent_containers/food/drinks/cans = 1,
+		/obj/item/reagent_containers/cup/soda_cans = 1,
 	)
 	parts = list(
-		/obj/item/reagent_containers/food/drinks/cans = 1,
+		/obj/item/reagent_containers/cup/soda_cans = 1,
 	)
 	time = 15
 	category = CAT_WEAPONRY
@@ -73,13 +73,13 @@
 
 /datum/crafting_recipe/molotov
 	name = "Molotov"
-	result = /obj/item/reagent_containers/food/drinks/bottle/molotov
+	result = /obj/item/reagent_containers/cup/glass/bottle/molotov
 	reqs = list(
 		/obj/item/rag = 1,
-		/obj/item/reagent_containers/food/drinks/bottle = 1,
+		/obj/item/reagent_containers/cup/glass/bottle = 1,
 	)
-	blacklist = list(/obj/item/reagent_containers/food/drinks/bottle/molotov)
-	parts = list(/obj/item/reagent_containers/food/drinks/bottle = 1)
+	blacklist = list(/obj/item/reagent_containers/cup/glass/bottle/molotov)
+	parts = list(/obj/item/reagent_containers/cup/glass/bottle = 1)
 	time = 40
 	category = CAT_WEAPONRY
 	subcategory = CAT_WEAPON
@@ -192,7 +192,7 @@
 	name = "Cleanbot"
 	result = /mob/living/simple_animal/bot/cleanbot
 	reqs = list(
-		/obj/item/reagent_containers/glass/bucket = 1,
+		/obj/item/reagent_containers/cup/bucket = 1,
 		/obj/item/assembly/prox_sensor = 1,
 		/obj/item/robot_parts/r_arm = 1,
 	)
@@ -443,6 +443,42 @@
 	category = CAT_WEAPONRY
 	subcategory = CAT_WEAPON
 
+/datum/crafting_recipe/handmade_bow
+	name = "Самодельный лук"
+	result = /obj/item/gun/projectile/bow/handmade
+	reqs = list(
+		/obj/item/stack/cable_coil = 15,
+		/obj/item/stack/tape_roll = 10,
+		/obj/item/stack/rods = 2,
+	)
+	tools = list(TOOL_WELDER)
+	time = 40
+	category = CAT_WEAPONRY
+	subcategory = CAT_WEAPON
+
+/datum/crafting_recipe/handmade_quiver
+	name = "Самодельный колчан"
+	result = /obj/item/storage/backpack/quiver/homemade
+	reqs = list(
+		/obj/item/stack/cable_coil = 10,
+		/obj/item/storage/bag/plasticbag = 1,
+	)
+	tools = list(TOOL_WIRECUTTER)
+	time = 40
+	category = CAT_WEAPONRY
+	subcategory = CAT_WEAPON
+
+/datum/crafting_recipe/makeshift_arrow
+	name = "Самодельная стрела"
+	result = /obj/item/ammo_casing/caseless/arrow/homemade
+	time = 5
+	reqs = list(
+		/obj/item/stack/rods = 1,
+	)
+	tools = list(TOOL_WELDER)
+	category = CAT_WEAPONRY
+	subcategory = CAT_AMMO
+
 /datum/crafting_recipe/nunchucks
 	name = "Nunchucks"
 	result = /obj/item/nunchuck
@@ -461,7 +497,7 @@
 	reqs = list(
 		/obj/item/stack/tape_roll = 2,
 		/obj/item/stack/sheet/metal = 1,
-		/obj/item/reagent_containers/food/drinks/cans = 1,
+		/obj/item/reagent_containers/cup/soda_cans = 1,
 	)
 	time = 5 SECONDS
 	category = CAT_WEAPONRY
@@ -1141,7 +1177,7 @@
 
 /datum/crafting_recipe/chitinquiver
 	name = "Chitin Quiver"
-	result = /obj/item/storage/belt/quiver_weaver
+	result = /obj/item/storage/backpack/quiver/weaver
 	time = 8 SECONDS
 	reqs = list(
 		/obj/item/stack/sheet/animalhide/weaver_chitin = 4,
@@ -1215,7 +1251,7 @@
 	reqs = list(
 		/obj/item/stack/sheet/wood = 3,
 	)
-	result = /obj/item/reagent_containers/glass/bucket/wooden
+	result = /obj/item/reagent_containers/cup/bucket/wooden
 	category = CAT_PRIMAL
 	subcategory = CAT_MISC2
 
@@ -2128,3 +2164,14 @@
 		/obj/item/stack/sheet/cloth = 2,
 	)
 	category = CAT_MISC
+
+/datum/crafting_recipe/elder_atmosian_statue
+	name = "Elder Atmosian Statue"
+	result = /obj/structure/statue/elder_atmosian
+	time = 6 SECONDS
+	reqs = list(
+		/obj/item/stack/sheet/mineral/metal_hydrogen = 20,
+		/obj/item/stack/sheet/mineral/zaukerite = 15,
+		/obj/item/stack/sheet/metal = 30,
+	)
+	category = CAT_DECORATIONS

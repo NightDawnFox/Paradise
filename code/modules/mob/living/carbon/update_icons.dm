@@ -37,8 +37,9 @@
 		var/is_vertical = !lying_angle || !rotate_on_lying
 		var/new_translation = get_transform_translation_size(resize * current_size)
 		///scaling also affects translation, so we've to undo the old translate beforehand.
-		if(translate && is_vertical)
-			ntransform.Translate(0, -translate)
+		if(is_vertical)
+			var/old_translation = get_transform_translation_size(current_size)
+			ntransform.Translate(0, -old_translation)
 		ntransform.Scale(resize)
 		current_size *= resize
 		//Update the height of the maptext according to the size of the mob so they don't overlap.
@@ -60,9 +61,17 @@
 	var/animate_time = is_opposite_angle ? 0 : UPDATE_TRANSFORM_ANIMATION_TIME
 	animate(src, transform = ntransform, time = animate_time, dir = final_dir, easing = (EASE_IN|EASE_OUT))
 
+	readjust_atom_huds(animate_time)
+
 	handle_transform_change()
 
 	SEND_SIGNAL(src, COMSIG_LIVING_POST_UPDATE_TRANSFORM, resize, lying_angle, is_opposite_angle)
+
+/mob/living/proc/readjust_atom_huds(animate_time = null)
+	for(var/hud_key, hud_value in hud_list)
+		var/image/hud_image = hud_value
+		if(istype(hud_image))
+			adjust_hud_position(hud_image, animate_time = animate_time)
 
 /mob/living/proc/handle_transform_change()
 	return

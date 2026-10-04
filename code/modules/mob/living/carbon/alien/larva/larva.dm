@@ -2,7 +2,7 @@
 	name = "alien larva"
 	real_name = "alien larva"
 	icon_state = "larva0"
-	pass_flags = PASSTABLE | PASSMOB
+	pass_flags = PASSTABLE | PASSMOB | PASSFENCE | PASSVEHICLE | PASSDOOR
 	mob_size = MOB_SIZE_SMALL
 	attack_damage = 3
 	obj_damage = 10
@@ -32,7 +32,7 @@
 	add_language(LANGUAGE_HIVE_XENOS)
 	hide_action = new
 	hide_action.Grant(src)
-	AddSpell(new /obj/effect/proc_holder/spell/alien_spell/evolve/larva)
+	AddSpell(new /datum/action/cooldown/spell/evolve/larva)
 
 /mob/living/carbon/alien/larva/Destroy()
 	if(hide_action)

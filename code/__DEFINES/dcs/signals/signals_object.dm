@@ -43,14 +43,12 @@
 #define COMSIG_ITEM_DROPPED "item_drop"
 ///from base of obj/item/pickup(): (/mob/taker)
 #define COMSIG_ITEM_PICKUP "item_pickup"
-///return a truthy value to prevent ensouling, checked in /obj/effect/proc_holder/spell/lichdom/cast(): (mob/user)
-#define COMSIG_ITEM_IMBUE_SOUL "item_imbue_soul"
-///called before marking an object for retrieval, checked in /obj/effect/proc_holder/spell/summonitem/cast() : (mob/user)
-#define COMSIG_ITEM_MARK_RETRIEVAL "item_mark_retrieval"
-	#define COMPONENT_BLOCK_MARK_RETRIEVAL (1<<0)
 ///from base of obj/item/hit_reaction(): (list/args)
 #define COMSIG_ITEM_HIT_REACT "item_hit_react"
 	#define COMPONENT_BLOCK_SUCCESSFUL (1 << 0)
+	#define COMPONENT_BLOCK_PERFECT (1 << 2)
+/// Called when attempting to recall an item using force recall
+#define COMSIG_ITEM_RECALL "item_recall"
 ///called on item when crossed by something (): (/atom/movable, mob/living/crossed)
 #define COMSIG_ITEM_WEARERCROSSED "wearer_crossed"
 ///from base of item/sharpener/attackby(): (amount, max)
@@ -142,7 +140,7 @@
 ///called in /obj/item/gun/process_fire (user, target)
 #define COMSIG_GUN_FIRED "gun_fired"
 
-/// Sent from obj/item/gun/toggle_gunlight_verb(): (user)
+/// Sent from obj/item/gun/toggle_gunlight(): (user)
 #define COMSIG_GUN_LIGHT_TOGGLE "gun_light_toggle"
 
 /// Sent from obj/item/gun/zoom(): (user, zoomed)
@@ -369,8 +367,30 @@
 /// Called when item removed from storage. [/obj/item/storage/proc/remove_from_storage()]: (obj/item/W, atom/new_location)
 #define COMSIG_ITEM_REMOVED_FROM_STORAGE "removed_from_storage"
 
+/// Called before inserting something into storage. [/obj/item/storage/proc/can_be_inserted(): (obj/item/W, stop_messages = FALSE)]
+#define COMSIG_PRE_INSERT_INTO_STORAGE "pre_insert_into_storage"
+	/// Block item inseration.
+	#define BLOCK_INSERTING_ITEM (1<<0)
+
+/// Called when need to check is /datum/component/differentiate_storage_size added to storage or not.
+#define COMSIG_CHECK_DIFFERENTIATE_SIZE_COMPONENT "check_differentiate_size_component"
+	/// Storage has differentiate_storage_size component.
+	#define HAS_DIFFERENTIATE_SIZE_COMPONENT (1<<0)
+
 /// Called when the spraycan interacts.
 #define COMSIG_OBJ_PAINTED "obj_painted"
 
 /// from /datum/component/subtype_picker/pick_subtype(): (obj/item/old_item, mob/picker)
 #define COMSIG_ITEM_SUBTYPE_PICKER_SELECTED "item_subtype_picker_selected"
+
+// /obj/item signals for economy
+///called before an item is sold by the exports system.
+#define COMSIG_ITEM_PRE_EXPORT "item_pre_sold"
+	/// Stops the export from calling sell_object() on the item, so you can handle it manually.
+	#define COMPONENT_STOP_EXPORT (1<<0)
+///called when an item is sold by the exports subsystem
+#define COMSIG_ITEM_EXPORTED "item_sold"
+	/// Stops the export from adding the export information to the report, so you can handle it manually.
+	#define COMPONENT_STOP_EXPORT_REPORT (1<<0)
+
+#define COMSIG_GRIPPED_ITEM_CHANGE "gripped_item_change"

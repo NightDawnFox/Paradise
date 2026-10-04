@@ -131,9 +131,9 @@
 	. = ..()
 	SSmachines.register_machine(src)
 
+	RegisterSignal(src, COMSIG_MOVABLE_EXITED_AREA, PROC_REF(onAreaExited))
 	myArea = get_area(src)
 	if(myArea)
-		RegisterSignal(src, COMSIG_ATOM_EXITED_AREA, PROC_REF(onAreaExited))
 		LAZYADD(myArea.machinery_cache, src)
 
 	if(processing_flags & START_PROCESSING_ON_INIT)
@@ -145,10 +145,24 @@
 	if(myArea)
 		LAZYREMOVE(myArea.machinery_cache, src)
 		myArea = null
-		UnregisterSignal(src, COMSIG_ATOM_EXITED_AREA)
+	UnregisterSignal(src, COMSIG_MOVABLE_EXITED_AREA)
 	SSmachines.unregister_machine(src)
 	end_processing()
+	clear_components()
 	return ..()
+
+/**
+ * This should be called before mass qdeling components to make space for replacements.
+ * If not done, things will go away as Exited() destroys the machine when it detects
+ * even a single component exiting the atom.
+ */
+/obj/machinery/proc/clear_components()
+	if(!component_parts)
+		return
+	var/list/old_components = component_parts
+	component_parts = null
+	for(var/atom/atom_part in old_components)
+		qdel(atom_part)
 
 /obj/machinery/add_debris_element()
 	generate_debris_handler(null, -40, 8, 0.7)
@@ -166,11 +180,11 @@
 /obj/machinery/proc/flicker()
 	return FALSE
 
-/obj/machinery/proc/onAreaExited()
+/obj/machinery/proc/onAreaExited(atom/movable/machinery, area/exited_area, direction)
 	SIGNAL_HANDLER
-	if(myArea == get_area(src))
+	if(exited_area == get_area(src))
 		return
-	LAZYREMOVE(myArea.machinery_cache, src)
+	LAZYREMOVE(exited_area.machinery_cache, src)
 	myArea = get_area(src)
 	if(!myArea)
 		return
@@ -220,7 +234,7 @@
 /obj/machinery/proc/set_frequency()
 	return
 
-/obj/machinery/process() // If you dont use process or power why are you here
+/obj/machinery/process(seconds_per_tick) // If you dont use process or power why are you here
 	return PROCESS_KILL
 
 /obj/machinery/proc/process_atmos(seconds) //If you dont use process why are you here
@@ -360,11 +374,12 @@
 	if(!(obj_flags & NODECONSTRUCT))
 		stat |= BROKEN
 
-/obj/machinery/proc/default_deconstruction_crowbar(user, obj/item/I, ignore_panel = 0)
+/obj/machinery/proc/default_deconstruction_crowbar(mob/user, obj/item/I, ignore_panel = 0)
 	add_fingerprint(user)
 	if(I.tool_behaviour != TOOL_CROWBAR)
 		return FALSE
-	if(!I.use_tool(src, user, 0, volume = 0))
+	CALCULATE_SKILL_MOD(user, CONSTRUCTING_SPEED_MOD, construction_mod)
+	if(!I.use_tool(src, user, 1 SECONDS * construction_mod, volume = 0))
 		return FALSE
 	if((panel_open || ignore_panel) && !(obj_flags & NODECONSTRUCT))
 		deconstruct(TRUE)
@@ -377,7 +392,8 @@
 	add_fingerprint(user)
 	if(I.tool_behaviour != TOOL_SCREWDRIVER)
 		return FALSE
-	if(!I.use_tool(src, user, 0, volume = 0))
+	CALCULATE_SKILL_MOD(user, CONSTRUCTING_SPEED_MOD, construction_mod)
+	if(!I.use_tool(src, user, 1 SECONDS * construction_mod, volume = 0))
 		return FALSE
 	if(!(obj_flags & NODECONSTRUCT))
 		var/prev_icon_state = icon_state
@@ -436,7 +452,8 @@
 			return ATTACK_CHAIN_PROCEED
 		to_chat(user, span_notice("You start applying [nanopaste] to [src]."))
 		being_repaired = TRUE
-		var/result = do_after(user, 3 SECONDS, src, category = DA_CAT_TOOL)
+		CALCULATE_SKILL_MOD(user, CONSTRUCTING_SPEED_MOD, construction_mod)
+		var/result = do_after(user, 3 SECONDS * construction_mod, src, category = DA_CAT_TOOL)
 		being_repaired = FALSE
 		if(!result || QDELETED(nanopaste))
 			return ATTACK_CHAIN_PROCEED
@@ -585,7 +602,8 @@
 /obj/machinery/proc/shock(mob/living/user, prb)
 	if(!istype(user) || inoperable())
 		return FALSE
-	if(!prob(prb))
+	CALCULATE_SKILL_MOD(user, ELECTRICITY_NEGATIVE_CHANCE_MOD, prob_mod)
+	if(!prob(prb * prob_mod))
 		return FALSE
 	do_sparks(5, TRUE, src)
 	if(electrocute_mob(user, get_area(src), src, siemens_strength, TRUE))

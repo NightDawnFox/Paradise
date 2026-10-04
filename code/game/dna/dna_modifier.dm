@@ -66,7 +66,7 @@
 	interaction_flags_mouse_drop = NEED_DEXTERITY
 	var/locked = FALSE
 	var/mob/living/carbon/occupant = null
-	var/obj/item/reagent_containers/glass/beaker = null
+	var/obj/item/reagent_containers/cup/beaker = null
 	var/opened = 0
 	var/damage_coeff
 	var/scan_level
@@ -127,9 +127,7 @@
 /obj/machinery/dna_scannernew/AllowDrop()
 	return FALSE
 
-/obj/machinery/dna_scannernew/verb/eject()
-	set src in oview(1)
-	set name = "Извлечь субъект"
+GAME_VERB_SRC(/obj/machinery/dna_scannernew, eject, oview(1), "Извлечь субъект", VERB_CATEGORY_HIDDEN)
 
 	if(usr.incapacitated() || HAS_TRAIT(usr, TRAIT_HANDS_BLOCKED))
 		return
@@ -189,7 +187,7 @@
 	if(exchange_parts(user, I))
 		return ATTACK_CHAIN_PROCEED_SUCCESS
 
-	if(isglassreagentcontainer(I))
+	if(iscup(I))
 		add_fingerprint(user)
 		if(beaker)
 			balloon_alert(user, "слот для ёмкости занят!")
@@ -492,7 +490,7 @@
 	data["beakerLabel"] = null
 	data["beakerVolume"] = 0
 	if(connected.beaker)
-		data["beakerLabel"] = connected.beaker.label_text ? connected.beaker.label_text : null
+		data["beakerLabel"] = DECLENT_RU_CAP(connected.beaker, NOMINATIVE)
 		if(connected.beaker.reagents && length(connected.beaker.reagents.reagent_list))
 			for(var/datum/reagent/R in connected.beaker.reagents.reagent_list)
 				data["beakerVolume"] += R.volume
@@ -537,7 +535,8 @@
 			connected.locked = TRUE //lock it
 
 			SStgui.update_uis(src)
-			sleep(10 * radiation_duration) // sleep for radiation_duration seconds
+			CALCULATE_SKILL_MOD(usr, IRRADIATION_DURATION_MOD, skill_mod)
+			sleep(10 * radiation_duration * skill_mod) // sleep for radiation_duration seconds
 
 			irradiating = 0
 			connected.locked = lock_state
@@ -581,7 +580,8 @@
 			connected.locked = TRUE //lock it
 
 			SStgui.update_uis(src)
-			sleep(10 * radiation_duration) // sleep for radiation_duration seconds
+			CALCULATE_SKILL_MOD(usr, IRRADIATION_DURATION_MOD, skill_mod)
+			sleep(10 * radiation_duration * skill_mod) // sleep for radiation_duration seconds
 
 			irradiating = 0
 			connected.locked = lock_state
@@ -632,7 +632,8 @@
 			connected.locked = TRUE //lock it
 
 			SStgui.update_uis(src)
-			sleep(10 * radiation_duration) // sleep for radiation_duration seconds
+			CALCULATE_SKILL_MOD(usr, IRRADIATION_DURATION_MOD, skill_mod)
+			sleep(10 * radiation_duration * skill_mod) // sleep for radiation_duration seconds
 
 			irradiating = 0
 			connected.locked = lock_state
@@ -667,7 +668,7 @@
 						connected.occupant.UpdateAppearance()
 		if("ejectBeaker")
 			if(connected.beaker)
-				var/obj/item/reagent_containers/glass/B = connected.beaker
+				var/obj/item/reagent_containers/cup/B = connected.beaker
 				B.forceMove(connected.loc)
 				connected.beaker = null
 				if(Adjacent(usr) && !issilicon(usr))
@@ -723,7 +724,8 @@
 					connected.locked = TRUE //lock it
 
 					SStgui.update_uis(src)
-					sleep(2 SECONDS)
+					CALCULATE_SKILL_MOD(usr, IRRADIATION_DURATION_MOD, skill_mod)
+					sleep(2 SECONDS * skill_mod)
 
 					irradiating = 0
 					connected.locked = lock_state
@@ -782,7 +784,8 @@
 
 	// Cooldown
 	injector_ready = FALSE
-	addtimer(CALLBACK(src, PROC_REF(injector_cooldown_finish)), (30 / connected.precision_coeff) SECONDS)
+	CALCULATE_SKILL_MOD(usr, IRRADIATION_DURATION_MOD, skill_mod)
+	addtimer(CALLBACK(src, PROC_REF(injector_cooldown_finish)), (30 / connected.precision_coeff * skill_mod) SECONDS)
 
 	// Create it
 	var/datum/dna2/record/buf = buffers[buffer_id]

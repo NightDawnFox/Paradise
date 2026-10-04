@@ -73,13 +73,14 @@
 	else if(!istype(armor, /datum/armor))
 		stack_trace("Invalid type [armor.type] found in .armor during /obj Initialize()")
 	if(sharp)
-		AddElement(/datum/element/surgery_initiator)
+		AddComponent(/datum/component/surgery_initiator)
 
 	if(on_blueprints && isturf(loc))
 		var/turf/T = loc
 		T.add_blueprints_preround(src)
 
 	add_debris_element()
+	add_deep_lore()
 
 /obj/Destroy(force)
 	if(!ismachinery(src))
@@ -89,6 +90,7 @@
 			STOP_PROCESSING(SSfastprocess, src)
 	SStgui.close_uis(src)
 	QDEL_NULL(multitool_menu)
+	armor = null
 	return ..()
 
 /obj/Topic(href, href_list, nowindow = FALSE, datum/ui_state/state = GLOB.default_state)
@@ -234,7 +236,8 @@
 		return
 	var/time = max(50 * (1 - obj_integrity / max_integrity), 5)
 	WELDER_ATTEMPT_REPAIR_MESSAGE
-	if(I.use_tool(src, user, time, volume = I.tool_volume))
+	CALCULATE_SKILL_MOD(user, CONSTRUCTING_SPEED_MOD, construction_mod)
+	if(I.use_tool(src, user, time * construction_mod, volume = I.tool_volume))
 		WELDER_REPAIR_SUCCESS_MESSAGE
 		update_integrity(max_integrity)
 		update_icon()
@@ -245,17 +248,22 @@
 	if(!anchored && !isfloorturf(loc))
 		user.visible_message(span_warning("A floor must be present to secure [src]!"))
 		return FALSE
+	if(obj_flags & NODECONSTRUCT)
+		return FALSE
+
 	if(I.tool_behaviour != TOOL_WRENCH)
 		return FALSE
 	if(!I.tool_use_check(user, 0))
 		return FALSE
-	if(!(obj_flags & NODECONSTRUCT))
-		to_chat(user, span_notice("Now [anchored ? "un" : ""]securing [name]."))
-		if(I.use_tool(src, user, time, volume = I.tool_volume))
-			to_chat(user, span_notice("You've [anchored ? "un" : ""]secured [name]."))
-			set_anchored(!anchored)
-		return TRUE
-	return FALSE
+
+	CALCULATE_SKILL_MOD(user, CONSTRUCTING_SPEED_MOD, construction_mod)
+	to_chat(user, span_notice("Now [anchored ? "un" : ""]securing [name]."))
+	if(!I.use_tool(src, user, time * construction_mod, volume = I.tool_volume))
+		return FALSE
+
+	to_chat(user, span_notice("You've [anchored ? "un" : ""]secured [name]."))
+	set_anchored(!anchored)
+	return TRUE
 
 /obj/water_act(volume, temperature, source, method = REAGENT_TOUCH)
 	. = ..()
@@ -295,6 +303,16 @@
 /obj/proc/cult_reveal() //Called by cult reveal spell and chaplain's bible
 	return
 
+/obj/proc/set_cult_veil(veiled)
+	if(veiled)
+		ADD_TRAIT(src, TRAIT_CULT_CONCEALED, CULT_TRAIT)
+		SET_PLANE_IMPLICIT(src, CULT_VEIL_PLANE)
+		mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+		return
+	REMOVE_TRAIT(src, TRAIT_CULT_CONCEALED, CULT_TRAIT)
+	SET_PLANE_IMPLICIT(src, initial(plane))
+	mouse_opacity = initial(mouse_opacity)
+
 /obj/proc/is_mob_spawnable() //Called by spawners_menu methods to determine if you can use an object through spawn-menu
 	//just override it to return TRUE in your object if you want to use it through spawn menu
 	return
@@ -306,7 +324,7 @@
 	sharp = new_sharp_val
 	SEND_SIGNAL(src, COMSIG_ATOM_UPDATE_SHARPNESS)
 	if(!sharp && new_sharp_val)
-		AddElement(/datum/element/surgery_initiator)
+		AddComponent(/datum/component/surgery_initiator)
 
 /obj/proc/force_eject_occupant(mob/target)
 	// This proc handles safely removing occupant mobs from the object if they must be teleported out (due to being SSD/AFK, by admin teleport, etc) or transformed.
@@ -381,3 +399,10 @@
 	for(var/atom/atom_to_display in items_to_log)
 		new_purchase_logs += span_fontsize4(icon2base64html(atom_to_display))
 	target_uplink.purchase_log += new_purchase_logs
+
+/**
+ * Use this proc to attach `/datum/element/examine_lore` to an object.
+ * Override if needed.
+ */
+/obj/proc/add_deep_lore()
+	return

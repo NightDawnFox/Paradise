@@ -79,8 +79,8 @@
 	pixel_y = 8
 
 	if(is_type_in_typecache(get_area(loc), invalid_area_typecache))
-		var/area = pick(SSmapping.teleportlocs)
-		var/area/tp = SSmapping.teleportlocs[area]
+		var/area = pick(GLOB.teleportlocs)
+		var/area/tp = GLOB.teleportlocs[area]
 		forceMove(pick(get_area_turfs(tp.type)))
 
 	if((!current_victim && !admincluwne) || QDELETED(current_victim))
@@ -215,7 +215,7 @@
 		if(STAGE_SPOOK)
 
 			if(prob(4))
-				H.slip(10 SECONDS)
+				H.slip(SLIPPERY_TIME_LUBE)
 				to_chat(H, span_warning("The floor shifts underneath you!"))
 
 			if(prob(3))
@@ -243,7 +243,7 @@
 		if(STAGE_TORMENT)
 
 			if(prob(5))
-				H.slip(10 SECONDS)
+				H.slip(SLIPPERY_TIME_LUBE)
 				to_chat(H, span_warning("The floor shifts underneath you!"))
 
 			if(prob(5))
@@ -313,7 +313,7 @@
 				if(!eating)
 					addtimer(CALLBACK(src, TYPE_PROC_REF(/mob/living/simple_animal/hostile/floor_cluwne, Grab), H), 70)
 					for(var/turf/simulated/floor/O in range(src, 6))
-						O.MakeSlippery(TURF_WET_LUBE, 20 SECONDS)
+						O.MakeSlippery(TURF_WET_LUBE, SLIPPERY_TIME_LUBE)
 						playsound(src, 'sound/effects/meteorimpact.ogg', 30, TRUE)
 
 				eating = TRUE
@@ -412,7 +412,6 @@
 
 /obj/effect/temp_visual/fcluwne_manifest/Initialize(mapload)
 	. = ..()
-	
 	playsound(src, 'sound/spookoween/scary_clown_appear.ogg', 100, TRUE)
 
 #undef STAGE_HAUNT

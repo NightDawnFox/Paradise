@@ -294,7 +294,7 @@
 		to_chat(user, span_notice("[src] crumbles to ashes."))
 		qdel(src)
 
-/obj/item/reagent_containers/food/drinks/bottle/unholywater
+/obj/item/reagent_containers/cup/glass/bottle/unholywater
 	name = "flask of unholy water"
 	desc = "Toxic to nonbelievers; this water renews and reinvigorates the faithful of a cult."
 	icon_state = "holyflask"
@@ -306,7 +306,7 @@
 	desc = "May the master guide you through the darkness and shield you from the light."
 	icon_state = "blindfold"
 	item_state = "blindfold"
-	invis_override = SEE_INVISIBLE_HIDDEN_RUNES
+	clothing_traits = list(TRAIT_CULT_VEIL_SIGHT)
 	flash_protect = FLASH_PROTECTION_FLASH
 	prescription = TRUE
 	origin_tech = null
@@ -388,7 +388,7 @@
 
 	var/curse_message = pick_n_take(remaining_curses) || "Что-то пошло ужасающе неправильно..."
 	var/curse_delay = cursetime / 600
-	curse_message += " Шаттл задерживается на [curse_delay] минут[DECL_SEC_MIN(curse_delay)]."
+	curse_message += " Шаттл задерживается на [curse_delay] минут[DECL_U_Y_0(curse_delay)]."
 
 	GLOB.major_announcement.announce(
 		message = curse_message,
@@ -403,7 +403,7 @@
 		to_chat(user, span_biggerdanger("Вы чувствуете, что эвакуационный шаттл можно проклясть ещё лишь один раз."))
 
 	else
-		to_chat(user, span_biggerdanger("Вы чувствуете, что эвакуационный шаттл можно проклясть ещё только [MAX_SHUTTLE_CURSES - totalcurses] раз[declension_ru(MAX_SHUTTLE_CURSES - totalcurses, "", "а", "")]."))
+		to_chat(user, span_biggerdanger("Вы чувствуете, что эвакуационный шаттл можно проклясть ещё только [MAX_SHUTTLE_CURSES - totalcurses] раз[DECL_0_A_0(MAX_SHUTTLE_CURSES - totalcurses)]."))
 
 	if(totalcurses >= MAX_SHUTTLE_CURSES && (world.time < first_curse_time + SHUTTLE_CURSE_OMFG_TIMESPAN))
 		var/omfg_message = pick_list(CULT_SHUTTLE_CURSE, "omfg_announce") || "ОСТАВЬТЕ НАС В ПОКОЕ!"
@@ -616,7 +616,7 @@
 			else if(P.damage_type == BURN)
 				threshold = energy_threshold
 			else
-				return FALSE
+				return HIT_RESULT_FAILED
 			// Assuming the projectile damage is 20 (WT-550), 'shatter_chance' will be 10
 			// 10 * 3 gives it a 30% chance to shatter per hit.
 			shatter_chance = min((P.damage - threshold) * 3, 75) // Maximum of 75% chance
@@ -628,10 +628,10 @@
 				playsound(T, 'sound/effects/glassbr3.ogg', 100)
 				owner.Knockdown(6 SECONDS)
 				qdel(src)
-				return FALSE
+				return HIT_RESULT_FAILED
 
 			if(P.is_reflectable(REFLECTABILITY_ENERGY))
-				return FALSE //To avoid reflection chance double-dipping with block chance
+				return HIT_RESULT_FAILED //To avoid reflection chance double-dipping with block chance
 
 		// Hit by a melee weapon or blocked a projectile
 		. = ..()
@@ -644,12 +644,12 @@
 					spawn_illusion(owner, TRUE) // Hostile illusion
 				else
 					spawn_illusion(owner, FALSE) // Running illusion
-			return TRUE
+			return HIT_RESULT_SUCCESS
 
 	else // Non-cultist holding the shield
 		if(prob(50))
 			spawn_illusion(owner, TRUE, TRUE)
-		return FALSE
+		return HIT_RESULT_FAILED
 
 /obj/item/shield/mirror/proc/spawn_illusion(mob/living/carbon/human/user, hostile, betray)
 	if(hostile)
@@ -681,7 +681,7 @@
 	if(isliving(loc))
 		var/mob/living/holder = loc
 		return prob(reflect_chance) && iscultist(holder) //so non-cultist can not reflect using this shield
-	return FALSE
+	return REFLECT_NOTHING
 
 /obj/item/twohanded/cult_spear
 	name = "blood halberd"
@@ -693,7 +693,6 @@
 	force_wielded = 24
 	throwforce = 40
 	armour_penetration = 30
-	block_chance = 30
 	attack_verb = list("атаковал", "пронзил", "уколол", "поранил", "пронзил")
 	sharp = TRUE
 	no_spin_thrown = TRUE
@@ -701,10 +700,13 @@
 	needs_permit = TRUE
 	var/datum/action/innate/cult/spear/spear_act
 
+/obj/item/twohanded/cult_spear/add_parry_component()
+	AddComponent(/datum/component/parry, _stamina_constant = 2, _stamina_coefficient = 0.4, _parryable_attack_types = ALL_ATTACK_TYPES, _parry_cooldown = (2 / 3) SECONDS ) // 0.666667 seconds for 60% uptime.
+
 /obj/item/twohanded/cult_spear/Destroy()
 	if(spear_act)
 		qdel(spear_act)
-	..()
+	return ..()
 
 /obj/item/twohanded/cult_spear/update_icon_state()
 	icon_state = "bloodspear[HAS_TRAIT(src, TRAIT_WIELDED)]"
@@ -747,20 +749,6 @@
 		new /obj/effect/decal/cleanable/blood/splatter(T)
 		playsound(T, 'sound/effects/glassbr3.ogg', 100)
 	qdel(src)
-
-/obj/item/twohanded/cult_spear/hit_reaction(mob/living/carbon/human/owner, atom/movable/hitby, attack_text = "the attack", final_block_chance = 0, damage = 0, attack_type = ITEM_ATTACK)
-	if(wielded)
-		final_block_chance *= 2
-	if(prob(final_block_chance))
-		if(attack_type == PROJECTILE_ATTACK)
-			owner.visible_message(span_danger("[owner] deflects [attack_text] with [src]!"), projectile_message = TRUE)
-			playsound(src, pick('sound/weapons/effects/ric1.ogg', 'sound/weapons/effects/ric2.ogg', 'sound/weapons/effects/ric3.ogg', 'sound/weapons/effects/ric4.ogg', 'sound/weapons/effects/ric5.ogg'), 100, TRUE)
-			return TRUE
-		else
-			playsound(src, 'sound/weapons/parry.ogg', 100, TRUE)
-			owner.visible_message(span_danger("[owner] parries [attack_text] with [src]!"))
-			return TRUE
-	return FALSE
 
 /datum/action/innate/cult/spear
 	name = "Bloody Bond"

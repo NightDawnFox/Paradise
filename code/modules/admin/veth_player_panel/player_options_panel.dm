@@ -1,4 +1,5 @@
-ADMIN_VERB_ONLY_CONTEXT_MENU(vuap_personal, R_ADMIN|R_MOD, "Open TGUI PP", mob/target in GLOB.mob_list)
+ADMIN_VERB_ONLY_CONTEXT_MENU(vuap_personal, R_ADMIN|R_MOD, "Open TGUI PP", /mob)
+	VERB_ARG_TYPED(target, VERB_ARG_TYPE_MOB, VERB_ARG_SOURCE_WORLD, /mob)
 	if(!target)
 		to_chat(user, span_warning("Could not find desired target mob!"), type = MESSAGE_TYPE_ADMINLOG, confidential = TRUE)
 		return
@@ -312,6 +313,9 @@ ADMIN_VERB_ONLY_CONTEXT_MENU(vuap_personal, R_ADMIN|R_MOD, "Open TGUI PP", mob/t
 		if("selectequip")
 			usr.client.holder.Topic(null, list("select_equip" = selected_player.UID()))
 			return
+		if("customquip")
+			usr.client.holder.Topic(null, list("custom_equip" = selected_player.UID()))
+			return
 		if("changevoice")
 			usr.client.holder.Topic(null, list("change_voice" = selected_player.UID()))
 			return
@@ -323,6 +327,9 @@ ADMIN_VERB_ONLY_CONTEXT_MENU(vuap_personal, R_ADMIN|R_MOD, "Open TGUI PP", mob/t
 			return
 		if("mirrorplayer")
 			usr.client.holder.Topic(null, list("cma_self" = selected_player.UID()))
+			return
+		if("editskills")
+			usr.client.skills_select_window.show(usr, selected_player, admin_interact = TRUE)
 			return
 		// Misc Section
 		if("forcesay")

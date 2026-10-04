@@ -99,6 +99,8 @@
 /obj/item/clothing/suit/space/hardsuit/Destroy()
 	unequip_helmet()
 	helmet = null
+	taser_proof?.hardsuit = null
+	taser_proof = null
 	return ..()
 
 /obj/item/clothing/suit/space/hardsuit/proc/MakeHelmet()
@@ -761,6 +763,9 @@
 	clothing_flags = STOPSPRESSUREDAMAGE
 	helmettype = /obj/item/clothing/head/helmet/space/hardsuit/singuloth
 	sprite_sheets = null
+
+/obj/item/clothing/suit/space/hardsuit/singuloth/deathmatch
+	slowdown = 0
 
 //Battlemage Hardsuit — code\modules\clothing\suits\wiz_robe.dm
 //Deathsquad Hardsuit — code\modules\clothing\spacesuits\ert.dm

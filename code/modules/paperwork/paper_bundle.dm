@@ -268,10 +268,7 @@
 		attack_self(loc)
 		updateUsrDialog()
 
-/obj/item/paper_bundle/verb/rename()
-	set name = "Переименовать пачку"
-	set category = VERB_CATEGORY_OBJECT
-	set src in usr
+GAME_VERB_SRC(/obj/item/paper_bundle, rename, usr, "Переименовать пачку", VERB_CATEGORY_HIDDEN)
 
 	var/n_name = tgui_input_text(usr, "What would you like to label the bundle?", "Bundle Labelling", name)
 	if(!Adjacent(usr) || !n_name || usr.stat)
@@ -280,17 +277,15 @@
 	add_fingerprint(usr)
 	return
 
-/obj/item/paper_bundle/verb/remove_all()
-	set name = "Распустить пачку"
-	set category = VERB_CATEGORY_OBJECT
-	set src in usr
+GAME_VERB_SRC(/obj/item/paper_bundle, remove_all, usr, "Распустить пачку", VERB_CATEGORY_HIDDEN)
 
 	to_chat(usr, span_notice("You loosen the bundle."))
-	for(var/obj/O in src)
-		O.loc = usr.loc
-		O.layer = initial(O.layer)
-		O.plane = initial(O.plane)
-		O.add_fingerprint(usr)
+	for(var/obj/item/page in papers)
+		page.forceMove_turf(usr.loc)
+		page.layer = initial(page.layer)
+		page.plane = initial(page.plane)
+		page.add_fingerprint(usr)
+	LAZYCLEARLIST(papers)
 	usr.temporarily_remove_item_from_inventory(src)
 	qdel(src)
 	return

@@ -100,6 +100,12 @@
 #define THROWN_PROJECTILE_ATTACK (1 << 3)
 #define LEAP_ATTACK (1 << 4)
 #define MELEE_ATTACKS (ITEM_ATTACK | THROWN_PROJECTILE_ATTACK | UNARMED_ATTACK | LEAP_ATTACK)
+#define ALL_ATTACK_TYPES (ALL)
+#define NON_PROJECTILE_ATTACKS ~PROJECTILE_ATTACK
+
+// the standard parry time out time
+#define PARRY_DEFAULT_TIMEOUT 5 SECONDS
+#define PARRY_SHIELD_TIMEOUT 10 SECONDS
 
 //attack visual effects
 #define ATTACK_EFFECT_PUNCH "punch"
@@ -213,6 +219,10 @@ GLOBAL_LIST_INIT(body_zones, list(
 #define REFLECTABILITY_PHYSICAL 1
 #define REFLECTABILITY_ENERGY 2
 
+#define REFLECT_NOTHING 0
+#define REFLECT_NORMAL 1
+#define REFLECT_TOY 2
+
 //Autofire component
 /// Compatible firemode is in the gun. Wait until it's held in the user hands.
 #define AUTOFIRE_STAT_IDLE (1<<0)
@@ -267,6 +277,7 @@ GLOBAL_LIST_INIT(body_zones, list(
 #define CLICK_CD_RAPID (0.2 SECONDS)
 #define CLICK_CD_LOOK_UP_DOWN (0.5 SECONDS)
 #define CLICK_CD_THROW (0.8 SECONDS)
+#define CLICK_CD_PARRY (0.8 SECONDS)
 
 #define CLICK_CD_BREAKOUT (10 SECONDS)
 
@@ -300,3 +311,20 @@ GLOBAL_LIST_INIT(body_zones, list(
 #define DEATHMATCH_NOT_PLAYING 0
 #define DEATHMATCH_PRE_PLAYING 1
 #define DEATHMATCH_PLAYING 2
+
+///Deathmatch loadout groups
+#define LOADOUT_NONE NONE
+#define LOADOUT_ASSISTANT (1<<0)
+#define LOADOUT_UNFUNNY (1<<1)
+#define LOADOUT_SYNDICATE (1<<2)
+#define LOADOUT_NUKEOPS (1<<3)
+#define LOADOUT_NT (1<<4)
+#define LOADOUT_WIZARD (1<<5)
+
+#define HIT_RESULT_FAILED 0
+#define HIT_RESULT_SUCCESS 1
+#define HIT_RESULT_REFLECY_BACK -1
+#define HIT_RESULT_PARRY -2
+
+#define PERFECT_PARRY_COEFFICIENT 0.2
+#define PERFECT_PARRY_MELEE_KNOCKDOWN 2 SECONDS

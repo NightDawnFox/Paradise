@@ -17,6 +17,7 @@
 	pixel_y_lying_offset = -20
 	hud_type = /datum/hud/devil
 	tts_seed = "Mannoroth"
+	looting_icon_mode = LOOT_ICON_ICON_TO_HTML
 	var/datum/antagonist/devil/devilinfo
 	var/ascended = FALSE
 	var/list/devil_overlays[DEVIL_TOTAL_LAYERS]
@@ -221,11 +222,11 @@
 	maxHealth = 800
 	var/list/bag_content
 	var/static/list/spell_list = list(
-		/obj/effect/proc_holder/spell/conjure_item/krampus_bag,
-		/obj/effect/proc_holder/spell/conjure_item/pitchfork/krampus,
-		/obj/effect/proc_holder/spell/fireball/hellish,
-		/obj/effect/proc_holder/spell/aoe/devil_fire,
-		/obj/effect/proc_holder/spell/infernal_jaunt,
+		/datum/action/cooldown/spell/conjure_item/krampus_bag,
+		/datum/action/cooldown/spell/conjure_item/pitchfork/krampus,
+		/datum/action/cooldown/spell/pointed/projectile/fireball/hellish,
+		/datum/action/cooldown/spell/aoe/devil_fire,
+		/datum/action/cooldown/spell/jaunt/infernal_jaunt,
 	)
 
 /mob/living/carbon/true_devil/krampus/get_ru_names()
@@ -241,8 +242,8 @@
 /mob/living/carbon/true_devil/krampus/Initialize(mapload, mob/living/carbon/dna_source)
 	. = ..()
 	ADD_TRAIT(src, TRAIT_SNOWSTORM_IMMUNE, INNATE_TRAIT)
-	for(var/spell in spell_list)
-		AddSpell(new spell)
+	for(var/datum/action/cooldown/spell/spell in spell_list)
+		AddSpell(spell)
 
 /mob/living/carbon/true_devil/krampus/Destroy()
 	var/turf/drop_loc = get_turf(src)

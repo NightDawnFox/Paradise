@@ -223,7 +223,7 @@
 		/obj/item/storage/toolbox/syndicate,
 		/obj/item/storage/fancy/cigarettes/cigpack_syndicate,
 		//syndi trash
-		/obj/item/toy/syndicateballoon,
+		/obj/item/toy/balloon/syndicate,
 		/obj/item/soap/syndie,
 		/obj/item/clothing/shoes/combat,
 		/obj/item/clothing/under/syndicate,
@@ -297,8 +297,8 @@
 		/obj/item/reagent_containers/syringe/pancuronium,
 		/obj/item/reagent_containers/syringe/capulettium_plus,
 		/obj/item/reagent_containers/syringe/capulettium_plus,
-		/obj/item/reagent_containers/glass/bottle/ether,
-		/obj/item/reagent_containers/glass/bottle/ether,
+		/obj/item/reagent_containers/cup/bottle/ether,
+		/obj/item/reagent_containers/cup/bottle/ether,
 	)
 
 /datum/thief_kit/mutant

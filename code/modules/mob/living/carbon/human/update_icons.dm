@@ -164,6 +164,10 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 	if(stand_icon)
 		qdel(stand_icon)
 
+
+	cached_body_width = ICON_SIZE_X
+	cached_body_height = ICON_SIZE_Y
+
 	update_misc_effects()
 	stand_icon = new (dna.species.icon_template ? dna.species.icon_template : 'icons/mob/human.dmi', "blank")
 	var/list/standing = list()
@@ -207,7 +211,7 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 			if(isgolem(src))
 				var/datum/species/golem/G = src.dna.species
 				if(G.golem_colour)
-					base_icon.ColorTone(G.golem_colour)
+					base_icon?.ColorTone(G.golem_colour)
 			if(husk)
 				base_icon.ColorTone(husk_color_mod)
 			else if(hulk)
@@ -225,8 +229,15 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 		var/mutable_appearance/new_base = mutable_appearance(base_icon, layer = -LIMBS_LAYER)
 		GLOB.human_icon_cache[icon_key] = new_base
 		standing += new_base
+		base = new_base
 
 		//END CACHED ICON GENERATION.
+
+	if(base)
+		cached_body_width = max(cached_body_width, base.get_cached_width())
+		cached_body_height = max(cached_body_height, base.get_cached_height())
+		cached_body_min_x_offset = min(cached_body_min_x_offset, base.pixel_x + base.pixel_w)
+		cached_body_min_y_offset = min(cached_body_min_y_offset, base.pixel_y + pixel_z)
 
 	overlays_standing[LIMBS_LAYER] = standing
 	apply_overlay(LIMBS_LAYER)
@@ -234,7 +245,7 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 	//Underwear
 	var/icon/underwear_standing = new /icon('icons/mob/clothing/underwear.dmi', "nude")
 	if(underwear && dna.species.clothing_flags & HAS_UNDERWEAR)
-		var/datum/sprite_accessory/underwear/U = GLOB.underwear_list[underwear]
+		var/datum/sprite_accessory/underwear/U = SSaccessories.underwear_list[underwear]
 		if(U)
 			var/u_icon = U.sprite_sheets && (dna.species.name in U.sprite_sheets) ? U.sprite_sheets[dna.species.name] : U.icon //Species-fit the undergarment.
 			var/icon/underwear_icon = new (u_icon, "uw_[U.icon_state]_s")
@@ -243,7 +254,7 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 			underwear_standing.Blend(underwear_icon, ICON_OVERLAY)
 
 	if(undershirt && dna.species.clothing_flags & HAS_UNDERSHIRT)
-		var/datum/sprite_accessory/undershirt/U2 = GLOB.undershirt_list[undershirt]
+		var/datum/sprite_accessory/undershirt/U2 = SSaccessories.undershirt_list[undershirt]
 		if(U2)
 			var/u2_icon = U2.sprite_sheets && (dna.species.name in U2.sprite_sheets) ? U2.sprite_sheets[dna.species.name] : U2.icon
 			var/icon/undershirt_icon = new(u2_icon, "us_[U2.icon_state]_s")
@@ -252,7 +263,7 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 			underwear_standing.Blend(undershirt_icon, ICON_OVERLAY)
 
 	if(socks && dna.species.clothing_flags & HAS_SOCKS)
-		var/datum/sprite_accessory/socks/U3 = GLOB.socks_list[socks]
+		var/datum/sprite_accessory/socks/U3 = SSaccessories.socks_list[socks]
 		if(U3)
 			var/u3_icon = U3.sprite_sheets && (dna.species.name in U3.sprite_sheets) ? U3.sprite_sheets[dna.species.name] : U3.icon
 			underwear_standing.Blend(new /icon(u3_icon, "sk_[U3.icon_state]_s"), ICON_OVERLAY)
@@ -286,7 +297,7 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 	var/obj/item/organ/external/chest/chest_organ = get_organ(BODY_ZONE_CHEST)
 	if(chest_organ && m_styles["body"])
 		var/body_marking = m_styles["body"]
-		var/datum/sprite_accessory/body_marking_style = GLOB.marking_styles_list[body_marking]
+		var/datum/sprite_accessory/body_marking_style = SSaccessories.body_markings_list[body_marking]
 		if(body_marking_style?.species_allowed && (dna.species.name in body_marking_style.species_allowed))
 			var/icon/b_marking_s = icon("icon" = body_marking_style.icon, "icon_state" = "[body_marking_style.icon_state]_s")
 			if(body_marking_style.do_colouration)
@@ -296,7 +307,7 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 	var/obj/item/organ/external/head/head_organ = get_organ(BODY_ZONE_HEAD)
 	if(head_organ && m_styles["head"]) //If the head is destroyed, forget the head markings. This prevents floating optical markings on decapitated IPCs, for example.
 		var/head_marking = m_styles["head"]
-		var/datum/sprite_accessory/head_marking_style = GLOB.marking_styles_list[head_marking]
+		var/datum/sprite_accessory/head_marking_style = SSaccessories.body_markings_list[head_marking]
 		if(head_marking_style?.species_allowed && (head_organ.dna.species.name in head_marking_style.species_allowed))
 			var/icon/h_marking_s = icon("icon" = head_marking_style.icon, "icon_state" = "[head_marking_style.icon_state]_s")
 			if(head_marking_style.do_colouration)
@@ -306,7 +317,7 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 	overlays_standing[MARKINGS_LAYER] = mutable_appearance(markings_standing, layer = -MARKINGS_LAYER)
 	apply_overlay(MARKINGS_LAYER)
 	var/body_marking = m_styles["body"]
-	var/datum/sprite_accessory/body_marking_style = GLOB.marking_styles_list[body_marking]
+	var/datum/sprite_accessory/body_marking_style = SSaccessories.body_markings_list[body_marking]
 	if(body_marking_style.visible_over_uniform && istype(w_uniform, /obj/item/clothing/under))
 		update_worn_undersuit()
 
@@ -324,7 +335,7 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 	if((head && (head.flags_inv & HIDEHAIR)) || (wear_mask && (wear_mask.flags_inv & HIDEHAIR)))
 		return
 
-	var/datum/sprite_accessory/head_accessory/head_accessory = GLOB.head_accessory_styles_list[head_organ.ha_style]
+	var/datum/sprite_accessory/head_accessory/head_accessory = SSaccessories.head_accessory_list[head_organ.ha_style]
 	if(!head_accessory || !(head_accessory.species_allowed && (head_organ.dna.species.name in head_accessory.species_allowed)))
 		return
 
@@ -361,7 +372,7 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 	if((head && (head.flags_inv & (HIDEHAIR|HIDEHEADHAIR))) || (wear_mask && (wear_mask.flags_inv & (HIDEHAIR|HIDEHEADHAIR))))
 		return
 
-	var/datum/sprite_accessory/hair/hair = GLOB.hair_styles_full_list[head_organ.h_style]
+	var/datum/sprite_accessory/hair/hair = SSaccessories.hairstyles_list[head_organ.h_style]
 	if(!hair || !((hair.species_allowed && (head_organ.dna.species.name in hair.species_allowed)) || (head_organ.dna.species.bodyflags & ALL_RPARTS)))
 		return
 
@@ -379,7 +390,7 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 	MA.overlays += img_hair
 
 	// Gradient
-	var/datum/sprite_accessory/hair_gradient/gradient = GLOB.hair_gradients_list[head_organ.h_grad_style]
+	var/datum/sprite_accessory/gradient/gradient = SSaccessories.hair_gradients_list[head_organ.h_grad_style]
 	if(gradient)
 		var/icon/icn_alpha_mask = icon(gradient.icon, gradient.icon_state)
 		var/icon/icn_gradient = icon(gradient.icon, "full")
@@ -421,7 +432,7 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 	if((head && (head.flags_inv & (HIDEHAIR|HIDEFACIALHAIR))) || (wear_mask && (wear_mask.flags_inv & (HIDEHAIR|HIDEFACIALHAIR))))
 		return
 
-	var/datum/sprite_accessory/facial_hair/facial_hair = GLOB.facial_hair_styles_list[head_organ.f_style]
+	var/datum/sprite_accessory/facial_hair/facial_hair = SSaccessories.facial_hairstyles_list[head_organ.f_style]
 	//If the head's species is in the list of allowed species for the hairstyle, or the head's species is one flagged to have bodies comprised wholly of cybernetics...
 	if(!facial_hair || !((facial_hair.species_allowed && (head_organ.dna.species.name in facial_hair.species_allowed)) || (head_organ.dna.species.bodyflags & ALL_RPARTS)))
 		return
@@ -573,7 +584,7 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 
 	// over_uniform body marks
 	var/body_marking = m_styles["body"]
-	var/datum/sprite_accessory/body_marking_style = GLOB.marking_styles_list[body_marking]
+	var/datum/sprite_accessory/body_marking_style = SSaccessories.body_markings_list[body_marking]
 	if(body_marking_style.visible_over_uniform || body_marking_style.name != /datum/sprite_accessory/body_markings/none::name)
 		var/obj/item/organ/external/chest/chest_organ = get_organ(BODY_ZONE_CHEST)
 		if(chest_organ && m_styles["body"])
@@ -683,7 +694,7 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 
 	update_item_on_hud(glasses, ui_glasses, togleable_inventory = TRUE)
 	var/glasses_layer = GLASSES_LAYER
-	var/datum/sprite_accessory/hair/hair_style = GLOB.hair_styles_full_list[head_organ.h_style]
+	var/datum/sprite_accessory/hair/hair_style = SSaccessories.hairstyles_list[head_organ.h_style]
 	var/obj/item/clothing/glasses/real_glasses = glasses
 	var/is_real_glasses = istype(real_glasses)
 
@@ -868,7 +879,7 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 
 	var/datum/sprite_accessory/alt_heads/alternate_head
 	if(head_organ.alt_head && head_organ.alt_head != "None")
-		alternate_head = GLOB.alt_heads_list[head_organ.alt_head]
+		alternate_head = SSaccessories.alt_heads_list[head_organ.alt_head]
 
 	var/override_icon_state
 	if(alternate_head)
@@ -929,14 +940,10 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 		bodypart_wing.body_accessory = GLOB.body_accessory_by_name[dna.species.default_bodyacc]
 
 	var/mutable_appearance/wings = mutable_appearance(bodypart_wing.body_accessory.icon, bodypart_wing.body_accessory.icon_state, layer = -WING_LAYER)
-	wings.pixel_w = bodypart_wing.body_accessory.pixel_x_offset
-	wings.pixel_z = bodypart_wing.body_accessory.pixel_y_offset
 	overlays_standing[WING_LAYER] = wings
 
 	if(bodypart_wing.body_accessory.has_behind)
 		var/mutable_appearance/under_wing = mutable_appearance(bodypart_wing.body_accessory.icon, "[bodypart_wing.body_accessory.icon_state]_BEHIND", layer = -WING_UNDERLIMBS_LAYER)
-		under_wing.pixel_w = bodypart_wing.body_accessory.pixel_x_offset
-		under_wing.pixel_z = bodypart_wing.body_accessory.pixel_y_offset
 		overlays_standing[WING_UNDERLIMBS_LAYER] = under_wing
 
 		var/icon/accessory_s = icon(bodypart_wing.body_accessory.icon, bodypart_wing.body_accessory.icon_state)
@@ -965,7 +972,7 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 	var/datum/sprite_accessory/body_markings/tail/tail_marking_style
 	if(bodypart_tail.m_styles["tail"] != "None" && (bodypart_tail.dna.species.bodyflags & HAS_TAIL_MARKINGS))
 		var/tail_marking = bodypart_tail.m_styles["tail"]
-		tail_marking_style = GLOB.marking_styles_list[tail_marking]
+		tail_marking_style = SSaccessories.alt_heads_list[tail_marking]
 		tail_marking_icon = new/icon("icon" = tail_marking_style.icon, "icon_state" = "[tail_marking_style.icon_state]_s")
 		tail_marking_icon.Blend(bodypart_tail.m_colours["tail"], ICON_ADD)
 
@@ -985,8 +992,6 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 				under.Insert(new/icon(accessory_s, dir=WEST), dir=WEST)
 
 				var/mutable_appearance/underlimbs = mutable_appearance(under, layer = -TAIL_UNDERLIMBS_LAYER)
-				underlimbs.pixel_w = bodypart_tail.body_accessory.pixel_x_offset
-				underlimbs.pixel_z = bodypart_tail.body_accessory.pixel_y_offset
 				overlays_standing[TAIL_UNDERLIMBS_LAYER] = underlimbs
 
 				// Creates a blank icon, and copies accessory_s' north direction sprite into it
@@ -995,13 +1000,9 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 				over.Insert(new/icon(accessory_s, dir=NORTH), dir=NORTH)
 
 				var/mutable_appearance/tail = mutable_appearance(over, layer = -TAIL_LAYER)
-				tail.pixel_w = bodypart_tail.body_accessory.pixel_x_offset
-				tail.pixel_z = bodypart_tail.body_accessory.pixel_y_offset
 				overlays_standing[TAIL_LAYER] = tail
 			else // Otherwise, since the user's tail isn't overlapped by limbs, go ahead and use default icon generation.
 				var/mutable_appearance/tail = mutable_appearance(accessory_s, layer = -TAIL_LAYER)
-				tail.pixel_w = bodypart_tail.body_accessory.pixel_x_offset
-				tail.pixel_z = bodypart_tail.body_accessory.pixel_y_offset
 				overlays_standing[TAIL_LAYER] = tail
 
 			var/icon/tempicon = new/icon(accessory_s,dir=NORTH)
@@ -1072,7 +1073,7 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 	var/datum/sprite_accessory/body_markings/tail/tail_marking_style
 	if(bodypart_tail.m_styles["tail"] != "None" && (bodypart_tail.dna.species.bodyflags & HAS_TAIL_MARKINGS))
 		var/tail_marking = bodypart_tail.m_styles["tail"]
-		tail_marking_style = GLOB.marking_styles_list[tail_marking]
+		tail_marking_style = SSaccessories.body_markings_list[tail_marking]
 		tail_marking_icon = new/icon("icon" = tail_marking_style.icon, "icon_state" = "[tail_marking_style.icon_state]w_s")
 		tail_marking_icon.Blend(bodypart_tail.m_colours["tail"], ICON_ADD)
 
@@ -1091,8 +1092,6 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 			under.Insert(new/icon(accessory_s, dir=WEST), dir=WEST)
 
 			var/mutable_appearance/underlimbs = mutable_appearance(under, layer = -TAIL_UNDERLIMBS_LAYER)
-			underlimbs.pixel_w = bodypart_tail.body_accessory.pixel_x_offset
-			underlimbs.pixel_z = bodypart_tail.body_accessory.pixel_y_offset
 			overlays_standing[TAIL_UNDERLIMBS_LAYER] = underlimbs
 
 			// Creates a blank icon, and copies accessory_s' north direction sprite into it before passing that to the tail layer that overlays uniforms and such.
@@ -1100,13 +1099,9 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 			over.Insert(new/icon(accessory_s, dir=NORTH), dir=NORTH)
 
 			var/mutable_appearance/tail = mutable_appearance(over, layer = -TAIL_LAYER)
-			tail.pixel_w = bodypart_tail.body_accessory.pixel_x_offset
-			tail.pixel_z = bodypart_tail.body_accessory.pixel_y_offset
 			overlays_standing[TAIL_LAYER] = tail
 		else // Otherwise, since the user's tail isn't overlapped by limbs, go ahead and use default icon generation.
 			var/mutable_appearance/tail = mutable_appearance(accessory_s, layer = -TAIL_LAYER)
-			tail.pixel_w = bodypart_tail.body_accessory.pixel_x_offset
-			tail.pixel_z = bodypart_tail.body_accessory.pixel_y_offset
 			overlays_standing[TAIL_LAYER] = tail
 
 	else
@@ -1233,46 +1228,46 @@ GLOBAL_LIST_EMPTY(damage_icon_parts)
 	if(g == DNA_GENDER_PLURAL)
 		g = DNA_GENDER_FEMALE
 
-	. = ""
+	var/list/result = list()
 
 	var/obj/item/organ/internal/eyes/eyes = get_int_organ(/obj/item/organ/internal/eyes)
 	if(eyes)
-		. += "[eyes.eye_colour]"
+		result += "[eyes.eye_colour]"
 	else
-		. += "#000000"
+		result += "#000000"
 
 	if(lip_color && HAS_TRAIT(src, TRAIT_HAS_LIPS))
-		. += "[lip_color]"
+		result += "[lip_color]"
 	else
-		. += "#000000"
+		result += "#000000"
 
 	for(var/limb_zone in dna.species.has_limbs)
 		var/obj/item/organ/external/part = bodyparts_by_name[limb_zone]
 		if(isnull(part))
-			. += "0"
+			result += "0"
 		else if(part.is_robotic())
-			. += "2[part.model ? "-[part.model]" : ""]"
+			result += "2[part.model ? "-[part.model]" : ""]"
 		else if(part.is_dead())
-			. += "3"
+			result += "3"
 		else
-			. += "1"
+			result += "1"
 
 		if(part)
 			var/datum/species/S = GLOB.all_species[part.dna.species.name]
-			. += "[S.race_key]"
-			. += "[part.dna.GetUIValue(DNA_UI_SKIN_TONE)]"
-			. += "[g]"
+			result += "[S.race_key]"
+			result += "[part.dna.GetUIValue(DNA_UI_SKIN_TONE)]"
+			result += "[g]"
 			if(part.s_col)
-				. += "[part.s_col]"
+				result += "[part.s_col]"
 			if(part.s_tone)
-				. += "[part.s_tone]"
+				result += "[part.s_tone]"
 
 	var/list/bonus_info = list()
 	SEND_SIGNAL(src, COMSIG_GET_ICON_RENDER_KEY_INFO, bonus_info)
 	for(var/info in bonus_info)
-		. += "[info]"
+		result += "[info]"
 
-	. = "[.][!!husk][!!hulk][!!skeleton]"
+	return "[result.Join("")][!!husk][!!hulk][!!skeleton]"
 
 /mob/living/carbon/human/update_ssd_overlay()
 	if(!isnull(player_logged))
@@ -1381,4 +1376,19 @@ use_item_state: SS1984 legacy var, used to fix fact, that item_state randomly us
 	standing.color = color
 
 	return standing
+
+// Wide organs or bodyparts shouldn't offset human HUD directly
+/mob/living/carbon/human/get_hud_x_offset()
+	return 0
+
+// But they are affected by height
+/mob/living/carbon/human/get_hud_y_offset()
+	return 0
+	//return GLOB.human_heights_to_offsets[mob_height]["[UPPER_BODY]"]
+
+/mob/living/carbon/human/get_cached_width()
+	return cached_body_width
+
+/mob/living/carbon/human/get_cached_height()
+	return cached_body_height
 

@@ -90,7 +90,6 @@
 	/// AI or pAI mob inhabiting the MOD.
 	var/mob/living/silicon/ai_assistant
 
-
 /obj/item/mod/control/get_ru_names()
 	return alist(
 		NOMINATIVE = "блок управления МЭК",
@@ -153,9 +152,10 @@
 		else
 			. += span_notice("Слот для ядра пуст.")
 
-/obj/item/mod/control/examine_more(mob/user)
-	. = ..()
-	. += "<i>[extended_desc]</i>"
+/obj/item/mod/control/add_deep_lore()
+	if(!extended_desc)
+		return
+	AddElement(/datum/element/examine_lore, lore = extended_desc)
 
 /obj/item/mod/control/process()
 	if(seconds_electrified > 0)
@@ -693,7 +693,11 @@
 
 /obj/item/mod/control/proc/update_speed()
 	var/total_slowdown = 0
-	total_slowdown += slowdown_deployed
+	var/skill_factor = 1
+	if(wearer)
+		CALCULATE_SKILL_MOD(wearer, SPACESUIT_SLOWDOWN_MOD, skill_modifier)
+		skill_factor = skill_modifier
+	total_slowdown += slowdown_deployed * skill_factor
 
 	var/list/module_slowdowns = list()
 	SEND_SIGNAL(src, COMSIG_MOD_UPDATE_SPEED, module_slowdowns)

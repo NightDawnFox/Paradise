@@ -51,12 +51,7 @@
 		current_turf_slowdown = 0
 
 /mob/living/proc/get_strength_pull_slowdown_modifier()
-	var/mod = 1
-	var/list/mods = list()
-	SEND_SIGNAL(src, COMSIG_GET_PULL_SLOWDOWN_MODIFIERS, mods)
-	for(var/modifier in mods)
-		mod *= modifier
-
+	CALCULATE_SKILL_MOD(src, PULL_SLOWDOWN_MODIFIERS, mod)
 	return mod
 
 /mob/living/proc/update_pull_movespeed()
@@ -354,18 +349,14 @@
 	UnregisterSignal(src, COMSIG_MOVABLE_PRE_MOVE)
 	UnregisterSignal(src, COMSIG_MOVABLE_MOVED)
 
-/mob/living/verb/lookup()
-	set name = "Смотреть наверх"
-	set category = VERB_CATEGORY_IC
+GAME_VERB(/mob/living, lookup, "Смотреть наверх", VERB_CATEGORY_IC)
 
 	if(client.perspective != MOB_PERSPECTIVE)
 		end_look_up()
 	else
 		look_up()
 
-/mob/living/verb/lookdown()
-	set name = "Смотреть вниз"
-	set category = VERB_CATEGORY_IC
+GAME_VERB(/mob/living, lookdown, "Смотреть вниз", VERB_CATEGORY_IC)
 
 	if(client.perspective != MOB_PERSPECTIVE)
 		end_look_down()

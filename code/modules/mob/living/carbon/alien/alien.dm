@@ -22,6 +22,7 @@
 	verb_yell = "ревёт"
 
 	blood_color = BLOOD_COLOR_XENO
+	looting_icon_mode = LOOT_ICON_ICON_TO_HTML
 
 	var/obj/item/card/id/wear_id = null // Fix for station bounced radios -- Skie
 	var/has_fine_manipulation = FALSE
@@ -54,7 +55,7 @@
 	var/death_message = "изда%(ет,ют)% тихий гортанный звук, зелёная кровь пузырится из %(его,её,его,их)% пасти..."
 	var/death_sound = 'sound/voice/hiss6.ogg'
 
-	var/datum/action/innate/alien_nightvision_toggle/night_vision_action
+	var/datum/action/innate/alien/thermal_toogle/thermal_toogle
 	var/static/praetorian_count = 0
 	var/static/queen_count = 0
 	var/static/queen_maximum = 0
@@ -62,9 +63,9 @@
 /mob/living/carbon/alien/Initialize(mapload)
 	. = ..()
 	create_reagents(1000)
-	add_verb(src, /mob/living/verb/mob_sleep)
-	night_vision_action = new
-	night_vision_action.Grant(src)
+	ASSIGN_GAME_VERB(src, /mob/living, mob_sleep)
+	thermal_toogle = new
+	thermal_toogle.Grant(src)
 
 	for(var/organ_path in get_caste_organs())
 		new organ_path(src)
@@ -77,9 +78,9 @@
 	GLOB.aliens_list += src
 
 /mob/living/carbon/alien/Destroy()
-	if(night_vision_action)
-		night_vision_action.Remove(src)
-		night_vision_action = null
+	if(thermal_toogle)
+		thermal_toogle.Remove(src)
+		thermal_toogle = null
 	GLOB.aliens_list -= src
 	return ..()
 
@@ -232,9 +233,7 @@
 /mob/living/carbon/alien/setDNA()
 	return
 
-/mob/living/carbon/alien/verb/nightvisiontoggle()
-	set name = "Toggle Night Vision"
-
+/mob/living/carbon/alien/proc/nightvisiontoggle()
 	if(!nightvision_enabled)
 		lighting_alpha = LIGHTING_PLANE_ALPHA_MOSTLY_INVISIBLE
 		nightvision = 8
@@ -324,7 +323,7 @@ Des: Removes all infected images from the alien.
 	if(!vessel)
 		return
 	vessel.stored_plasma = clamp(vessel.stored_plasma + amount, 0, vessel.max_plasma)
-	for(var/datum/action/spell_action/action in actions)
+	for(var/datum/action/cooldown/spell/action in mob_spell_list)
 		action.UpdateButtonIcon()
 
 /**
@@ -333,7 +332,7 @@ Des: Removes all infected images from the alien.
  */
 /mob/living/carbon/proc/update_plasma_display(mob/owner, update_buttons = FALSE)
 	if(update_buttons)
-		for(var/datum/action/spell_action/action in actions)
+		for(var/datum/action/cooldown/spell/action in mob_spell_list)
 			action.UpdateButtonIcon()
 
 	if(!hud_used || !isalien(owner)) //clientless aliens or non aliens

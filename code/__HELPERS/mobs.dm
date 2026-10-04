@@ -22,44 +22,45 @@
 	var/list/pick_list = list()
 	switch(gender)
 		if(MALE)
-			pick_list = GLOB.underwear_m
+			pick_list = SSaccessories.underwear_m
 		if(FEMALE)
-			pick_list = GLOB.underwear_f
+			pick_list = SSaccessories.underwear_f
 		else
-			pick_list = GLOB.underwear_list
-	return pick_species_allowed_underwear(pick_list, species)
+			pick_list = SSaccessories.underwear_list
+	return pick_species_allowed_underwear(pick_list, SSaccessories.underwear_list, species)
 
 /proc/random_undershirt(gender, species = SPECIES_HUMAN)
 	var/list/pick_list = list()
 	switch(gender)
 		if(MALE)
-			pick_list = GLOB.undershirt_m
+			pick_list = SSaccessories.undershirt_m
 		if(FEMALE)
-			pick_list = GLOB.undershirt_f
+			pick_list = SSaccessories.undershirt_f
 		else
-			pick_list = GLOB.undershirt_list
-	return pick_species_allowed_underwear(pick_list, species)
+			pick_list = SSaccessories.undershirt_list
+	return pick_species_allowed_underwear(pick_list, SSaccessories.undershirt_list, species)
 
 /proc/random_socks(gender, species = SPECIES_HUMAN)
 	var/list/pick_list = list()
 	switch(gender)
 		if(MALE)
-			pick_list = GLOB.socks_m
+			pick_list = SSaccessories.socks_m
 		if(FEMALE)
-			pick_list = GLOB.socks_f
+			pick_list = SSaccessories.socks_f
 		else
-			pick_list = GLOB.socks_list
-	return pick_species_allowed_underwear(pick_list, species)
+			pick_list = SSaccessories.socks_list
+	return pick_species_allowed_underwear(pick_list, SSaccessories.socks_list, species)
 
-/proc/pick_species_allowed_underwear(list/all_picks, species)
+/proc/pick_species_allowed_underwear(list/all_picks, list/full_list, species)
 	var/list/valid_picks = list()
 	for(var/test in all_picks)
-		var/datum/sprite_accessory/S = all_picks[test]
-		if(!(species in S.species_allowed))
+		var/datum/sprite_accessory/S = full_list[test]
+		if(S && !(species in S.species_allowed))
 			continue
 		valid_picks += test
 
-	if(!length(valid_picks)) valid_picks += "Nude"
+	if(!length(valid_picks))
+		valid_picks += "Nude"
 
 	return pick(valid_picks)
 
@@ -67,8 +68,8 @@
 	var/h_style = "Bald"
 	var/list/valid_hairstyles = list()
 
-	for(var/hairstyle in GLOB.hair_styles_public_list)
-		var/datum/sprite_accessory/style = GLOB.hair_styles_public_list[hairstyle]
+	for(var/hairstyle, hairstyle_object in SSaccessories.hairstyles_list)
+		var/datum/sprite_accessory/style = hairstyle_object
 
 		if(!LAZYIN(style.species_allowed, species.name))
 			continue
@@ -76,7 +77,7 @@
 		if(style.wizard_only)
 			continue
 
-		if(gender == style.unsuitable_gender)
+		if(style.gender && gender != style.gender)
 			continue
 
 		if(!species.is_allowed_hair_style(human, robohead, style))
@@ -94,15 +95,15 @@
 /proc/random_facial_hair_style(gender, species = SPECIES_HUMAN, datum/robolimb/robohead)
 	var/f_style = "Shaved"
 	var/list/valid_facial_hairstyles = list()
-	for(var/facialhairstyle in GLOB.facial_hair_styles_list)
-		var/datum/sprite_accessory/S = GLOB.facial_hair_styles_list[facialhairstyle]
+	for(var/facialhairstyle, facialhairstyle_object in SSaccessories.facial_hairstyles_list)
+		var/datum/sprite_accessory/S = facialhairstyle_object
 
 		if(facialhairstyle == "Shaved") //Just in case.
 			valid_facial_hairstyles += facialhairstyle
 			continue
 		if(S.wizard_only)
 			continue
-		if(gender == S.unsuitable_gender)
+		if(S.gender && gender != S.gender)
 			continue
 		if(species == SPECIES_MACHINEPERSON) //If the user is a species who can have a robotic head...
 			if(!robohead)
@@ -125,8 +126,8 @@
 /proc/random_head_accessory(species = SPECIES_HUMAN)
 	var/ha_style = "None"
 	var/list/valid_head_accessories = list()
-	for(var/head_accessory in GLOB.head_accessory_styles_list)
-		var/datum/sprite_accessory/S = GLOB.head_accessory_styles_list[head_accessory]
+	for(var/head_accessory, head_accessory_object in SSaccessories.head_accessory_list)
+		var/datum/sprite_accessory/S = head_accessory_object
 
 		if(!(species in S.species_allowed))
 			continue
@@ -140,14 +141,14 @@
 /proc/random_marking_style(location = "body", species = SPECIES_HUMAN, datum/robolimb/robohead, body_accessory, alt_head, gender = NEUTER)
 	var/m_style = "None"
 	var/list/valid_markings = list()
-	for(var/marking in GLOB.marking_styles_list)
-		var/datum/sprite_accessory/body_markings/S = GLOB.marking_styles_list[marking]
+	for(var/marking, marking_object in SSaccessories.body_markings_list)
+		var/datum/sprite_accessory/body_markings/S = marking_object
 		if(S.name == "None")
 			valid_markings += marking
 			continue
 		if(S.marking_location != location) // If the marking isn't for the location we desire, skip.
 			continue
-		if(gender == S.unsuitable_gender) // If the marking isn't allowed for the user's gender, skip.
+		if(S.gender && gender != S.gender) // If the marking isn't allowed for the user's gender, skip.
 			continue
 		if(!(species in S.species_allowed)) // If the user's head is not of a species the marking style allows, skip it. Otherwise, add it to the list.
 			continue
@@ -168,7 +169,7 @@
 				if(!S.wings_allowed || !(body_accessory in S.wings_allowed))
 					continue
 		if(location == "head")
-			var/datum/sprite_accessory/body_markings/head/M = GLOB.marking_styles_list[S.name]
+			var/datum/sprite_accessory/body_markings/head/M = SSaccessories.body_markings_list[S.name]
 			if(species == SPECIES_MACHINEPERSON)//If the user is a species that can have a robotic head...
 				if(!robohead)
 					robohead = GLOB.all_robolimbs["Morpheus Cyberkinetics"]
@@ -243,7 +244,7 @@
 	var/list/fields = target_records.fields
 	var/their_name = fields["name"]
 	var/their_rank = fields["rank"]
-	var/static/list/protected_levels = list(SEC_RECORD_STATUS_ARREST, SEC_RECORD_STATUS_EXECUTE, SEC_RECORD_STATUS_INCARCERATED)
+	var/static/list/protected_levels = list(SEC_RECORD_STATUS_ARREST, SEC_RECORD_STATUS_EXECUTE, SEC_RECORD_STATUS_INCARCERATED, SEC_RECORD_STATUS_DEMOTE)
 
 	switch(criminal_status)
 
@@ -293,138 +294,6 @@
 	fields["comments"] += "Set to [status] by [user_name || user.name] ([user_rank]) on [GLOB.current_date_string] [station_time_timestamp()], comment: [comment]"
 	update_all_mob_security_hud()
 	return TRUE
-
-/**
- * Timed action involving one mob user. Target is optional.
- * Checks that `user` does not move, change hands, get stunned, etc. for the given `delay`.
- *
- * Arguments:
- * * user - The mob performing the action.
- * * delay - The time in deciseconds. Use the SECONDS define for readability. `1 SECONDS` is 10 deciseconds.
- * * target - The target of the action. This is where the progressbar will display.
- * * timed_action_flags - Flags to control the behavior of the timed action.
- * * progress - Whether to display a progress bar `TRUE` or `FALSE`.
- * * extra_checks - Additional checks to perform before the action is executed.
- * * interaction_key - The assoc key under which the do_after is capped, with max_interact_count being the cap. Interaction key will default to target if not set.
- * * max_interact_count - The maximum amount of interactions allowed.
- * * cancel_on_max - If `TRUE`, when the interaction limit is reached, the currently running action(s) with the same interaction_key and max_interact_count will be cancelled and the proc will fail. Note: Requires either consistent max_interact_count per interaction_key, or unique interaction_key per distinct max_interact_count value.
- * * cancel_message - Message shown to the user if cancel_on_max is set to `TRUE` and they exceeds max interaction count. Use empty string ("") to skip default cancel message.
- * * category - Used to apply proper action speed modifier to passed delay.
- *
- * Returns `TRUE` on success, `FALSE` on failure.
- */
-/proc/do_after(
-	mob/user,
-	delay,
-	atom/target,
-	timed_action_flags = DEFAULT_DOAFTER_IGNORE,
-	progress = TRUE,
-	datum/callback/extra_checks,
-	interaction_key,
-	max_interact_count = INFINITY,
-	cancel_on_max = FALSE,
-	cancel_message = span_warning("Attempt cancelled."),
-	category = DA_CAT_ALL,
-)
-	if(!user)
-		return FALSE
-
-	if(!isnum(delay))
-		CRASH("do_after was passed a non-number delay: [delay || "null"].")
-
-	if(!interaction_key && target)
-		if(cancel_on_max)
-			interaction_key = "[UID_of(target)]+[max_interact_count]"
-		else
-			interaction_key = target //Use the direct ref to the target
-	if(interaction_key) //Do we have a interaction_key now?
-		var/current_interaction_count = LAZYACCESS(user.do_afters, interaction_key) || 0
-		if(current_interaction_count >= max_interact_count) //We are at our peak
-			if(cancel_on_max && current_interaction_count == max_interact_count) // we are adding extra one, to catch this on while loop
-				LAZYSET(user.do_afters, interaction_key, current_interaction_count + 1)
-			return FALSE
-		LAZYSET(user.do_afters, interaction_key, current_interaction_count + 1)
-
-	var/atom/user_loc = user.loc
-	var/atom/target_loc = target?.loc
-
-	var/drifting = FALSE
-	if(GLOB.move_manager.processing_on(user, SSspacedrift))
-		drifting = TRUE
-
-	var/holding = user.get_active_hand()
-	var/obj/item/gripper/gripper = holding
-	var/gripper_check = FALSE
-	if(!(timed_action_flags & DA_IGNORE_EMPTY_GRIPPER) && istype(gripper) && !gripper.isEmpty())
-		gripper_check = TRUE
-
-	if(!(timed_action_flags & DA_IGNORE_SLOWDOWNS))
-		delay *= user.get_actionspeed_by_category(category)
-
-	var/datum/progressbar/progbar
-	var/endtime = world.time + delay
-	var/starttime = world.time
-
-	// progress bar will not show up if there is no delay at all
-	if(progress && user.client && starttime < endtime)
-		progbar = new(user, delay, target || user)
-
-	SEND_SIGNAL(user, COMSIG_DO_AFTER_BEGAN)
-
-	. = TRUE
-
-	while(world.time < endtime)
-		stoplag(1)
-
-		if(!QDELETED(progbar))
-			progbar.update(world.time - starttime)
-
-		if(QDELETED(user))
-			. = FALSE
-			break
-
-		if(cancel_on_max && interaction_key)
-			var/current_interaction_count = LAZYACCESS(user.do_afters, interaction_key) || 0
-			if(current_interaction_count > max_interact_count)
-				// we need to reduce count by one, since its just a marker
-				LAZYSET(user.do_afters, interaction_key, current_interaction_count - 1)
-				if(cancel_message)
-					to_chat(user, "[cancel_message]")
-				. = FALSE
-				break
-
-		if(drifting && (!(timed_action_flags & DA_IGNORE_SPACE_DRIFT) || !GLOB.move_manager.processing_on(user, SSspacedrift)))
-			drifting = FALSE
-			user_loc = user.loc
-
-		if((!(timed_action_flags & DA_IGNORE_USER_LOC_CHANGE) && !drifting && user.loc != user_loc) \
-			|| (!(timed_action_flags & DA_IGNORE_HELD_ITEM) && user.get_active_hand() != holding) \
-			|| (!(timed_action_flags & DA_IGNORE_CONSCIOUSNESS) && user.stat) \
-			|| (!(timed_action_flags & DA_IGNORE_LYING) && user.IsLying()) \
-			|| (!(timed_action_flags & DA_IGNORE_INCAPACITATED) && HAS_TRAIT_NOT_FROM(user, TRAIT_INCAPACITATED, STAT_TRAIT)) \
-			|| (!(timed_action_flags & DA_IGNORE_RESTRAINED) && HAS_TRAIT(user, TRAIT_RESTRAINED)) \
-			|| (gripper_check && gripper?.isEmpty()) \
-			|| (extra_checks && !extra_checks.Invoke()))
-			. = FALSE
-			break
-
-		if(target && (user != target) && \
-			(QDELETED(target) || (!(timed_action_flags & DA_IGNORE_TARGET_LOC_CHANGE) && target.loc != target_loc)))
-			. = FALSE
-			break
-
-	if(!QDELETED(progbar))
-		progbar.end_progress()
-
-	if(interaction_key)
-		var/reduced_interaction_count = (LAZYACCESS(user.do_afters, interaction_key) || 0) - 1
-		if(reduced_interaction_count > 0) // Not done yet!
-			LAZYSET(user.do_afters, interaction_key, reduced_interaction_count)
-			return .
-		// all out, let's clear er out fully
-		LAZYREMOVE(user.do_afters, interaction_key)
-
-	SEND_SIGNAL(user, COMSIG_DO_AFTER_ENDED)
 
 /// Returns the total amount of do_afters this mob is taking part in
 /mob/proc/do_after_count()
@@ -581,19 +450,14 @@
 		SEND_SOUND(usr, sound('sound/misc/sadtrombone.ogg'))
 		client.next_mouse_macro_warning = world.time + 600
 
-/mob/verb/ClickSubstitute(params as command_text)
-	set hidden = TRUE
-	set name = ".click"
+//suppress the .click/dblclick/.mouse macros so people can't use them to identify the location of items or aimbot
+GAME_VERB_NATIVE(/mob, ClickSubstitute, ".click", VERB_CATEGORY_HIDDEN, params as command_text)
 	LogMouseMacro(".click", params)
 
-/mob/verb/DblClickSubstitute(params as command_text)
-	set hidden = TRUE
-	set name = ".dblclick"
+GAME_VERB_NATIVE(/mob, DblClickSubstitute, ".dblclick", VERB_CATEGORY_HIDDEN, params as command_text)
 	LogMouseMacro(".dblclick", params)
 
-/mob/verb/MouseSubstitute(params as command_text)
-	set hidden = TRUE
-	set name = ".mouse"
+GAME_VERB_NATIVE(/mob, MouseSubstitute, ".mouse", VERB_CATEGORY_HIDDEN, params as command_text)
 	LogMouseMacro(".mouse", params)
 
 /proc/update_all_mob_security_hud()

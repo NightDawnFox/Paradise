@@ -26,6 +26,11 @@
 /obj/effect/light_emitter/singularity_act()
 	return
 
+/obj/effect/light_emitter/thunderdome
+	light_range = 4
+	light_power = 8
+	icon_state = "impact_laser_orange"
+
 /**********************Miner Lockers**************************/
 
 /obj/structure/closet/wardrobe/miner
@@ -232,6 +237,13 @@
 	inserted_gem = new_gem
 	inserted_gem.set_light_on(FALSE)
 	refresh_lantern_lights()
+
+/obj/item/flashlight/lantern/on
+	on = TRUE
+
+/obj/item/flashlight/lantern/on/Initialize(mapload)
+	. = ..()
+	update_icon(UPDATE_ICON_STATE)
 
 /**********************Mining car (Crate like thing, not the rail car)**************************/
 

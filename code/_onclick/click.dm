@@ -9,6 +9,18 @@
 /mob/proc/changeNext_move(num)
 	next_move = world.time + ((num + next_move_adjust) * next_move_modifier)
 
+/mob/living/changeNext_move(num)
+	/*
+	var/mod = next_move_modifier
+	var/adj = next_move_adjust
+	for(var/datum/status_effect/effect as anything in status_effects)
+		mod *= effect.nextmove_modifier()
+		adj += effect.nextmove_adjust()
+	next_move = world.time + ((num + adj)*mod)
+	*/
+	. = ..()
+	SEND_SIGNAL(src, COMSIG_LIVING_CHANGENEXT_MOVE, next_move, num)
+
 /**
  * Before anything else, defer these calls to a per-mobtype handler.  This allows us to
  * remove istype() spaghetti code, but requires the addition of other handler procs to simplify it.
@@ -23,6 +35,10 @@
 
 /atom/DblClick(location, control, params)
 	usr.DblClickOn(src,params)
+
+/atom/MouseWheel(delta_x,delta_y,location,control,params)
+	if(flags & INITIALIZED)
+		usr.MouseWheelOn(src, delta_x, delta_y, params)
 
 /**
  * Standard mob ClickOn()
@@ -625,3 +641,17 @@
 
 #undef MAX_SAFE_BYOND_ICON_SCALE_TILES
 #undef MAX_SAFE_BYOND_ICON_SCALE_PX
+
+/// MouseWheelOn
+/mob/proc/MouseWheelOn(atom/A, delta_x, delta_y, params)
+	SEND_SIGNAL(src, COMSIG_MOUSE_SCROLL_ON, A, delta_x, delta_y, params)
+
+/mob/dead/observer/MouseWheelOn(atom/A, delta_x, delta_y, params)
+	var/list/modifiers = params2list(params)
+	if(LAZYACCESS(modifiers, SHIFT_CLICK))
+		var/view = 0
+		if(delta_y > 0)
+			view = -1
+		else
+			view = 1
+		add_view_range(view)

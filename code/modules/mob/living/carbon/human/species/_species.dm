@@ -5,6 +5,10 @@
 	var/name_plural
 	/// the "a" or "an" in "a Vulpkanin" or "an Abductor", use with singular version
 	var/a = "a"
+	/// Russian name of the species in the genitive case.
+	/// Appended to bodypart names, so a severed limb reads "левая нога человека" rather
+	/// than a bare "левая нога".
+	var/ru_genitive
 
 	/// Normal icon set.
 	var/icobase = 'icons/mob/human_races/r_human.dmi'
@@ -279,6 +283,41 @@
 
 	var/max_radiation = CARBON_MAX_RADIATION //! Maximum radiation species can hold
 
+	/// How many free skill points can be select for specific skill
+	var/list/max_select_skills = list(
+		/datum/skill/general/carrying = 2,
+		/datum/skill/general/mech_drive = 2,
+		/datum/skill/general/mod_use = 2,
+		/datum/skill/general/cooking = 2,
+		/datum/skill/service/drink_mixing = 2,
+		/datum/skill/service/botany = 2,
+		/datum/skill/service/cleaning = 2,
+		/datum/skill/combat/accuracy = 2,
+		/datum/skill/combat/guns = 2,
+		/datum/skill/combat/melee = 2,
+		/datum/skill/combat/fists = 2,
+		/datum/skill/engineering/building = 2,
+		/datum/skill/engineering/construction = 2,
+		/datum/skill/engineering/electrician = 2,
+		/datum/skill/engineering/atmos = 2,
+		/datum/skill/medical/surgery = 2,
+		/datum/skill/medical/heal = 2,
+		/datum/skill/medical/chemistry = 2,
+		/datum/skill/medical/genetic = 2,
+		/datum/skill/medical/virusology = 2,
+		/datum/skill/research/research = 2,
+		/datum/skill/research/protolathe = 2,
+		/datum/skill/research/robotics = 2,
+		/datum/skill/research/xenobiology = 2,
+	)
+	var/bonus_skill_free_points = 0
+
+	/**
+	 * Was on_species_gain ever actually called?
+	 * Species code is really odd...
+	 **/
+	var/properly_gained = FALSE
+
 /datum/species/New()
 	unarmed = new unarmed_type()
 
@@ -288,6 +327,20 @@
 
 /datum/species/proc/is_allowed_hair_style(mob/living/carbon/human/human, datum/robolimb/robohead, datum/sprite_accessory/style)
 	return TRUE
+
+/**
+ * Returns the species name in the genitive case, ready to be appended to a bodypart name.
+ *
+ * The result is already spaced, so it can be passed straight into
+ * [/atom/proc/set_ru_names_suffix].
+ *
+ * Returns:
+ * * `string` - " человека", or null if the species shouldn't be named in bodypart names.
+ */
+/datum/species/proc/get_bodypart_name_suffix()
+	if(!ru_genitive)
+		return null
+	return " [ru_genitive]"
 
 /proc/get_age_limits(datum/species/species, list/tags)
 	if(!islist(tags))
@@ -426,6 +479,8 @@
 	target.hud_used?.update_locked_slots()
 	gain_muscles(target, STRENGTH_LEVEL_DEFAULT, STRENGTH_LEVEL_MAXDEFAULT, TRUE)
 	target.update_body(TRUE)
+
+	properly_gained = TRUE
 
 /datum/species/proc/gain_muscles(mob/living/carbon/human/target, default, max_level, can_become_stronger = TRUE)
 	target.AddComponent(/datum/component/muscles, max_level, default, can_become_stronger)
@@ -612,13 +667,17 @@
 		target.lastattackerckey = user.ckey
 
 		var/damage_type = BRUTE
+		var/damage = rand(user.dna.species.punchdamagelow + user.physiology.punch_damage_low, user.dna.species.punchdamagehigh + user.physiology.punch_damage_high)
+		CALCULATE_SKILL_MOD(user, FISTS_DAMAGE_MOD, skill_mod)
+		damage *= skill_mod
+
 		var/delta = 0
 		var/list/deltas = list()
 		SEND_SIGNAL(user, COMSIG_GET_MELEE_DAMAGE_DELTAS, deltas, null)
 		for(var/addition in deltas)
 			delta += addition
+		damage += delta
 
-		var/damage = rand(user.dna.species.punchdamagelow + user.physiology.punch_damage_low, user.dna.species.punchdamagehigh + user.physiology.punch_damage_high) + delta
 		damage += attack.damage
 		if(!damage)
 			playsound(target.loc, attack.miss_sound, 25, TRUE, -1)
@@ -664,9 +723,9 @@
 				span_userdanger("[user.declent_ru(NOMINATIVE)] ослабля[PLUR_ET_YUT(user)] [target.declent_ru(ACCUSATIVE)]!")
 			)
 			target.apply_effect(4 SECONDS, KNOCKDOWN, armor_block)
-			target.forcesay(GLOB.hit_appends)
+			target.force_say(GLOB.hit_appends)
 		else if(target.body_position == LYING_DOWN)
-			target.forcesay(GLOB.hit_appends)
+			target.force_say(GLOB.hit_appends)
 
 /datum/species/proc/disarm(mob/living/carbon/human/user, mob/living/carbon/human/target, datum/martial_art/attacker_style)
 	if(user == target)
@@ -697,7 +756,9 @@
 		if(istype(user.gloves, /obj/item/clothing/gloves))
 			var/obj/item/clothing/gloves/gloves = user.gloves
 			extra_knock_chance = gloves.extra_knock_chance
-	if(randn <= 5 + extra_knock_chance)
+	var/knockdown_chance = 5 + extra_knock_chance
+	CALCULATE_SKILL_MOD(user, FISTS_DISARM_MOD, disarm_skill_mod)
+	if(randn <= knockdown_chance * disarm_skill_mod)
 		target.apply_effect(4 SECONDS, KNOCKDOWN, target.run_armor_check(affecting, MELEE))
 		playsound(target.loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
 		target.visible_message(span_danger("[user.declent_ru(NOMINATIVE)] толка[PLUR_ET_YUT(user)] [target.declent_ru(ACCUSATIVE)]!"))
@@ -754,12 +815,14 @@
 				return TRUE
 
 	var/moved = TRUE
-	if(target.a_intent == INTENT_HELP || prob(25)) // Chance to move with shove
+	var/shove_move_chance = 25 * disarm_skill_mod
+	if(target.a_intent == INTENT_HELP || prob(shove_move_chance)) // Chance to move with shove
 		moved = target.Move(shove_to, shove_dir)
 
 	SEND_SIGNAL(target, COMSIG_HUMAN_DISARM_HIT, user, target)
 	if(!moved) //they got pushed into a dense object
-		if(prob(75)) // Chance to knockdown on wall hit
+		var/wall_hit_disarm_chance = 75 * disarm_skill_mod
+		if(prob(wall_hit_disarm_chance)) // Chance to knockdown on wall hit
 			add_attack_logs(user, target, "Disarmed into a dense object", ATKLOG_ALL)
 			target.visible_message(
 				span_warning("[DECLENT_RU_CAP(user, NOMINATIVE)] толка[PLUR_ET_YUT(user)] [target.declent_ru(ACCUSATIVE)]"),
@@ -773,7 +836,8 @@
 				target.Stun(0.5 SECONDS)
 	else
 		var/obj/item/I = target.get_active_hand()
-		if(I && prob(40)) // Chance to disarm target item
+		var/disarm_chance = 40 * disarm_skill_mod
+		if(I && prob(disarm_chance)) // Chance to disarm target item
 			target.drop_from_active_hand()
 			add_attack_logs(user, target, "Disarmed object out of hand", ATKLOG_ALL)
 		else
@@ -1193,10 +1257,7 @@ It'll return null if the organ doesn't correspond, so include null checks when u
 		human.add_sight(glasses.vision_flags)
 		human.nightvision = max(glasses.see_in_dark, human.nightvision)
 
-		if(glasses.invis_override)
-			human.set_invis_see(glasses.invis_override)
-		else
-			human.set_invis_see(min(glasses.invis_view, human.see_invisible))
+		human.set_invis_see(min(glasses.invis_view, human.see_invisible))
 
 		if(!isnull(glasses.lighting_alpha))
 			human.lighting_alpha = min(glasses.lighting_alpha, human.lighting_alpha)
@@ -1379,3 +1440,9 @@ It'll return null if the organ doesn't correspond, so include null checks when u
 	head_organ.h_style = "Bald"
 	target.update_hair()
 	target.update_fhair()
+
+/datum/species/dump_harddel_info()
+	if(harddel_deets_dumped)
+		return
+	harddel_deets_dumped = TRUE
+	return "Gained / Owned: [properly_gained ? "Yes" : "No"]"
